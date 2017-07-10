@@ -28,7 +28,7 @@ Acesse a pastqa 'www' ou 'html' (dependendo do seu servidor PHP)
 Execute o comando abaixo:
 ``` terminal
 create-project sendaxe/senda-gnre master --prefer-dist
-
+```
 ## Licença
 
 [MIT license](http://opensource.org/licenses/MIT)
