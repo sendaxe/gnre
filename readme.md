@@ -1,21 +1,33 @@
-# Lumen PHP Framework
+# SENDA - GNRE
 
-[![Build Status](https://travis-ci.org/laravel/lumen-framework.svg)](https://travis-ci.org/laravel/lumen-framework)
-[![Total Downloads](https://poser.pugx.org/laravel/lumen-framework/d/total.svg)](https://packagist.org/packages/laravel/lumen-framework)
-[![Latest Stable Version](https://poser.pugx.org/laravel/lumen-framework/v/stable.svg)](https://packagist.org/packages/laravel/lumen-framework)
-[![Latest Unstable Version](https://poser.pugx.org/laravel/lumen-framework/v/unstable.svg)](https://packagist.org/packages/laravel/lumen-framework)
-[![License](https://poser.pugx.org/laravel/lumen-framework/license.svg)](https://packagist.org/packages/laravel/lumen-framework)
+SENDA - GNRE é um projeto de integração entre o sistema Senda ERP e os portais de geração GNRE.
 
-Laravel Lumen is a stunningly fast PHP micro-framework for building web applications with expressive, elegant syntax. We believe development must be an enjoyable, creative experience to be truly fulfilling. Lumen attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as routing, database abstraction, queueing, and caching.
+## Documentação
+SENDA - GNRE é baseado no projeto: https://github.com/nfephp-org/sped-gnre mantendo-se atualizado conforme as necessidades do sistema Senda ERP.
 
-## Official Documentation
+## Dependencias \ Requisitos
+- Apache
+- PHP = 7.0 *Problema de comunicação com a Sefaz na versão >= 7.1 do PHP.
+- Openssl
+- Extenções PHP
+-- php_soap
+-- php_openssl
+-- php_gd2
+-- php_pdo_pgsql
+- DOMDocument
 
-Documentation for the framework can be found on the [Lumen website](http://lumen.laravel.com/docs).
+## Instalação
+- Via Composer
 
-## Security Vulnerabilities
+Adicionando o SENDA - GNRE com o composer
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell at taylor@laravel.com. All security vulnerabilities will be promptly addressed.
+Caso você não possua o composer veja [esse link](https://getcomposer.org/doc/01-basic-usage.md) antes de prosseguir
 
-## License
+Acesse a pastqa 'www' ou 'html' (dependendo do seu servidor PHP)
+Execute o comando abaixo:
+``` terminal
+create-project sendaxe/senda-gnre master --prefer-dist
 
-The Lumen framework is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT)
+## Licença
+
+[MIT license](http://opensource.org/licenses/MIT)
