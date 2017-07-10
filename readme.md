@@ -12,9 +12,9 @@ SENDA - GNRE é baseado no projeto: https://github.com/nfephp-org/sped-gnre mant
 - DOMDocument
 - Extenções PHP:
   - php_soap
-*php_openssl
-*php_gd2
-*php_pdo_pgsql
+  - php_openssl
+  - php_gd2
+  - php_pdo_pgsql
 
 
 ## Instalação
