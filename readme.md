@@ -27,7 +27,7 @@ Caso você não possua o composer veja [esse link](https://getcomposer.org/doc/0
 Acesse a pastqa 'www' ou 'html' (dependendo do seu servidor PHP)
 Execute o comando abaixo:
 ``` terminal
-create-project sendaxe/senda-gnre master --prefer-dist
+composer create-project sendaxe/senda-gnre:dev-master --prefer-dist
 ```
 ## Licença
 
