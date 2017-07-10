@@ -18,7 +18,7 @@ SENDA - GNRE é baseado no projeto: https://github.com/nfephp-org/sped-gnre mant
 
 
 ## Instalação
-### Via Composer
+### Criando um projeto Via Composer - Recomendado
 
 Adicionando o SENDA - GNRE com o composer
 
@@ -30,14 +30,19 @@ Execute o comando abaixo:
 composer create-project sendaxe/senda-gnre:dev-master --prefer-dist
 ```
 Aguarde o Download das dependencias.
-Em seguida acesse o sistema atraves da URL: localhost/sendaxe/senda-gnre/public ou se preferir crie um arquivo .BAT (windows) com os comandos:
+
+### Configurando os arquivos
+
+Assim que as dependências forem baixadas, acesse o sistema atraves da URL: "http://localhost/sendaxe/senda-gnre/public" ou se preferir crie um arquivo .BAT (windows) com os comandos abaixo:
 ``` terminal
-REM echo off
+
 cd C:\xampp\htdocs\sendaxe\senda-gnre
 php -S localhost:8000 -t ./public
 pause
+REM Acesse a url: http://localhost:8000 através de um navegador.
 ```
-e acesse a url: http://localhost:8000 através de um navegador.
+
+
 
 
 ## Licença
