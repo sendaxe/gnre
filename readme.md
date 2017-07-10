@@ -33,7 +33,7 @@ Aguarde o Download das dependencias.
 
 ### Ajustando o arquvivo de configuração do SENDA - GNRE
 Assim que as dependências forem baixadas, acesse a pasta onde foi realizado a instalação.
-Abra o arquivo .env e configure os dados de acesso conforme o arquivo .env.exemplo
+Abra o arquivo .env e configure os dados de acesso conforme o arquivo .env.exemple
 
 ### Configurando a URL de Acesso
 
