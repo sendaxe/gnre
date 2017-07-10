@@ -9,12 +9,13 @@ SENDA - GNRE é baseado no projeto: https://github.com/nfephp-org/sped-gnre mant
 - Apache
 - PHP = 7.0 *Problema de comunicação com a Sefaz na versão >= 7.1 do PHP.
 - Openssl
+- DOMDocument
 - Extenções PHP:
-*php_soap
+- - php_soap
 *php_openssl
 *php_gd2
 *php_pdo_pgsql
--DOMDocument
+
 
 ## Instalação
 - Via Composer
