@@ -29,6 +29,16 @@ Execute o comando abaixo:
 ``` terminal
 composer create-project sendaxe/senda-gnre:dev-master --prefer-dist
 ```
-## Licença
+Aguarde o Download das dependencias.
+Em seguida acesse o sistema atraves da URL: localhost/sendaxe/senda-gnre/public ou se preferir crie um arquivo .BAT (windows) com os comandos:
+``` terminal
+REM echo off
+cd C:\xampp\htdocs\sendaxe\senda-gnre
+php -S localhost:8000 -t ./public
+pause
+```
+e acesse através de um navegador com a url: http://localhost:8000
 
+
+## Licença
 [MIT license](http://opensource.org/licenses/MIT)
