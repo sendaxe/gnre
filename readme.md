@@ -37,7 +37,7 @@ cd C:\xampp\htdocs\sendaxe\senda-gnre
 php -S localhost:8000 -t ./public
 pause
 ```
-e acesse através de um navegador com a url: http://localhost:8000
+e acesse a url: http://localhost:8000 através de um navegador.
 
 
 ## Licença
