@@ -48,6 +48,7 @@ REM Acesse a url: http://localhost:8000 através de um navegador.
 ```terminal
 openssl version
 ```
+O php também deverá utilizar parte deste comando para extração das chaves
 - Sempre que o certificado estiver expirando será necessário atualizar o arquivo através da URL: /configuracoes disponível na aplicação.
 ```No primeiro acesso será necessário realizar esse upload```
 
