@@ -24,7 +24,7 @@
                 </div>
                 <div id="navbar" class="collapse navbar-collapse">
                     <ul class="nav navbar-nav">
-                        <li class="{{(app('request')->is('/') || app('request')->is('dashboard'))?'active':''}}"><a href="dashboard">Dashboard</a></li>
+                        <!--<li class="{{(app('request')->is('/') || app('request')->is('dashboard'))?'active':''}}"><a href="dashboard">Dashboard</a></li>-->
                         <li class="{{app('request')->is('configuracoes')?'active':''}}"><a href="configuracoes">Configurações</a></li>
                         <li class="{{app('request')->is('sefaz/enviar-lote')?'active':''}}"><a href="sefaz/enviar-lote">Enviar Lotes</a></li>
                         <li class="{{app('request')->is('sefaz/consultar-lote')?'active':''}}"><a href="sefaz/consultar-lote">Consultar Lotes</a></li>

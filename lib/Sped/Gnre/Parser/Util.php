@@ -13,7 +13,7 @@ class Util {
      * @param int $length
      * @return string
      */
-    public function getTag($content, $tag) {
+    public static function getTag($content, $tag) {
         $startTag = (strpos($content, '<' . $tag . '>') + strlen('<' . $tag . '>'));
         $endTag = strpos($content, '</' . $tag . '>');
         if ($startTag > 0 && $endTag > 0) {
@@ -22,7 +22,7 @@ class Util {
         return null;
     }
 
-    public function getValue($value) {
+    public static function getValue($value) {
         return (empty($value)) ? NULL : $value;
     }
 

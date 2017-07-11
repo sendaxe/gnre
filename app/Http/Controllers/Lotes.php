@@ -12,11 +12,8 @@ use Sped\Gnre\Webservice\Connection;
 
 class Lotes extends Controller {
 
-    private $util;
-
     public function __construct() {
         parent::__construct();
-        $this->util = new Util();
     }
 
     public function enviar() {
@@ -138,13 +135,13 @@ class Lotes extends Controller {
             $soapResponse = str_replace(['ns1:'], [], $soapResponse);
             $arrRetorno = [
                 'id' => $valLote->id,
-                'ambiente' => $this->util->getTag($soapResponse, 'ambiente'),
+                'ambiente' => Util::getTag($soapResponse, 'ambiente'),
                 'status' => STATUS_ENVIADO,
-                'codigo' => $this->util->getTag($soapResponse, 'codigo'),
-                'descricao' => html_entity_decode($this->util->getTag($soapResponse, 'descricao')),
-                'reciboNumero' => $this->util->getTag($soapResponse, 'numero'),
-                'reciboDataHora' => $this->util->getTag($soapResponse, 'dataHoraRecibo'),
-                'reciboTempoProcessamento' => $this->util->getTag($soapResponse, 'tempoEstimadoProc')
+                'codigo' => Util::getTag($soapResponse, 'codigo'),
+                'descricao' => html_entity_decode(Util::getTag($soapResponse, 'descricao')),
+                'reciboNumero' => Util::getTag($soapResponse, 'numero'),
+                'reciboDataHora' => Util::getTag($soapResponse, 'dataHoraRecibo'),
+                'reciboTempoProcessamento' => Util::getTag($soapResponse, 'tempoEstimadoProc')
             ];
             //print '<pre>'; var_dump($arrRetorno);
             if ($arrRetorno['codigo'] != 100 || empty($arrRetorno['reciboNumero'])) {
@@ -183,13 +180,12 @@ class Lotes extends Controller {
             $soapResponse = $webService->doRequest($consulta->soapAction());
 
             $soapResponse = str_replace(['ns1:'], [], $soapResponse);
-            $this->util = new Util();
             $arrRetorno = [
                 'id' => $valLote->id,
-                'ambiente' => $this->util->getTag($soapResponse, 'ambiente'),
-                'codigo' => $this->util->getTag($soapResponse, 'codigo'),
-                'descricao' => html_entity_decode($this->util->getTag($soapResponse, 'descricao')),
-                'resultado' => html_entity_decode($this->util->getTag($soapResponse, 'resultado')),
+                'ambiente' => Util::getTag($soapResponse, 'ambiente'),
+                'codigo' => Util::getTag($soapResponse, 'codigo'),
+                'descricao' => html_entity_decode(Util::getTag($soapResponse, 'descricao')),
+                'resultado' => html_entity_decode(Util::getTag($soapResponse, 'resultado')),
             ];
             app('db')->update("UPDATE senda.com_03_02_01_a10 SET retorno_ambiente=?,retorno_codigo=?,retorno_descricao=?,retorno_resultado=? WHERE id=?", [
                 $arrRetorno['ambiente'],
@@ -200,7 +196,6 @@ class Lotes extends Controller {
             ]);
             $parser = new SefazRetorno($arrRetorno['resultado']);
             $loteRetorno = $parser->getLote();
-
             echo '<pre>';
             foreach ($loteRetorno->getGuias() as $key2 => $valGuia) {
                 $arrRetorno = [
@@ -225,29 +220,36 @@ class Lotes extends Controller {
                     $arrRetorno['id_cpa'] = $valAux->id_cpa;
                     break;
                 }
-                app('db')->insert("INSERT INTO senda.com_03_02_01_a10_a2(id_lote,id_nf,id_cpa,informacoes_complementares,atualizacao_monetaria,juros,multa,representacao_numerica,codigo_barras,situacao_guia,sequencial_guia,erros_validacao_campo,erros_validacao_codigo,erros_validacao_descricao,numero_controle) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", [
-                    $this->util->getValue($arrRetorno['id_lote']),
-                    $this->util->getValue($arrRetorno['id_nf']),
-                    $this->util->getValue($arrRetorno['id_cpa']),
-                    $this->util->getValue($arrRetorno['informacoes_complementares']),
-                    $this->util->getValue($arrRetorno['atualizacao_monetaria']),
-                    $this->util->getValue($arrRetorno['juros']),
-                    $this->util->getValue($arrRetorno['multa']),
-                    $this->util->getValue($arrRetorno['representacao_numerica']),
-                    $this->util->getValue($arrRetorno['codigo_barras']),
-                    $this->util->getValue($arrRetorno['situacao_guia']),
-                    $this->util->getValue($arrRetorno['sequencial_guia']),
-                    $this->util->getValue($arrRetorno['erros_validacao_campo']),
-                    $this->util->getValue($arrRetorno['erros_validacao_codigo']),
-                    $this->util->getValue($arrRetorno['erros_validacao_descricao']),
-                    $this->util->getValue($arrRetorno['numero_controle'])
-                ]);
+                app('db')->insert("INSERT INTO senda.com_03_02_01_a10_a2(id_lote,id_nf,id_cpa,informacoes_complementares,atualizacao_monetaria,juros,multa,representacao_numerica,codigo_barras,situacao_guia,sequencial_guia,erros_validacao_campo,erros_validacao_codigo,erros_validacao_descricao,numero_controle) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) RETURNING id", [
+                    Util::getValue($arrRetorno['id_lote']),
+                    Util::getValue($arrRetorno['id_nf']),
+                    Util::getValue($arrRetorno['id_cpa']),
+                    Util::getValue($arrRetorno['informacoes_complementares']),
+                    Util::getValue($arrRetorno['atualizacao_monetaria']),
+                    Util::getValue($arrRetorno['juros']),
+                    Util::getValue($arrRetorno['multa']),
+                    Util::getValue($arrRetorno['representacao_numerica']),
+                    Util::getValue($arrRetorno['codigo_barras']),
+                    Util::getValue($arrRetorno['situacao_guia']),
+                    Util::getValue($arrRetorno['sequencial_guia']),
+                    Util::getValue($arrRetorno['erros_validacao_campo']),
+                    Util::getValue($arrRetorno['erros_validacao_codigo']),
+                    Util::getValue($arrRetorno['erros_validacao_descricao']),
+                    Util::getValue($arrRetorno['numero_controle'])
+                ]); //$arrRetorno['id'] = app('db')->getPdo()->lastInsertId();
+                if (!empty($arrRetorno['numero_controle'])) {
+                    app('db')->update("UPDATE senda.fin_03_02_01 SET gnre_numero_controle=? WHERE codigo=?", [
+                        Util::getValue($arrRetorno['numero_controle']),
+                        Util::getValue($arrRetorno['id_cpa'])
+                    ]);
+                }
+                print_r($arrRetorno);
             }
-            die();
         }
-        echo '<pre>';
-        print_r($arrRetorno);
-        echo '</pre> <br/> <a href="../dashboard">Voltar</a>';
+        if (count($lotes) == 0) {
+            echo '<h3>Nenhum Lote Disponível para Envio</h3>';
+        }
+        echo '<br/> <a href="../dashboard">Voltar</a>';
         return;
     }
 
@@ -261,4 +263,5 @@ class Lotes extends Controller {
         $webService = new Connection($config, $consulta->getHeaderSoap(), $consulta->toXml());
         return $webService->doRequest($consulta->soapAction());
     }
+
 }
