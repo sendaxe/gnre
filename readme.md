@@ -31,9 +31,9 @@ composer create-project sendaxe/senda-gnre:dev-master --prefer-dist
 ```
 Aguarde o Download das dependencias.
 
-### Ajustando o arquvivo de configuração .ENV do SENDA - GNRE
+### Ajustando o arquvivo de configuração .ENV
 Assim que as dependências forem baixadas, acesse a pasta onde foi realizada a instalação.
-Abra o arquivo .env e configure os dados de acesso conforme o arquivo .env.exemple
+Abra o arquivo .env que esta na raiz do projeto e configure os dados de acesso conforme o arquivo .env.exemple
 
 ### Configurando a URL de Acesso
 Acesse o sistema atraves da URL: "http://localhost/sendaxe/senda-gnre/public" ou se preferir crie um arquivo .BAT (windows) com os comandos abaixo:
