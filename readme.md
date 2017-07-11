@@ -24,19 +24,18 @@ Adicionando o SENDA - GNRE com o composer
 
 Caso você não possua o composer veja [esse link](https://getcomposer.org/doc/01-basic-usage.md) antes de prosseguir
 
-Acesse a pasta 'htdocs' ou 'html' (dependendo da configuração do seu servidor PHP)
+Acesse a pasta 'htdocs' ou 'html' via terminal (dependendo da configuração do seu servidor PHP)
 Execute o comando abaixo:
 ``` terminal
 composer create-project sendaxe/senda-gnre:dev-master --prefer-dist
 ```
 Aguarde o Download das dependencias.
 
-### Ajustando o arquvivo de configuração do SENDA - GNRE
-Assim que as dependências forem baixadas, acesse a pasta onde foi realizado a instalação.
+### Ajustando o arquvivo de configuração .ENV do SENDA - GNRE
+Assim que as dependências forem baixadas, acesse a pasta onde foi realizada a instalação.
 Abra o arquivo .env e configure os dados de acesso conforme o arquivo .env.exemple
 
 ### Configurando a URL de Acesso
-
 Acesse o sistema atraves da URL: "http://localhost/sendaxe/senda-gnre/public" ou se preferir crie um arquivo .BAT (windows) com os comandos abaixo:
 ``` terminal
 cd C:\xampp\htdocs\sendaxe\senda-gnre
@@ -44,6 +43,8 @@ php -S localhost:8000 -t ./public
 pause
 REM Acesse a url: http://localhost:8000 através de um navegador.
 ```
+### 
+
 
 ## Licença
 [MIT license](http://opensource.org/licenses/MIT)
