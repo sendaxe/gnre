@@ -22,4 +22,8 @@ class Util {
         return null;
     }
 
+    public function getValue($value) {
+        return (empty($value)) ? NULL : $value;
+    }
+
 }

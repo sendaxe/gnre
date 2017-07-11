@@ -70,7 +70,7 @@ abstract class Rules
      */
     public function __construct($dadosArquivo)
     {
-        $this->dadosArquivo = explode(PHP_EOL, $dadosArquivo);
+        $this->dadosArquivo = explode(chr(10), $dadosArquivo);
     }
 
     abstract protected function getTipoIdentificadorDoSolicitante();
