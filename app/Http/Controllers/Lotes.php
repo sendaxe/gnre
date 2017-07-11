@@ -21,10 +21,10 @@ class Lotes extends Controller {
 
     public function enviar() {
         $config = new GnreSetup;
-        $lotes = app('db')->select("SELECT lote.id FROM senda.com_03_02_01_a10 lote WHERE status = ? AND tipo = 'PORTAL'", [STATUS_INCLUIDO]);
+        $lotes = app('db')->select("SELECT lote.id, ambiente FROM senda.com_03_02_01_a10 lote WHERE status = ? AND tipo = 'PORTAL'", [STATUS_INCLUIDO]);
         foreach ($lotes as $key => $valLote) {
             $lote = new Lote();
-            if (env('CONFIG_ENVIRONMENT') == '2') {
+            if ($valLote->ambiente == '2'){
                 $lote->utilizarAmbienteDeTeste(true);
             }
 
@@ -50,7 +50,8 @@ class Lotes extends Controller {
                     $guia->__set('c28_tipoDocOrigem', $valGuia->c28_tipoDocOrigem);
                 }
                 if ($guia->verifyProperty('c04_docOrigem') && isset($valGuia->c04_docOrigem)) {
-                    $guia->__set('c04_docOrigem', $valGuia->c04_docOrigem);
+                    //$guia->__set('c04_docOrigem', $valGuia->c04_docOrigem);
+                    $guia->__set('c04_docOrigem', rand(10000, 99999));
                 }
                 if ($guia->verifyProperty('c06_valorPrincipal') && isset($valGuia->c06_valorPrincipal)) {
                     $guia->__set('c06_valorPrincipal', $valGuia->c06_valorPrincipal);
@@ -128,6 +129,10 @@ class Lotes extends Controller {
                 }
                 $lote->addGuia($guia);
             }
+            //header('Content-Type: text/xml');
+            //var_dump($lote);
+            //echo $lote->toXml();
+            //die();
             $webService = new Connection($config, $lote->getHeaderSoap(), $lote->toXml());
             $soapResponse = $webService->doRequest($lote->soapAction());
             $soapResponse = str_replace(['ns1:'], [], $soapResponse);

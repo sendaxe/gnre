@@ -35,7 +35,9 @@ class ConsultarUF extends Controller {
         $configUF->setEnvironment(env('CONFIG_ENVIRONMENT', 1));
         $configUF->setReceita($receita);
         $configUF->setEstado($estado);
-        $configUF->utilizarAmbienteDeTeste(env('CONFIG_ENVIRONMENT', 1));
+        if (env('CONFIG_ENVIRONMENT', 1) == '2') {
+            $configUF->utilizarAmbienteDeTeste(true);
+        }
         if (!empty($configUF->getEnvironment()) && !empty($configUF->getReceita()) && !empty($configUF->getEstado())) {
             header('Content-Type: text/xml');
             $config = new GnreSetup;
