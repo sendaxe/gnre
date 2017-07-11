@@ -43,9 +43,9 @@ php -S localhost:8000 -t ./public
 pause
 REM Acesse a url: http://localhost:8000 através de um navegador.
 ```
-### Rotina para Atualizar o certificado.
-- Sempre que o certificado expirar será necessário atualizar pela URL: /configuracoes
-(No primeiro acesso será necessário realizar esse upload)
+### Atualizando o Certificado.
+- Sempre que o certificado estiver expirando será necessário atualizar o arquivo através da URL: /configuracoes disponível na aplicação
+[small](No primeiro acesso será necessário realizar esse upload)
 
 
 
