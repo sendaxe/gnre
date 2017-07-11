@@ -15,7 +15,7 @@ SENDA - GNRE é baseado no projeto: https://github.com/nfephp-org/sped-gnre mant
   - php_openssl
   - php_gd2
   - php_pdo_pgsql
-
+- Composer
 
 ## Instalação
 ### Criando um projeto Via Composer - Recomendado
