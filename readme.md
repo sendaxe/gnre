@@ -18,9 +18,8 @@ SENDA - GNRE é baseado no projeto: https://github.com/nfephp-org/sped-gnre mant
 - Composer
 
 ## Instalação
-### Criando um projeto Via Composer - Recomendado
 
-Adicionando o SENDA - GNRE com o composer
+### Criando um novo projeto Via Composer
 
 Caso você não possua o composer veja [esse link](https://getcomposer.org/doc/01-basic-usage.md) antes de prosseguir
 
