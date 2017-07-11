@@ -44,10 +44,12 @@ pause
 REM Acesse a url: http://localhost:8000 através de um navegador.
 ```
 ### Atualizando o Certificado.
-- Sempre que o certificado estiver expirando será necessário atualizar o arquivo através da URL: /configuracoes disponível na aplicação
-```(No primeiro acesso será necessário realizar esse upload)```
-
-
+- Antes de processeguir verifique através do terminal se o openssl esta instalado corretamente, através do comando:
+```terminal
+openssl version
+```
+- Sempre que o certificado estiver expirando será necessário atualizar o arquivo através da URL: /configuracoes disponível na aplicação.
+```No primeiro acesso será necessário realizar esse upload```
 
 ## Licença
 [MIT license](http://opensource.org/licenses/MIT)
