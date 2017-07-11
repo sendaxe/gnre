@@ -32,7 +32,7 @@ Aguarde o Download das dependencias.
 
 ### Ajustando o arquvivo de configuração .ENV
 - Assim que as dependências forem baixadas, acesse a pasta raiz onde foi realizada a instalação.
-- Abra o arquivo .env que esta na raiz do projeto e configure os dados de acesso conforme o arquivo .env.exemple
+- Abra o arquivo [.env](http://github.com/sendaxe/senda-gnre/blob/master/.env) que esta na raiz do projeto e configure os dados de acesso conforme o arquivo [.env.exemple](http://github.com/sendaxe/senda-gnre/blob/master/.env.example)
 
 ### Configurando a URL de Acesso
 - Acesse o sistema atraves da URL: "http://localhost/sendaxe/senda-gnre/public" 
