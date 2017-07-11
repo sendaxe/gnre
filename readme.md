@@ -31,7 +31,7 @@ composer create-project sendaxe/senda-gnre:dev-master --prefer-dist
 Aguarde o Download das dependencias.
 
 ### Ajustando o arquvivo de configuração .ENV
-- Assim que as dependências forem baixadas, acesse a pasta onde foi realizada a instalação.
+- Assim que as dependências forem baixadas, acesse a pasta raiz onde foi realizada a instalação.
 - Abra o arquivo .env que esta na raiz do projeto e configure os dados de acesso conforme o arquivo .env.exemple
 
 ### Configurando a URL de Acesso
