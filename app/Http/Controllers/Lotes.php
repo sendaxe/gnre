@@ -155,9 +155,13 @@ class Lotes extends Controller {
                 $arrRetorno['reciboTempoProcessamento'],
                 $arrRetorno['id']
             ]);
-            return $arrRetorno;
+            echo '<pre>';
+            print_r($arrRetorno);
+            echo '</pre> <br/> <a href="../dashboard">Voltar</a>';
+            return;
         }
-        return 'Todos os lotes já foram enviados';
+        echo '<h3>Todos os lotes já foram enviados</h3> <br/> <a href="../dashboard">Voltar</a>';
+        return;
     }
 
     public function consultar() {
@@ -190,7 +194,10 @@ class Lotes extends Controller {
                 $arrRetorno['id']
             ]);
         }
-        return $lotes;
+        echo '<pre>';
+        print_r($arrRetorno);
+        echo '</pre> <br/> <a href="../dashboard">Voltar</a>';
+        return;
     }
 
     public function consultarRecibo($numero) {
