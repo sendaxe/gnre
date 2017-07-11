@@ -45,7 +45,7 @@ REM Acesse a url: http://localhost:8000 através de um navegador.
 ```
 ### Atualizando o Certificado.
 - Sempre que o certificado estiver expirando será necessário atualizar o arquivo através da URL: /configuracoes disponível na aplicação
-[small](No primeiro acesso será necessário realizar esse upload)
+``(No primeiro acesso será necessário realizar esse upload)
 
 
 
