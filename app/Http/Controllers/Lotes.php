@@ -50,8 +50,8 @@ class Lotes extends Controller {
                     $guia->__set('c28_tipoDocOrigem', $valGuia->c28_tipoDocOrigem);
                 }
                 if ($guia->verifyProperty('c04_docOrigem') && isset($valGuia->c04_docOrigem)) {
-                    //$guia->__set('c04_docOrigem', $valGuia->c04_docOrigem);
-                    $guia->__set('c04_docOrigem', rand(10000, 99999));
+                    $guia->__set('c04_docOrigem', $valGuia->c04_docOrigem);
+                    //$guia->__set('c04_docOrigem', rand(10000, 99999));
                 }
                 if ($guia->verifyProperty('c06_valorPrincipal') && isset($valGuia->c06_valorPrincipal)) {
                     $guia->__set('c06_valorPrincipal', $valGuia->c06_valorPrincipal);
