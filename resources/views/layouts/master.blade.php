@@ -24,17 +24,18 @@
                 </div>
                 <div id="navbar" class="collapse navbar-collapse">
                     <ul class="nav navbar-nav">
-                        <!--<li class="{{(app('request')->is('/') || app('request')->is('dashboard'))?'active':''}}"><a href="dashboard">Dashboard</a></li>-->
-                        <li class="{{app('request')->is('configuracoes')?'active':''}}"><a href="configuracoes">Configurações</a></li>
-                        <li class="{{app('request')->is('sefaz/enviar-lote')?'active':''}}"><a href="sefaz/enviar-lote">Enviar Lotes</a></li>
-                        <li class="{{app('request')->is('sefaz/consultar-lote')?'active':''}}"><a href="sefaz/consultar-lote">Consultar Lotes</a></li>
+                        <!--<li class="{{(app('request')->is('/') || app('request')->is('home'))?'active':''}}"><a href="home">Home</a></li>-->
+                        <li class="{{app('request')->is('configuracoes')?'active':''}}"><a href="configuracoes">Portal - Configurações</a></li>
+                        <li class="{{app('request')->is('sefaz/enviar-lote')?'active':''}}"><a href="sefaz/enviar-lote">Portal - Enviar Lotes</a></li>
+                        <li class="{{app('request')->is('sefaz/consultar-lote')?'active':''}}"><a href="sefaz/consultar-lote">Portal - Consultar Lotes</a></li>
+                        <li class="{{app('request')->is('sefaz/gerar-guias')?'active':''}}"><a href="sefaz/gerar-guias">Portal - Gerar Guias</a></li>
                     </ul>
                 </div><!--/.nav-collapse -->
             </div>
         </nav>
-        
+
         @show
-        
+
         <div class="container">
             @yield('content')
         </div><!-- /.container -->

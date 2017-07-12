@@ -8,12 +8,9 @@ use Sped\Gnre\Configuration\GnreSetup;
 use Sped\Gnre\Webservice\Connection;
 
 class ConsultarUF extends Controller {
-
-    private $util;
-
+    
     public function __construct() {
         parent::__construct();
-        $this->util = new Util();
     }
 
     public function atualizar() {

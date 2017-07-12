@@ -23,7 +23,7 @@ class Util {
     }
 
     public static function getValue($value) {
-        return (empty($value)) ? NULL : $value;
+        return (empty($value) && $value <> "0") ? NULL : $value;
     }
 
 }

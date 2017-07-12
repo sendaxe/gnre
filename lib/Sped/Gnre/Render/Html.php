@@ -30,8 +30,7 @@ use Sped\Gnre\Render\SmartyFactory;
  * @license     http://www.gnu.org/licenses/gpl-howto.html GPL
  * @version     1.0.0
  */
-class Html
-{
+class Html {
 
     /**
      * Conteúdo HTML gerado pela classe
@@ -54,8 +53,7 @@ class Html
      * Retorna a instância do objeto atual ou cria uma caso não exista
      * @return \Sped\Gnre\Render\Barcode128
      */
-    public function getBarCode()
-    {
+    public function getBarCode() {
         if (!$this->barCode instanceof Barcode128) {
             $this->barCode = new Barcode128();
         }
@@ -69,14 +67,12 @@ class Html
      * @param \Sped\Gnre\Render\Barcode128 $barCode
      * @return \Sped\Gnre\Render\Html
      */
-    public function setBarCode(Barcode128 $barCode)
-    {
+    public function setBarCode(Barcode128 $barCode) {
         $this->barCode = $barCode;
         return $this;
     }
 
-    public function setSmartyFactory(\Sped\Gnre\Render\SmartyFactory $smartyFactory)
-    {
+    public function setSmartyFactory(\Sped\Gnre\Render\SmartyFactory $smartyFactory) {
         $this->smartyFactory = $smartyFactory;
         return $this;
     }
@@ -85,8 +81,7 @@ class Html
      * Retorna uma factory para ser possível utilizar o Smarty
      * @return Sped\Gnre\Render\SmartyFactory
      */
-    public function getSmartyFactory()
-    {
+    public function getSmartyFactory() {
         if ($this->smartyFactory === null) {
             $this->smartyFactory = new SmartyFactory();
         }
@@ -102,43 +97,41 @@ class Html
      * utilizado por esse método</p>
      * @since 1.0.0
      */
-    public function create(Lote $lote)
-    {
-        $guiaViaInfo = array(
+    public function create(Lote $lote) {
+        
+        $guiaViaInfo = [
             1 => '1ª via Banco',
             2 => '2ª via Contrinuinte',
             3 => '3ª via Contribuinte/Fisco'
-        );
-
+        ];
+        
         $guias = $lote->getGuias();
         $html = '';
-
+        $documentRoot = dirname(dirname(dirname(dirname(dirname(__FILE__))))) . DIRECTORY_SEPARATOR;
         for ($index = 0; $index < count($guias); $index++) {
             $guia = $lote->getGuia($index);
-
-            $barcode = $this->getBarCode()
-                    ->setNumeroCodigoBarras($guia->retornoCodigoDeBarras);
-
-            $smarty = $this->getSmartyFactory()
-                    ->create();
+            $barcode = $this->getBarCode()->setNumeroCodigoBarras($guia->retornoCodigoDeBarras);
+            
+            $smarty = $this->getSmartyFactory()->create();
             $smarty->assign('guiaViaInfo', $guiaViaInfo);
             $smarty->assign('barcode', $barcode);
             $smarty->assign('guia', $guia);
-
-            $documentRoot = dirname(dirname(dirname(dirname(dirname(__FILE__))))) .  DIRECTORY_SEPARATOR ;
-
             $html .= $smarty->fetch($documentRoot . 'templates' . DIRECTORY_SEPARATOR . 'gnre.tpl');
         }
-
-        $this->html = $html;
+        $smarty = $this->getSmartyFactory()->create();
+        $smarty->assign('templateGuias', $html);
+        $htmlMain = $smarty->fetch($documentRoot . 'templates' . DIRECTORY_SEPARATOR . 'main.gnre.tpl');
+        
+        $this->html = $htmlMain;
+        //print_r($html);
     }
 
     /**
      * Retorna o conteúdo HTML gerado pela classe
      * @return string
      */
-    public function getHtml()
-    {
+    public function getHtml() {
         return $this->html;
     }
+
 }

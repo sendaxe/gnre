@@ -9,7 +9,7 @@
 @section('content')
 <div class="content-principal">
     <div class="content-title">
-        <h3>Dashboard</h3>
+        <h3>Movimentações</h3>
     </div>
 </div>
 @stop
