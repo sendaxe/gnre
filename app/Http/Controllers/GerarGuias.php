@@ -15,12 +15,19 @@ class GerarGuias extends Controller {
     }
 
     public function pdfLotes() {
-        
+        $lotes = app('db')->select("SELECT lote.id, ambiente FROM senda.com_03_02_01_a10 lote WHERE status = ? AND tipo = 'PORTAL' ", [STATUS_PROCESSADO]);
+        foreach ($lotes as $key => $valLote) {
+            $this->pdfGuia($valLote->id);
+        }
+        if(count($lotes) == 0){
+            echo '<h3>Nenhum registro disponível para geração</h3>';
+        }
+        echo '<br/> <a href="../home">Voltar</a>';
     }
 
-    public function pdfGuia($id) {
+    public function pdfGuia($idLote) {
         require '../vendor/dompdf/dompdf/dompdf_config.inc.php';
-        
+
         $guias = app('db')->select("
                 SELECT env.*, ret.informacoes_complementares, ret.atualizacao_monetaria, ret.numero_controle, ret.codigo_barras, ret.representacao_numerica, ret.juros, ret.multa
                 FROM senda.com_03_02_01_a10_a2 ret
@@ -30,15 +37,11 @@ class GerarGuias extends Controller {
                         FROM senda.com_03_02_01_a10_a2 g2
                         WHERE g2.id_lote = ?
                         GROUP BY g2.id_lote, g2.sequencial_guia
-                )", [$id]
+                )", [$idLote]
         );
-        
+
         $lote = new Lote();
         //echo "<pre>";
-        //echo "<img src='".app('url')->asset('public/img/logo-senda-m.png')."'>";
-        //echo "<img src='".app('url')->asset('public/img/logo-senda-m.png')."'>";
-        //Storage::disk('local')->get('public/img/logo-senda-m.png');
-        //echo "<img src=\"{{ Storage::disk('local')->get('public/img/logo-senda-m.png') }}\" style=\"width:150px; height:150px; float: left; border-radius:50%; margin-right:25px; padding-top: 10px;\">";
         foreach ($guias as $key => $valGuia) {
             //print_r($valGuia);
             $guia = new Guia();
@@ -82,8 +85,25 @@ class GerarGuias extends Controller {
         }
         $html = new Html();
         $html->create($lote);
-        
+
         $pdf = new Pdf();
-        $pdf->create($html)->stream('gnre.pdf', ['Attachment' => 0]);
+        if (!file_exists(env('CONFIG_PDFPATH'))) {
+            mkdir(env('CONFIG_PDFPATH'), 0777, true);
+        }
+        if (file_exists(env('CONFIG_PDFPATH'))) {
+            //gerar na tela
+            //$pdf->create($html)->stream('gnre.pdf', ['Attachment' => 0]);
+            //gerar no arquivo
+            $pdf->create($html, env('CONFIG_PDFPATH') . "/{$idLote}.pdf");
+            if (file_exists(env('CONFIG_PDFPATH') . "/{$idLote}.pdf")) {
+                app('db')->update("UPDATE senda.com_03_02_01_a10 SET status=? WHERE id=?", [STATUS_GUIAGERADA, $idLote]);
+                echo '<h4>Guia Gerada em: ' . env('CONFIG_PDFPATH') . "/{$idLote}.pdf" . '</h4>';
+            } else {
+                echo '<h3>Falha ao gerar arquivo em: ' . env('CONFIG_PDFPATH') . "/{$idLote}.pdf" . '</h4>';
+            }
+        } else {
+            echo '<h3>Pasta para geração de arquivos PDF não definida ou inexistente nos parâmetros de configuração.</h3>';
+        }
     }
+
 }

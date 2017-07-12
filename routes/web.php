@@ -23,6 +23,7 @@ $app->group([], function() {
     define('STATUS_PROCESSADO','3');
     define('STATUS_PENDENCIA','4');
     define('STATUS_CONTINGENCIA','5');
+    define('STATUS_GUIAGERADA','6');
     define('STATUS_FALHA','8');
     define('STATUS_REJEICAO','9');
 });

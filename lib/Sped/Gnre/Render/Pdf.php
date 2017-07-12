@@ -46,12 +46,16 @@ class Pdf
      * @param \Sped\Gnre\Render\Html $html
      * @return \DOMPDF
      */
-    public function create(Html $html)
+    public function create(Html $html, $file=null)
     {
         $dompdf = $this->getDomPdf();
         $dompdf->load_html($html->getHtml());
         $dompdf->render();
-
+        if(!empty($file)){
+            $output = $dompdf->output();
+            file_put_contents($file, $output);
+            return true;
+        }
         return $dompdf;
     }
 }
