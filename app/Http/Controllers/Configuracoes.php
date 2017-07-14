@@ -22,19 +22,19 @@ class Configuracoes extends Controller {
                     }
                     rename(env('CERT_DIR').'/metadata', $pastaOld.'/metadata');
                 }
-                if(file_exists(env('CERT_DIR').'/'.env('CERT_NAME'))){
+                if(file_exists(env('CERT_DIR').'/'.CERT_NAME)){
                     if(!file_exists($pastaOld)){
                         mkdir($pastaOld, 0777, true);
                     }
-                    rename(env('CERT_DIR').'/'.env('CERT_NAME'), $pastaOld.'/'.env('CERT_NAME'));
+                    rename(env('CERT_DIR').'/'.CERT_NAME, $pastaOld.'/'.CERT_NAME);
                 }
-                $request->file('certificado')->move(env('CERT_DIR'),env('CERT_NAME'));
+                $request->file('certificado')->move(env('CERT_DIR'),CERT_NAME);
                 
                 mkdir(env('CERT_DIR').'/metadata', 0777, true);
                 
-                shell_exec('openssl pkcs12 -in "'.env('CERT_DIR').'/'.env('CERT_NAME').'" -nokeys -out '.env('CERT_PEMFILE').' -password pass:'.env('CERT_PASS'));
+                shell_exec('openssl pkcs12 -in "'.env('CERT_DIR').'/'.CERT_NAME.'" -nokeys -out '.CERT_PEMFILE.' -password pass:'.env('CERT_PASS'));
                 
-                $certificadoArquivo = new CertificatePfxFileOperation(env('CERT_DIR').'/'.env('CERT_NAME'));
+                $certificadoArquivo = new CertificatePfxFileOperation(env('CERT_DIR').'/'.CERT_NAME);
                 $gnre = new CertificatePfx($certificadoArquivo, env('CERT_PASS'));
                 if($gnre->getPrivateKey()){
                     return redirect('configuracoes');

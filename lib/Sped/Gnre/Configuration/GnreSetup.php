@@ -22,7 +22,7 @@ class GnreSetup extends Setup
 
     public function getCertificateName()
     {
-      return env('CERT_NAME', 'certificado.pfx');
+      return CERT_NAME;
     }
 
     public function getCertificatePassword()
@@ -32,7 +32,7 @@ class GnreSetup extends Setup
 
     public function getCertificatePemFile()
     {
-      return env('CERT_PEMFILE', '');
+      return CERT_PEMFILE;
     }
 
     public function getEnvironment()
@@ -42,7 +42,7 @@ class GnreSetup extends Setup
 
     public function getPrivateKey()
     {
-      return env('CERT_PRIVATEKEY', '');
+      return CERT_PRIVATEKEY;
     }
 
     public function getProxyIp()
