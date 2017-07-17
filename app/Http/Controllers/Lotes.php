@@ -9,6 +9,7 @@ use Sped\Gnre\Parser\SefazRetorno;
 use Sped\Gnre\Parser\Util;
 use Sped\Gnre\Configuration\GnreSetup;
 use Sped\Gnre\Webservice\Connection;
+use App\Http\Controllers\GerarGuias;
 
 class Lotes extends Controller {
 
@@ -280,6 +281,12 @@ class Lotes extends Controller {
         return;
     }
 
+    public function enviarConsultarGerar() {
+       $this->enviar();
+       $this->consultar();
+       $gerar = new GerarGuias();
+       $gerar->pdfLotes();
+    }
     public function consultarRecibo($numero) {
         $config = new GnreSetup;
         $consulta = new Consulta();

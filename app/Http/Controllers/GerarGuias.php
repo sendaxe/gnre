@@ -20,7 +20,7 @@ class GerarGuias extends Controller {
             $this->pdfGuia($valLote->id);
         }
         if(count($lotes) == 0){
-            echo '<h3>Nenhum registro disponível para geração</h3>';
+            echo '<h3>Nenhum registro disponível para geração de guia</h3>';
         }
         echo '<br/> <a href="../home">Voltar</a>';
     }
