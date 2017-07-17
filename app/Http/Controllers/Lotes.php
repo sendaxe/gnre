@@ -19,12 +19,22 @@ class Lotes extends Controller {
 
     public function enviar() {
         $config = new GnreSetup;
-        $lotes = app('db')->select("SELECT lote.id, ambiente FROM senda.com_03_02_01_a10 lote WHERE status = ? AND tipo = 'PORTAL'", [STATUS_INCLUIDO]);
+        $lotes = app('db')->select("SELECT lote.id, ambiente, lote.id_nf, lote.usuario_inc FROM senda.com_03_02_01_a10 lote WHERE status = ? AND tipo = 'PORTAL' AND cnpj = ?", [STATUS_INCLUIDO, env('CERT_CNPJ')]);
         foreach ($lotes as $key => $valLote) {
             $lote = new Lote();
             if ($valLote->ambiente == '2') {
                 $lote->utilizarAmbienteDeTeste(true);
             }
+
+            /* app('db')->insert("INSERT INTO senda.com_03_02_01_a10_a3(id_lote,id_nf,id_cpa,codigo,mensagem,usuario) VALUES (?,?,?,?,?,?) RETURNING id", [
+              Util::getValue($valLote->id),
+              Util::getValue($valLote->id_nf),
+              NULL,
+              '001',
+              'Sistema Iniciou Envio de lote GNRE',
+              NULL
+              ]); */
+
             $guias = app('db')->select("SELECT guia.* FROM senda.com_03_02_01_a10_a1 guia WHERE guia.id_lote = ?", [$valLote->id]);
             foreach ($guias as $key => $valGuia) {
                 $guia = new Guia();
@@ -168,6 +178,14 @@ class Lotes extends Controller {
                 $arrRetorno['reciboTempoProcessamento'],
                 $arrRetorno['id']
             ]);
+            /* app('db')->insert("INSERT INTO senda.com_03_02_01_a10_a3(id_lote,id_nf,id_cpa,codigo,mensagem,usuario) VALUES (?,?,?,?,?,?) RETURNING id", [
+              Util::getValue($valLote->id),
+              Util::getValue($valLote->id_nf),
+              NULL,
+              '002',
+              'Envio de Lote Concluido',
+              NULL
+              ]); */
             echo '<pre>';
             print_r($arrRetorno);
             echo '</pre> <br/> <a href="../home">Voltar</a>';
@@ -179,8 +197,16 @@ class Lotes extends Controller {
 
     public function consultar() {
         $config = new GnreSetup;
-        $lotes = app('db')->select("SELECT lote.* FROM senda.com_03_02_01_a10 lote WHERE status = ? AND tipo = 'PORTAL'", [STATUS_ENVIADO]);
+        $lotes = app('db')->select("SELECT lote.* FROM senda.com_03_02_01_a10 lote WHERE status = ? AND tipo = 'PORTAL' AND cnpj = ?", [STATUS_ENVIADO, env('CERT_CNPJ')]);
         foreach ($lotes as $key => $valLote) {
+            app('db')->insert("INSERT INTO senda.com_03_02_01_a10_a3(id_lote,id_nf,id_cpa,codigo,mensagem,usuario) VALUES (?,?,?,?,?,?) RETURNING id", [
+                Util::getValue($valLote->id),
+                Util::getValue($valLote->id_nf),
+                NULL,
+                '003',
+                'Sistema Iniciou Consulta de Lote',
+                NULL
+            ]);
             $consulta = new Consulta();
             $consulta->setRecibo($valLote->recibo_numero);
             $consulta->setEnvironment($valLote->ambiente);
@@ -214,14 +240,14 @@ class Lotes extends Controller {
             } elseif (empty($arrRetorno['codigo'])) {
                 $arrRetorno['status'] = STATUS_FALHA;
             }
-            app('db')->update("UPDATE senda.com_03_02_01_a10 SET status=?, retorno_ambiente=?,retorno_codigo=?,retorno_descricao=?,retorno_resultado=? WHERE id=?", [
-                $arrRetorno['status'],
-                $arrRetorno['ambiente'],
-                $arrRetorno['codigo'],
-                $arrRetorno['descricao'],
-                $arrRetorno['resultado'],
-                $arrRetorno['id']
-            ]);
+            /* app('db')->update("UPDATE senda.com_03_02_01_a10 SET status=?, retorno_ambiente=?,retorno_codigo=?,retorno_descricao=?,retorno_resultado=? WHERE id=?", [
+              $arrRetorno['status'],
+              $arrRetorno['ambiente'],
+              $arrRetorno['codigo'],
+              $arrRetorno['descricao'],
+              $arrRetorno['resultado'],
+              $arrRetorno['id']
+              ]); */
             $parser = new SefazRetorno($arrRetorno['resultado']);
             $loteRetorno = $parser->getLote();
             echo '<pre>';
@@ -249,7 +275,7 @@ class Lotes extends Controller {
                     $arrRetorno['id_cpa'] = $valAux->id_cpa;
                     break;
                 }
-                if( !empty(Util::getValue($arrRetorno['erros_validacao_campo'])) || !empty(Util::getValue($arrRetorno['erros_validacao_codigo'])) ){
+                if (!empty(Util::getValue($arrRetorno['erros_validacao_campo'])) || !empty(Util::getValue($arrRetorno['erros_validacao_codigo']))) {
                     $guiaPendencia = TRUE;
                 }
                 app('db')->insert("INSERT INTO senda.com_03_02_01_a10_a2(id_lote,id_nf,id_cpa,informacoes_complementares,atualizacao_monetaria,juros,multa,representacao_numerica,codigo_barras,situacao_guia,sequencial_guia,erros_validacao_campo,erros_validacao_codigo,erros_validacao_descricao,numero_controle) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) RETURNING id", [
@@ -277,9 +303,18 @@ class Lotes extends Controller {
                 }
                 print_r($arrRetorno);
             }
-            if($guiaPendencia){
+            if ($guiaPendencia) {
                 app('db')->update("UPDATE senda.com_03_02_01_a10 SET status=? WHERE id=?", [STATUS_PENDENCIA, $valLote->id]);
             }
+
+            /* app('db')->insert("INSERT INTO senda.com_03_02_01_a10_a3(id_lote,id_nf,id_cpa,codigo,mensagem,usuario) VALUES (?,?,?,?,?,?) RETURNING id", [
+              Util::getValue($valLote->id),
+              Util::getValue($valLote->id_nf),
+              NULL,
+              '004',
+              'Consulta de Lote Concluída',
+              NULL
+              ]); */
         }
         if (count($lotes) == 0) {
             echo '<h3>Nenhum Lote Disponível Para Consulta</h3>';
@@ -289,11 +324,12 @@ class Lotes extends Controller {
     }
 
     public function enviarConsultarGerar() {
-       $this->enviar();
-       $this->consultar();
-       $gerar = new GerarGuias();
-       $gerar->pdfLotes();
+        $this->enviar();
+        $this->consultar();
+        $gerar = new GerarGuias();
+        $gerar->pdfLotes();
     }
+
     public function consultarRecibo($numero) {
         $config = new GnreSetup;
         $consulta = new Consulta();

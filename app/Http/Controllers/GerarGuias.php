@@ -15,7 +15,7 @@ class GerarGuias extends Controller {
     }
 
     public function pdfLotes() {
-        $lotes = app('db')->select("SELECT lote.id, ambiente FROM senda.com_03_02_01_a10 lote WHERE status = ? AND tipo = 'PORTAL' ", [STATUS_PROCESSADO]);
+        $lotes = app('db')->select("SELECT lote.id, ambiente FROM senda.com_03_02_01_a10 lote WHERE status = ? AND tipo = 'PORTAL' AND cnpj = ?", [STATUS_PROCESSADO, env('CERT_CNPJ')]);
         foreach ($lotes as $key => $valLote) {
             $this->pdfGuia($valLote->id);
         }
