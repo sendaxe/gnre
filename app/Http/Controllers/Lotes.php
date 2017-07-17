@@ -225,6 +225,7 @@ class Lotes extends Controller {
             $parser = new SefazRetorno($arrRetorno['resultado']);
             $loteRetorno = $parser->getLote();
             echo '<pre>';
+            $guiaPendencia = FALSE; //Por algum motivo o portal de teste retorna o código 402 - processado com sucesso mesmo quando a guia contém erros de validação de campos.
             foreach ($loteRetorno->getGuias() as $key2 => $valGuia) {
                 $arrRetorno = [
                     'id_lote' => $valLote->id,
@@ -249,10 +250,7 @@ class Lotes extends Controller {
                     break;
                 }
                 if( !empty(Util::getValue($arrRetorno['erros_validacao_campo'])) || !empty(Util::getValue($arrRetorno['erros_validacao_codigo'])) ){
-                    app('db')->update("UPDATE senda.com_03_02_01_a10 SET status=? WHERE id=?", [
-                        STATUS_PENDENCIA,
-                        $valLote->id
-                    ]);
+                    $guiaPendencia = TRUE;
                 }
                 app('db')->insert("INSERT INTO senda.com_03_02_01_a10_a2(id_lote,id_nf,id_cpa,informacoes_complementares,atualizacao_monetaria,juros,multa,representacao_numerica,codigo_barras,situacao_guia,sequencial_guia,erros_validacao_campo,erros_validacao_codigo,erros_validacao_descricao,numero_controle) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) RETURNING id", [
                     Util::getValue($arrRetorno['id_lote']),
@@ -278,6 +276,9 @@ class Lotes extends Controller {
                     ]);
                 }
                 print_r($arrRetorno);
+            }
+            if($guiaPendencia){
+                app('db')->update("UPDATE senda.com_03_02_01_a10 SET status=? WHERE id=?", [STATUS_PENDENCIA, $valLote->id]);
             }
         }
         if (count($lotes) == 0) {
