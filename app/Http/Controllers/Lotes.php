@@ -248,6 +248,12 @@ class Lotes extends Controller {
                     $arrRetorno['id_cpa'] = $valAux->id_cpa;
                     break;
                 }
+                if( !empty(Util::getValue($arrRetorno['erros_validacao_campo'])) || !empty(Util::getValue($arrRetorno['erros_validacao_codigo'])) ){
+                    app('db')->update("UPDATE senda.com_03_02_01_a10 SET status=? WHERE id=?", [
+                        STATUS_PENDENCIA,
+                        $valLote->id
+                    ]);
+                }
                 app('db')->insert("INSERT INTO senda.com_03_02_01_a10_a2(id_lote,id_nf,id_cpa,informacoes_complementares,atualizacao_monetaria,juros,multa,representacao_numerica,codigo_barras,situacao_guia,sequencial_guia,erros_validacao_campo,erros_validacao_codigo,erros_validacao_descricao,numero_controle) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) RETURNING id", [
                     Util::getValue($arrRetorno['id_lote']),
                     Util::getValue($arrRetorno['id_nf']),
