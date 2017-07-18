@@ -31,7 +31,7 @@ class Lotes extends Controller {
               Util::getValue($valLote->id_nf),
               NULL,
               '001',
-              'Sistema Iniciou Envio de lote GNRE',
+              'Envio do lote GNRE',
               NULL
               ]); */
 
@@ -70,7 +70,7 @@ class Lotes extends Controller {
                     $guia->c14_dataVencimento = $valGuia->c14_dataVencimento;
                 }
                 if (isset($valGuia->c16_razaoSocialEmitente)) {
-                    $guia->c16_razaoSocialEmitente = $valGuia->c16_razaoSocialEmitente;
+                    $guia->c16_razaoSocialEmitente = htmlspecialchars($valGuia->c16_razaoSocialEmitente);
                 }
                 if (isset($valGuia->c17_inscricaoEstadualEmitente)) {
                     $guia->c17_inscricaoEstadualEmitente = $valGuia->c17_inscricaoEstadualEmitente;
@@ -79,7 +79,7 @@ class Lotes extends Controller {
                     $guia->c18_enderecoEmitente = $valGuia->c18_enderecoEmitente;
                 }
                 if (isset($valGuia->c19_municipioEmitente)) {
-                    $guia->c19_municipioEmitente = $valGuia->c19_municipioEmitente;
+                    $guia->c19_municipioEmitente = str_pad($valGuia->c19_municipioEmitente, 5, '0', STR_PAD_LEFT);
                 }
                 if (isset($valGuia->c20_ufEnderecoEmitente)) {
                     $guia->c20_ufEnderecoEmitente = $valGuia->c20_ufEnderecoEmitente;
@@ -97,10 +97,10 @@ class Lotes extends Controller {
                     $guia->c35_idContribuinteDestinatario = $valGuia->c35_idContribuinteDestinatario;
                 }
                 if (isset($valGuia->c37_razaoSocialDestinatario)) {
-                    $guia->c37_razaoSocialDestinatario = $valGuia->c37_razaoSocialDestinatario;
+                    $guia->c37_razaoSocialDestinatario = htmlspecialchars($valGuia->c37_razaoSocialDestinatario);
                 }
                 if (isset($valGuia->c38_municipioDestinatario)) {
-                    $guia->c38_municipioDestinatario = $valGuia->c38_municipioDestinatario;
+                    $guia->c38_municipioDestinatario = str_pad($valGuia->c38_municipioDestinatario, 5, '0', STR_PAD_LEFT);
                 }
                 if (isset($valGuia->c33_dataPagamento)) {
                     $guia->c33_dataPagamento = $valGuia->c33_dataPagamento;
@@ -125,7 +125,7 @@ class Lotes extends Controller {
                                 'campoExtra' => [
                                     'codigo' => $val->codigo,
                                     'tipo' => $val->tipo,
-                                    'valor' => $val->valor
+                                    'valor' => htmlspecialchars($val->valor)
                                 ]
                             ];
                         }
@@ -140,6 +140,14 @@ class Lotes extends Controller {
             //var_dump($lote);
             //echo $lote->toXml();
             //die();
+            /* app('db')->insert("INSERT INTO senda.com_03_02_01_a10_a3(id_lote,id_nf,id_cpa,codigo,mensagem,usuario) VALUES (?,?,?,?,?,?) RETURNING id", [
+              Util::getValue($valLote->id),
+              Util::getValue($valLote->id_nf),
+              NULL,
+              '001',
+              'Inicio de Transmissão do Lote para SEFAZ',
+              NULL
+              ]); */
             $webService = new Connection($config, $lote->getHeaderSoap(), $lote->toXml());
             $soapResponse = $webService->doRequest($lote->soapAction());
             $soapResponse = str_replace(['ns1:'], [], $soapResponse);
@@ -153,6 +161,14 @@ class Lotes extends Controller {
                 'reciboDataHora' => Util::getTag($soapResponse, 'dataHoraRecibo'),
                 'reciboTempoProcessamento' => Util::getTag($soapResponse, 'tempoEstimadoProc')
             ];
+            /* app('db')->insert("INSERT INTO senda.com_03_02_01_a10_a3(id_lote,id_nf,id_cpa,codigo,mensagem,usuario) VALUES (?,?,?,?,?,?) RETURNING id", [
+              Util::getValue($valLote->id),
+              Util::getValue($valLote->id_nf),
+              NULL,
+              '001',
+              'Concluído Transmissão do Lote para SEFAZ',
+              NULL
+              ]); */
             //print '<pre>'; var_dump($arrRetorno);
             /*
               Códigos de Retorno do Envio
@@ -178,14 +194,6 @@ class Lotes extends Controller {
                 $arrRetorno['reciboTempoProcessamento'],
                 $arrRetorno['id']
             ]);
-            /* app('db')->insert("INSERT INTO senda.com_03_02_01_a10_a3(id_lote,id_nf,id_cpa,codigo,mensagem,usuario) VALUES (?,?,?,?,?,?) RETURNING id", [
-              Util::getValue($valLote->id),
-              Util::getValue($valLote->id_nf),
-              NULL,
-              '002',
-              'Envio de Lote Concluido',
-              NULL
-              ]); */
             echo '<pre>';
             print_r($arrRetorno);
             echo '</pre> <br/> <a href="../home">Voltar</a>';
@@ -199,14 +207,14 @@ class Lotes extends Controller {
         $config = new GnreSetup;
         $lotes = app('db')->select("SELECT lote.* FROM senda.com_03_02_01_a10 lote WHERE status = ? AND tipo = 'PORTAL' AND cnpj = ?", [STATUS_ENVIADO, env('CERT_CNPJ')]);
         foreach ($lotes as $key => $valLote) {
-            app('db')->insert("INSERT INTO senda.com_03_02_01_a10_a3(id_lote,id_nf,id_cpa,codigo,mensagem,usuario) VALUES (?,?,?,?,?,?) RETURNING id", [
-                Util::getValue($valLote->id),
-                Util::getValue($valLote->id_nf),
-                NULL,
-                '003',
-                'Sistema Iniciou Consulta de Lote',
-                NULL
-            ]);
+            /* app('db')->insert("INSERT INTO senda.com_03_02_01_a10_a3(id_lote,id_nf,id_cpa,codigo,mensagem,usuario) VALUES (?,?,?,?,?,?) RETURNING id", [
+              Util::getValue($valLote->id),
+              Util::getValue($valLote->id_nf),
+              NULL,
+              '001',
+              'Inicio da Consulta de Lote no Servidor da Sefaz',
+              NULL
+              ]); */
             $consulta = new Consulta();
             $consulta->setRecibo($valLote->recibo_numero);
             $consulta->setEnvironment($valLote->ambiente);
@@ -240,13 +248,13 @@ class Lotes extends Controller {
             } elseif (empty($arrRetorno['codigo'])) {
                 $arrRetorno['status'] = STATUS_FALHA;
             }
-            /* app('db')->update("UPDATE senda.com_03_02_01_a10 SET status=?, retorno_ambiente=?,retorno_codigo=?,retorno_descricao=?,retorno_resultado=? WHERE id=?", [
-              $arrRetorno['status'],
-              $arrRetorno['ambiente'],
-              $arrRetorno['codigo'],
-              $arrRetorno['descricao'],
-              $arrRetorno['resultado'],
-              $arrRetorno['id']
+            /* app('db')->insert("INSERT INTO senda.com_03_02_01_a10_a3(id_lote,id_nf,id_cpa,codigo,mensagem,usuario) VALUES (?,?,?,?,?,?) RETURNING id", [
+              Util::getValue($valLote->id),
+              Util::getValue($valLote->id_nf),
+              NULL,
+              '001',
+              'Concluído Consulta de Lote no Sefaz',
+              NULL
               ]); */
             $parser = new SefazRetorno($arrRetorno['resultado']);
             $loteRetorno = $parser->getLote();
