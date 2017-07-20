@@ -21,12 +21,28 @@ class DefinesProvider extends ServiceProvider {
         define('STATUS_GUIAGERADA', '6');
         define('STATUS_FALHA', '8');
         define('STATUS_REJEICAO', '9');
+        
+        define('AVISO_TRANSMISSAO', '10');
+        define('AVISO_TRANSMISSAO_FALHA', '11');
+        define('AVISO_TRANSMISSAO_PENDENCIA', '12');
+        define('AVISO_TRANSMISSAO_OK', '20');
+        define('AVISO_CONSULTA', '30');
+        define('AVISO_CONSULTA_FALHA', '31');
+        define('AVISO_CONSULTA_PENDENCIA', '32');
+        define('AVISO_CONSULTA_OK', '40');
+        define('AVISO_GUIA', '50');
+        define('AVISO_GUIA_FALHA', '51');
+        define('AVISO_GUIA_OK', '60');
+        
+        define('AVISO_DESTINO_POPUP', '0');
+        define('AVISO_DESTINO_OUTRO', '1');
+        
         define('DOMPDF_ENABLE_AUTOLOAD', false);
 
         define('CERT_NAME', 'certificado.pfx');
         define('CERT_PEMFILE', env('CERT_DIR') . '/metadata/certificado_certKEY.pem');
         define('CERT_PRIVATEKEY', env('CERT_DIR') . '/metadata/certificado_privKEY.pem');
-
+        
         $configOk = TRUE;
         $arrMsg = [];
         if (empty(env('CERT_CNPJ'))) {

@@ -25,5 +25,11 @@ class Util {
     public static function getValue($value) {
         return (empty($value) && $value <> "0") ? NULL : $value;
     }
-
+    
+    public static function convertDateDB($dateDB) {
+        if(!empty($dateDB) && strpos($dateDB,'-') !== FALSE){
+            return date('d/m/Y',strtotime($dateDB));
+        }
+        return null;
+    }
 }

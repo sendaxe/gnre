@@ -7,6 +7,7 @@ use Sped\Gnre\Sefaz\Lote;
 use Sped\Gnre\Render\Html;
 use Sped\Gnre\Render\Pdf;
 use Illuminate\Support\Facades\Storage;
+use Sped\Gnre\Parser\Util;
 
 class GerarGuias extends Controller {
 
@@ -39,7 +40,24 @@ class GerarGuias extends Controller {
                         GROUP BY g2.id_lote, g2.sequencial_guia
                 )", [$idLote]
         );
-
+        $rowLote = app('db')->select("SELECT lote.* FROM senda.com_03_02_01_a10 lote WHERE id = ? ", [$idLote]);
+        foreach ($rowLote as $key => $val) {
+            $rowLote = $val;
+            break;
+        }
+        if(empty($rowLote)){
+            return;
+        }
+        app('db')->insert("INSERT INTO senda.com_03_02_01_a10_a3(id_lote,id_nf,codigo,usuario,ip_usuario,destino,timeout,autoclose) VALUES (?,?,?,?,?,?,?,?) RETURNING id", [
+            Util::getValue($idLote),
+            Util::getValue($rowLote->id_nf),
+            AVISO_GUIA,
+            $rowLote->usuario_inc,
+            $rowLote->ip_usuario_inc,
+            AVISO_DESTINO_POPUP,
+            1000,
+            'T'
+        ]);
         $lote = new Lote();
         //echo "<pre>";
         foreach ($guias as $key => $valGuia) {
@@ -55,7 +73,7 @@ class GerarGuias extends Controller {
             $guia->c04_docOrigem = $valGuia->c04_docOrigem;
             $guia->c06_valorPrincipal = $valGuia->c06_valorPrincipal;
             $guia->c10_valorTotal = $valGuia->c10_valorTotal;
-            $guia->c14_dataVencimento = $valGuia->c14_dataVencimento;
+            $guia->c14_dataVencimento = Util::convertDateDB($valGuia->c14_dataVencimento);
             $guia->c15_convenio = $valGuia->c15_convenio;
             $guia->c16_razaoSocialEmitente = $valGuia->c16_razaoSocialEmitente;
             $guia->c17_inscricaoEstadualEmitente = $valGuia->c17_inscricaoEstadualEmitente;
@@ -69,7 +87,7 @@ class GerarGuias extends Controller {
             $guia->c36_inscricaoEstadualDestinatario = $valGuia->c36_inscricaoEstadualDestinatario;
             $guia->c37_razaoSocialDestinatario = $valGuia->c37_razaoSocialDestinatario;
             $guia->c38_municipioDestinatario = $valGuia->c38_municipioDestinatario;
-            $guia->c33_dataPagamento = $valGuia->c33_dataPagamento;
+            $guia->c33_dataPagamento = Util::convertDateDB($valGuia->c33_dataPagamento);
             $guia->retornoInformacoesComplementares = $valGuia->informacoes_complementares;
             $guia->retornoAtualizacaoMonetaria = $valGuia->atualizacao_monetaria;
             $guia->retornoNumeroDeControle = $valGuia->numero_controle;
@@ -97,8 +115,28 @@ class GerarGuias extends Controller {
             $pdf->create($html, env('CONFIG_PDFPATH') . "/{$idLote}.pdf");
             if (file_exists(env('CONFIG_PDFPATH') . "/{$idLote}.pdf")) {
                 app('db')->update("UPDATE senda.com_03_02_01_a10 SET status=? WHERE id=?", [STATUS_GUIAGERADA, $idLote]);
+                app('db')->insert("INSERT INTO senda.com_03_02_01_a10_a3(id_lote,id_nf,codigo,usuario,ip_usuario,destino,timeout,autoclose) VALUES (?,?,?,?,?,?,?,?) RETURNING id", [
+                    Util::getValue($idLote),
+                    Util::getValue($rowLote->id_nf),
+                    AVISO_GUIA_OK,
+                    $rowLote->usuario_inc,
+                    $rowLote->ip_usuario_inc,
+                    AVISO_DESTINO_POPUP,
+                    5000,
+                    'F'
+                ]);
                 echo '<h4>Guia Gerada em: ' . env('CONFIG_PDFPATH') . "/{$idLote}.pdf" . '</h4>';
             } else {
+                app('db')->insert("INSERT INTO senda.com_03_02_01_a10_a3(id_lote,id_nf,codigo,usuario,ip_usuario,destino,timeout,autoclose) VALUES (?,?,?,?,?,?,?,?) RETURNING id", [
+                    Util::getValue($idLote),
+                    Util::getValue($rowLote->id_nf),
+                    AVISO_GUIA_FALHA,
+                    $rowLote->usuario_inc,
+                    $rowLote->ip_usuario_inc,
+                    AVISO_DESTINO_POPUP,
+                    5000,
+                    'F'
+                ]);
                 echo '<h3>Falha ao gerar arquivo em: ' . env('CONFIG_PDFPATH') . "/{$idLote}.pdf" . '</h4>';
             }
         } else {
