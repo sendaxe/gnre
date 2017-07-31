@@ -18,17 +18,16 @@
 namespace Sped\Gnre\Sefaz\Estados;
 
 use Sped\Gnre\Sefaz\Guia;
+use Sped\Gnre\Parser\Util;
 
-abstract class Padrao
-{
+abstract class Padrao {
 
     /**
      * @param \DOMDocument $gnre
      * @param \Sped\Gnre\Sefaz\Guia $gnreGuia
      * @return mixed
      */
-    public function getNodeCamposExtras(\DOMDocument $gnre, Guia $gnreGuia)
-    {
+    public function getNodeCamposExtras(\DOMDocument $gnre, Guia $gnreGuia) {
         if (is_array($gnreGuia->c39_camposExtras) && count($gnreGuia->c39_camposExtras) > 0) {
             $c39_camposExtras = $gnre->createElement('c39_camposExtras');
 
@@ -56,23 +55,28 @@ abstract class Padrao
      * @param \Sped\Gnre\Sefaz\Guia $gnreGuia
      * @return \DOMElement
      */
-    public function getNodeReferencia(\DOMDocument $gnre, Guia $gnreGuia)
-    {
+    public function getNodeReferencia(\DOMDocument $gnre, Guia $gnreGuia) {
         if (!$gnreGuia->periodo && !$gnreGuia->mes && !$gnreGuia->ano && !$gnreGuia->parcela) {
             return null;
         }
-
         $c05 = $gnre->createElement('c05_referencia');
-
-        $periodo = $gnre->createElement('periodo', $gnreGuia->periodo);
-        $mes = $gnre->createElement('mes', $gnreGuia->mes);
-        $ano = $gnre->createElement('ano', $gnreGuia->ano);
-        $parcela = $gnre->createElement('parcela', $gnreGuia->parcela);
-        
-        $c05->appendChild($periodo);
-        $c05->appendChild($mes);
-        $c05->appendChild($ano);
-        $c05->appendChild($parcela);
+        if (is_numeric($gnreGuia->periodo)) {
+            $periodo = $gnre->createElement('periodo', $gnreGuia->periodo);
+            $c05->appendChild($periodo);
+        }
+        if (!empty(Util::getValue($gnreGuia->mes)) && is_numeric($gnreGuia->mes)) {
+            $mes = $gnre->createElement('mes', $gnreGuia->mes);
+            $c05->appendChild($mes);
+        }
+        if (!empty(Util::getValue($gnreGuia->ano)) && is_numeric($gnreGuia->ano)) {
+            $ano = $gnre->createElement('ano', $gnreGuia->ano);
+            $c05->appendChild($ano);
+        }
+        if (!empty(Util::getValue($gnreGuia->parcela)) && is_numeric($gnreGuia->parcela)) {
+            $parcela = $gnre->createElement('parcela', $gnreGuia->parcela);
+            $c05->appendChild($parcela);
+        }
         return $c05;
     }
+
 }

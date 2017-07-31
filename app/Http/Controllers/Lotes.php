@@ -45,7 +45,10 @@ class Lotes extends Controller {
                     $guia->c02_receita = $valGuia->c02_receita;
                 }
                 if (isset($valGuia->c25_detalhamentoReceita)) {
-                    $guia->c25_detalhamentoReceita = $valGuia->c25_detalhamentoReceita;
+                    $guia->c25_detalhamentoReceita = str_pad($valGuia->c25_detalhamentoReceita, 6, '0', STR_PAD_LEFT);
+                }
+                if (isset($valGuia->c26_produto)) {
+                    $guia->c26_produto = $valGuia->c26_produto;
                 }
                 if (isset($valGuia->c27_tipoIdentificacaoEmitente)) {
                     $guia->c27_tipoIdentificacaoEmitente = $valGuia->c27_tipoIdentificacaoEmitente;
@@ -104,17 +107,17 @@ class Lotes extends Controller {
                 if (isset($valGuia->c33_dataPagamento)) {
                     $guia->c33_dataPagamento = $valGuia->c33_dataPagamento;
                 }
-                if (isset($valGuia->c05_referencia) && isset($valGuia->c05_referencia->periodo)) {
-                    $guia->periodo = $valGuia->c05_referencia->periodo;
+                if (isset($valGuia->c05_referencia_periodo)) {
+                    $guia->periodo = $valGuia->c05_referencia_periodo;
                 }
-                if (isset($valGuia->c05_referencia) && isset($valGuia->c05_referencia->mes)) {
-                    $guia->mes = $valGuia->c05_referencia->mes;
+                if (isset($valGuia->c05_referencia_mes)) {
+                    $guia->mes = $valGuia->c05_referencia_mes;
                 }
-                if (isset($valGuia->c05_referencia) && isset($valGuia->c05_referencia->ano)) {
-                    $guia->ano = $valGuia->c05_referencia->ano;
+                if (isset($valGuia->c05_referencia_ano)) {
+                    $guia->ano = $valGuia->c05_referencia_ano;
                 }
-                if (isset($valGuia->c05_referencia) && isset($valGuia->c05_referencia->parcela)) {
-                    $guia->parcela = $valGuia->c05_referencia->parcela;
+                if (isset($valGuia->c05_referencia_parcela)) {
+                    $guia->parcela = $valGuia->c05_referencia_parcela;
                 }
                 if (isset($valGuia->c39_camposExtras)) {
                     $arrCampoExtra = [];

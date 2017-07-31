@@ -13,6 +13,6 @@ $app->group([], function() use ($app) {
 $app->get('sefaz/enviar-lote', 'Lotes@enviar');
 $app->get('sefaz/consultar-lote', 'Lotes@consultar');
 $app->get('sefaz/consultar-recibo/{numero}', 'Lotes@consultarRecibo');
-$app->get('sefaz/atualizar-receitas', 'Receita@atualizar');
+$app->get('sefaz/atualizar-receitas', 'ConsultarUF@atualizar');
 $app->get('sefaz/consultar-uf/{uf}/{receita}', 'ConsultarUF@consultarUf');
 $app->get('sefaz/enviar-consultar-gerar', 'Lotes@enviarConsultarGerar');
