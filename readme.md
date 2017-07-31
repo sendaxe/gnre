@@ -16,7 +16,7 @@ SENDA - GNRE é baseado no projeto: https://github.com/nfephp-org/sped-gnre mant
   - php_gd2
   - php_pdo_pgsql
 - Composer
-
+- Poderá ser necessário modificar o parâmetro max_execution_time, sugestão de valor: 300.
 ## Instalação
 
 ### Criando um novo projeto Via Composer
