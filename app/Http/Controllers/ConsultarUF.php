@@ -109,13 +109,9 @@ class ConsultarUF extends Controller {
                 $arrRetorno['valorExigido'] = str_replace(['S', 'N'], ['T', 'F'], Util::getTag($soapResponse, 'valorExigido'));
                 $arrRetorno['exigeDocumentoOrigem'] = str_replace(['S', 'N'], ['T', 'F'], Util::getTag($soapResponse, 'exigeDocumentoOrigem'));
                 /*
-                  $arrRetorno['tiposDocumentosOrigem'] = str_replace(['S','N'], ['T','F'], Util::getTag($soapResponse, 'tiposDocumentosOrigem'));
-                  $tiposDocOrigem = Util::getTag(Util::getTag($soapResponse, 'tiposDocumentosOrigem'), 'tipoDocumentoOrigem');
-                  if (!empty($tiposDocOrigem)) {
-                  echo '<pre>';
-                  $tiposDocOrigem = explode('</descricao>',$tiposDocOrigem);
-                  var_dump($tiposDocOrigem);
-                  } */
+                  regras semelhantes aos campos: detalhamentosReceita, porém será salvo em json.
+                  $arrRetorno['tiposDocumentosOrigem'] = Util::getTag($soapResponse, 'tiposDocumentosOrigem');
+                */
                 $arrRetorno['exigeContribuinteDestinatario'] = str_replace(['S', 'N'], ['T', 'F'], Util::getTag($soapResponse, 'exigeContribuinteDestinatario'));
                 $arrRetorno['exigeDataVencimento'] = str_replace(['S', 'N'], ['T', 'F'], Util::getTag($soapResponse, 'exigeDataVencimento'));
                 $arrRetorno['exigeDataPagamento'] = str_replace(['S', 'N'], ['T', 'F'], Util::getTag($soapResponse, 'exigeDataPagamento'));
@@ -148,15 +144,3 @@ class ConsultarUF extends Controller {
     }
 
 }
-
-/*
-CREATE TABLE senda.com_03_02_01_a9_a1
-(
-  id serial NOT NULL,
-  id_receita integer,
-  uf character varying(2),
-  receita text,
-  codigo integer,
-  descricao text,
-)
- */
