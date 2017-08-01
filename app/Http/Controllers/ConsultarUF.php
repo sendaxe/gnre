@@ -26,17 +26,27 @@ class ConsultarUF extends Controller {
                 $arrRetorno = $this->consultarUf($receita, $row->sigla);
                 if (!empty($arrRetorno)) {
                     $arrRetorno['id_estado'] = $row->codigo;
-                    $arrAux = $arrRetorno['detalhamento_receita'];
+                    $arrDetReceita = $arrRetorno['detalhamento_receita'];
+                    $arrCamposAdic = $arrRetorno['campos_adicionais'];
                     unset($arrRetorno['detalhamento_receita']);
+                    unset($arrRetorno['campos_adicionais']);
                     app('db')->delete('DELETE FROM senda.com_03_02_01_a9 WHERE uf = ? AND receita = ? AND ambiente = ?', [$row->sigla, $receita, $arrRetorno['ambiente']]);
                     app('db')->table('senda.com_03_02_01_a9')->insert($arrRetorno);
                     $id = app('db')->getPdo()->lastInsertId();
-                    if (!empty($id) && !empty($arrAux) && count($arrAux) > 0) {
-                        foreach ($arrAux as $key =>$arrDet) {
-                            $arrDet['id_receita'] = $id;
-                            $arrDet['uf'] = $row->sigla;
-                            $arrDet['receita'] = $receita;
-                            app('db')->table('senda.com_03_02_01_a9_a1')->insert($arrDet);
+                    if (!empty($id) && !empty($arrDetReceita) && count($arrDetReceita) > 0) {
+                        foreach ($arrDetReceita as $key =>$rowDet) {
+                            $rowDet['id_receita'] = $id;
+                            $rowDet['uf'] = $row->sigla;
+                            $rowDet['receita'] = $receita;
+                            app('db')->table('senda.com_03_02_01_a9_a1')->insert($rowDet);
+                        }
+                    }
+                    if (!empty($id) && !empty($arrCamposAdic) && count($arrCamposAdic) > 0) {
+                        foreach ($arrCamposAdic as $key =>$rowDet) {
+                            $rowDet['id_receita'] = $id;
+                            $rowDet['uf'] = $row->sigla;
+                            $rowDet['receita'] = $receita;
+                            app('db')->table('senda.com_03_02_01_a9_a2')->insert($rowDet);
                         }
                     }
                 }
@@ -88,6 +98,8 @@ class ConsultarUF extends Controller {
                 'exigeDataPagamento' => NULL,
                 'exigeConvenio' => NULL,
                 'exigeCamposAdicionais' => NULL,
+                'detalhamento_receita' => [],
+                'campos_adicionais' => [],
                 'ambiente' => NULL
             ];
             $codigoRetorno = Util::getTag(Util::getTag($soapResponse, 'situacaoConsulta'), 'codigo');
@@ -117,8 +129,8 @@ class ConsultarUF extends Controller {
                 $arrRetorno['exigeDataPagamento'] = str_replace(['S', 'N'], ['T', 'F'], Util::getTag($soapResponse, 'exigeDataPagamento'));
                 $arrRetorno['exigeConvenio'] = str_replace(['S', 'N'], ['T', 'F'], Util::getTag($soapResponse, 'exigeConvenio'));
                 $arrRetorno['exigeCamposAdicionais'] = str_replace(['S', 'N'], ['T', 'F'], Util::getTag($soapResponse, 'exigeCamposAdicionais'));
-                $arrRetorno['detalhamento_receita'] = [];
-
+                
+                /** detalhamentos de receitas **/
                 $detReceita = Util::getTag($soapResponse, 'detalhamentosReceita');
                 $posUltima = 0;
                 for ($index = 0; $index < substr_count($detReceita, '</detalhamentoReceita>'); $index++) {
@@ -131,11 +143,31 @@ class ConsultarUF extends Controller {
                     }
                     $posUltima = strpos($detReceita, '</detalhamentoReceita>', $posUltima + strlen('</detalhamentoReceita>'));
                 }
+                
+                /** campos adicionais **/
+                $camposAdic = Util::getTag($soapResponse, 'camposAdicionais');
+                $posUltima = 0;
+                for ($index = 0; $index < substr_count($camposAdic, '</campoAdicional>'); $index++) {
+                    $arrAux = [];
+                    $aux = Util::getTag(substr($camposAdic, $posUltima), 'codigo');
+                    if (is_numeric($aux)) {
+                        $arrAux['obrigatorio'] = str_replace(['S', 'N'], ['T', 'F'], Util::getTag(substr($camposAdic, $posUltima), 'obrigatorio'));
+                        $arrAux['codigo'] = $aux;
+                        $arrAux['tipo'] = Util::getTag(substr($camposAdic, $posUltima), 'tipo');
+                        $arrAux['tamanho'] = Util::getTag(substr($camposAdic, $posUltima), 'tamanho');
+                        $arrAux['casasdecimais'] = Util::getTag(substr($camposAdic, $posUltima), 'casasDecimais');
+                        $arrAux['titulo'] = html_entity_decode(Util::getTag(substr($camposAdic, $posUltima), 'titulo'), ENT_QUOTES, "UTF-8");
+                        $arrRetorno['campos_adicionais'][] = $arrAux;
+                    }
+                    $posUltima = strpos($camposAdic, '</campoAdicional>', $posUltima + strlen('</campoAdicional>'));
+                }
                 $arrRetorno['ambiente'] = env('CONFIG_ENVIRONMENT', 1);
             } else {
                 $arrRetorno = NULL;
                 echo "<h4>Não foi possível consultar UF: {$estado}, Receita: {$receita}, Ambiente: " . env('CONFIG_ENVIRONMENT', 1) . ", Código Retorno: {$codigoRetorno}, Mensagem: {$mensagemRetorno}</h4>";
             }
+            //echo '<pre>';
+            //var_dump($arrRetorno);
             return $arrRetorno;
         } else {
             print ("Parametros obrigatórios não informados. Informar: Ambiente, Receita e Estado");
