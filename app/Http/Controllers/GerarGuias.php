@@ -25,7 +25,7 @@ class GerarGuias extends Controller {
         }
         echo '<br/> <a href="../home">Voltar</a>';
     }
-
+    
     public function pdfGuia($idLote) {
         require '../vendor/dompdf/dompdf/dompdf_config.inc.php';
 
@@ -112,8 +112,12 @@ class GerarGuias extends Controller {
             //gerar na tela
             //$pdf->create($html)->stream('gnre.pdf', ['Attachment' => 0]);
             //gerar no arquivo
-            $pdf->create($html, env('CONFIG_PDFPATH') . "/{$idLote}.pdf");
-            if (file_exists(env('CONFIG_PDFPATH') . "/{$idLote}.pdf")) {
+            $valNF = app('db')->select('SELECT nf.numero_nf FROM senda.com_03_02_01 nf WHERE nf.id = (SELECT lote.id_nf FROM senda.com_03_02_01_a10 lote WHERE lote.id = ?)',[$idLote]);
+            foreach ($valNF as $key => $row) {
+                $valNF = $row;
+            }
+            $pdf->create($html, env('CONFIG_PDFPATH') . "/{$idLote}_{$valNF->numero_nf}.pdf");
+            if (file_exists(env('CONFIG_PDFPATH') . "/{$idLote}_{$valNF->numero_nf}.pdf")) {
                 app('db')->update("UPDATE senda.com_03_02_01_a10 SET status=? WHERE id=?", [STATUS_GUIAGERADA, $idLote]);
                 app('db')->insert("INSERT INTO senda.com_03_02_01_a10_a3(id_lote,id_nf,codigo,usuario,ip_usuario,destino,timeout,autoclose) VALUES (?,?,?,?,?,?,?,?) RETURNING id", [
                     Util::getValue($idLote),
@@ -125,7 +129,7 @@ class GerarGuias extends Controller {
                     5000,
                     'F'
                 ]);
-                echo '<h4>Guia Gerada em: ' . env('CONFIG_PDFPATH') . "/{$idLote}.pdf" . '</h4>';
+                echo '<h4>Guia Gerada em: ' . env('CONFIG_PDFPATH') . "/{$idLote}_{$valNF->numero_nf}.pdf" . '</h4>';
             } else {
                 app('db')->insert("INSERT INTO senda.com_03_02_01_a10_a3(id_lote,id_nf,codigo,usuario,ip_usuario,destino,timeout,autoclose) VALUES (?,?,?,?,?,?,?,?) RETURNING id", [
                     Util::getValue($idLote),
@@ -137,7 +141,7 @@ class GerarGuias extends Controller {
                     5000,
                     'F'
                 ]);
-                echo '<h3>Falha ao gerar arquivo em: ' . env('CONFIG_PDFPATH') . "/{$idLote}.pdf" . '</h4>';
+                echo '<h3>Falha ao gerar arquivo em: ' . env('CONFIG_PDFPATH') . "/{$idLote}_{$numero_nf}.pdf" . '</h4>';
             }
         } else {
             echo '<h3>Pasta para geração de arquivos PDF não definida ou inexistente nos parâmetros de configuração.</h3>';
