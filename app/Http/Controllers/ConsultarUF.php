@@ -42,11 +42,11 @@ class ConsultarUF extends Controller {
                         }
                     }
                     if (!empty($id) && !empty($arrCamposAdic) && count($arrCamposAdic) > 0) {
-                        foreach ($arrCamposAdic as $key =>$rowDet) {
-                            $rowDet['id_receita'] = $id;
-                            $rowDet['uf'] = $row->sigla;
-                            $rowDet['receita'] = $receita;
-                            app('db')->table('senda.com_03_02_01_a9_a2')->insert($rowDet);
+                        foreach ($arrCamposAdic as $key =>$rowCamposAdic) {
+                            $rowCamposAdic['id_receita'] = $id;
+                            $rowCamposAdic['uf'] = $row->sigla;
+                            $rowCamposAdic['receita'] = $receita;
+                            app('db')->table('senda.com_03_02_01_a9_a2')->insert($rowCamposAdic);
                         }
                     }
                 }
