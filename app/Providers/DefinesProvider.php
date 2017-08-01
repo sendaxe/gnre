@@ -50,7 +50,7 @@ class DefinesProvider extends ServiceProvider {
             $configOk = FALSE;
         } else {
             if (!empty(env('CONFIG_PDFPATH')) && file_exists(env('CONFIG_PDFPATH'))) {
-                app('db')->update("UPDATE senda.cad_01_02_a1 SET gnre_pasta_guias=? WHERE gera_gnre = 'T' AND EXISTS (SELECT emp.codigo FROM senda.cad_01_02 emp WHERE emp.codigo = senda.cad_01_02_a1.cod_empresa AND cnpj = ? LIMIT 1) ", [
+                app('db')->update("UPDATE senda.cad_01_02_a1 SET gnre_pasta_guias=? WHERE gera_gnre = 'T' AND EXISTS (SELECT emp.codigo FROM senda.cad_01_02 emp WHERE emp.codigo = senda.cad_01_02_a1.cod_empresa AND TRANSLATE(cnpj,'/-().','') = ? LIMIT 1) ", [
                     Util::getValue(env('CONFIG_PDFPATH')),
                     Util::getValue(env('CERT_CNPJ'))
                 ]);
@@ -63,7 +63,7 @@ class DefinesProvider extends ServiceProvider {
                 $configOk = FALSE;
             }
             if (!empty(env('CONFIG_BASEURL'))) {
-                app('db')->update("UPDATE senda.cad_01_02_a1 SET gnre_url_servico=? WHERE gera_gnre = 'T' AND EXISTS (SELECT emp.codigo FROM senda.cad_01_02 emp WHERE emp.codigo = senda.cad_01_02_a1.cod_empresa AND cnpj = ? LIMIT 1) ", [
+                app('db')->update("UPDATE senda.cad_01_02_a1 SET gnre_url_servico=? WHERE gera_gnre = 'T' AND EXISTS (SELECT emp.codigo FROM senda.cad_01_02 emp WHERE emp.codigo = senda.cad_01_02_a1.cod_empresa AND TRANSLATE(cnpj,'/-().','') = ? LIMIT 1) ", [
                     Util::getValue(env('CONFIG_BASEURL')),
                     Util::getValue(env('CERT_CNPJ'))
                 ]);
