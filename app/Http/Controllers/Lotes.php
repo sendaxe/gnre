@@ -206,8 +206,7 @@ class Lotes extends Controller {
         if (count($lotes) > 0) {
             echo '<a href="../home">Voltar</a>';
         }else{
-            echo '<h3>Todos os lotes já foram enviados</h3> <br/> <a href="../home">Voltar</a>';
-            echo '<br/> <a href="../home">Voltar</a>';
+            echo '</pre><h3>Todos os lotes já foram enviados</h3> <br/> <a href="../home">Voltar</a>';
         }
         return;
     }
