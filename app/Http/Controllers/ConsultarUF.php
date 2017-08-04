@@ -28,8 +28,10 @@ class ConsultarUF extends Controller {
                     $arrRetorno['id_estado'] = $row->codigo;
                     $arrDetReceita = $arrRetorno['detalhamento_receita'];
                     $arrCamposAdic = $arrRetorno['campos_adicionais'];
+                    $arrProduto = $arrRetorno['produtos'];
                     unset($arrRetorno['detalhamento_receita']);
                     unset($arrRetorno['campos_adicionais']);
+                    unset($arrRetorno['produtos']);
                     app('db')->delete('DELETE FROM senda.com_03_02_01_a9 WHERE uf = ? AND receita = ? AND ambiente = ?', [$row->sigla, $receita, $arrRetorno['ambiente']]);
                     app('db')->table('senda.com_03_02_01_a9')->insert($arrRetorno);
                     $id = app('db')->getPdo()->lastInsertId();
@@ -47,6 +49,14 @@ class ConsultarUF extends Controller {
                             $rowCamposAdic['uf'] = $row->sigla;
                             $rowCamposAdic['receita'] = $receita;
                             app('db')->table('senda.com_03_02_01_a9_a2')->insert($rowCamposAdic);
+                        }
+                    }
+                    if (!empty($id) && !empty($arrProduto) && count($arrProduto) > 0) {
+                        foreach ($arrProduto as $key =>$rowProduto) {
+                            $rowProduto['id_receita'] = $id;
+                            $rowProduto['uf'] = $row->sigla;
+                            $rowProduto['receita'] = $receita;
+                            app('db')->table('senda.com_03_02_01_a9_a3')->insert($rowProduto);
                         }
                     }
                 }
@@ -76,9 +86,9 @@ class ConsultarUF extends Controller {
             $webService = new Connection($config, $configUF->getHeaderSoap(), $configUF->toXml());
             $soapResponse = $webService->doRequest($configUF->soapAction());
             $soapResponse = str_replace(['ns1:'], [], $soapResponse);
-            //header('Content-Type: text/xml');
-            //echo $soapResponse;
-            //die();
+            header('Content-Type: text/xml');
+            echo $soapResponse;
+            die();
             $arrRetorno = [
                 'uf' => NULL,
                 'exigeUfFavorecida' => NULL,
@@ -100,6 +110,7 @@ class ConsultarUF extends Controller {
                 'exigeCamposAdicionais' => NULL,
                 'detalhamento_receita' => [],
                 'campos_adicionais' => [],
+                'produtos' => [],
                 'ambiente' => NULL
             ];
             $codigoRetorno = Util::getTag(Util::getTag($soapResponse, 'situacaoConsulta'), 'codigo');
@@ -160,6 +171,20 @@ class ConsultarUF extends Controller {
                         $arrRetorno['campos_adicionais'][] = $arrAux;
                     }
                     $posUltima = strpos($camposAdic, '</campoAdicional>', $posUltima + strlen('</campoAdicional>'));
+                }
+                
+                /** produtos **/
+                $produto = Util::getTag($soapResponse, 'produtos');
+                $posUltima = 0;
+                for ($index = 0; $index < substr_count($produto, '</produto>'); $index++) {
+                    $arrAux = [];
+                    $aux = Util::getTag(substr($produto, $posUltima), 'codigo');
+                    if (is_numeric($aux)) {
+                        $arrAux['codigo'] = $aux;
+                        $arrAux['descricao'] = html_entity_decode(Util::getTag(substr($produto, $posUltima), 'descricao'), ENT_QUOTES, "UTF-8");
+                        $arrRetorno['produtos'][] = $arrAux;
+                    }
+                    $posUltima = strpos($produto, '</produto>', $posUltima + strlen('</produto>'));
                 }
                 $arrRetorno['ambiente'] = env('CONFIG_ENVIRONMENT', 1);
             } else {
