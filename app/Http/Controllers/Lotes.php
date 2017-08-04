@@ -180,6 +180,9 @@ class Lotes extends Controller {
                 $arrRetorno['reciboTempoProcessamento'],
                 $arrRetorno['id']
             ]);
+            if ($arrRetorno['status'] != STATUS_ENVIADO){
+                app('db')->delete("DELETE FROM senda.fin_03_02_01 cpa WHERE cpa.id_nf = ? AND saldo = valor_titulo;", [$valLote->id_nf]);
+            }
             $aviso = AVISO_TRANSMISSAO_FALHA;
             if ($arrRetorno['status'] == STATUS_ENVIADO) {
                 $aviso = AVISO_TRANSMISSAO_OK;
@@ -264,6 +267,9 @@ class Lotes extends Controller {
                 $arrRetorno['resultado'],
                 $arrRetorno['id']
             ]);
+            if ($arrRetorno['status'] != STATUS_ENVIADO && $arrRetorno['status'] != STATUS_PROCESSADO){
+                app('db')->delete("DELETE FROM senda.fin_03_02_01 cpa WHERE cpa.id_nf = ? AND saldo = valor_titulo;", [$valLote->id_nf]);
+            }
             if (!empty($aviso)) {
                 app('db')->insert("INSERT INTO senda.com_03_02_01_a10_a3(id_lote,id_nf,codigo,usuario,ip_usuario,destino,timeout,autoclose) VALUES (?,?,?,?,?,?,?,?) RETURNING id", [
                     Util::getValue($valLote->id),
@@ -319,7 +325,7 @@ class Lotes extends Controller {
                     Util::getValue($arrRetorno['erros_validacao_descricao']),
                     Util::getValue($arrRetorno['numero_controle'])
                 ]); //$arrRetorno['id'] = app('db')->getPdo()->lastInsertId();
-                if (!empty($arrRetorno['numero_controle'])) {
+                if (!empty(trim($arrRetorno['numero_controle'],'0'))) {
                     app('db')->update("UPDATE senda.fin_03_02_01 SET gnre_numero_controle=? WHERE codigo=?", [
                         Util::getValue($arrRetorno['numero_controle']),
                         Util::getValue($arrRetorno['id_cpa'])
