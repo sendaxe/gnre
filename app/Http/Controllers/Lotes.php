@@ -202,7 +202,6 @@ class Lotes extends Controller {
             echo '<pre>';
             print_r($arrRetorno);
             echo '</pre> <br/> <a href="../home">Voltar</a>';
-            return;
         }
         echo '<h3>Todos os lotes já foram enviados</h3> <br/> <a href="../home">Voltar</a>';
         return;
