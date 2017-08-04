@@ -20,6 +20,7 @@ class Lotes extends Controller {
     public function enviar() {
         $config = new GnreSetup;
         $lotes = app('db')->select("SELECT lote.* FROM senda.com_03_02_01_a10 lote WHERE status = ? AND tipo = 'PORTAL' AND cnpj = ?", [STATUS_INCLUIDO, env('CERT_CNPJ')]);
+        echo '<pre>';
         foreach ($lotes as $key => $valLote) {
             $lote = new Lote();
             if ($valLote->ambiente == '2') {
@@ -199,11 +200,14 @@ class Lotes extends Controller {
                 5000,
                 ($aviso == AVISO_TRANSMISSAO_OK)?'T':'F'
             ]);
-            echo '<pre>';
             print_r($arrRetorno);
-            echo '</pre> <br/> <a href="../home">Voltar</a>';
+            echo '<br/>';
         }
-        echo '<h3>Todos os lotes já foram enviados</h3> <br/> <a href="../home">Voltar</a>';
+        if (count($arrRetorno) > 0) {
+            echo '</pre> <br/> <a href="../home">Voltar</a>';
+        }else{
+            echo '<h3>Todos os lotes já foram enviados</h3> <br/> <a href="../home">Voltar</a>';
+        }
         return;
     }
 
