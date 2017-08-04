@@ -86,9 +86,9 @@ class ConsultarUF extends Controller {
             $webService = new Connection($config, $configUF->getHeaderSoap(), $configUF->toXml());
             $soapResponse = $webService->doRequest($configUF->soapAction());
             $soapResponse = str_replace(['ns1:'], [], $soapResponse);
-            header('Content-Type: text/xml');
-            echo $soapResponse;
-            die();
+            //header('Content-Type: text/xml');
+            //echo $soapResponse;
+            //die();
             $arrRetorno = [
                 'uf' => NULL,
                 'exigeUfFavorecida' => NULL,
