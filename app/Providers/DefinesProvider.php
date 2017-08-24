@@ -77,7 +77,7 @@ class DefinesProvider extends ServiceProvider {
                     Util::getValue(env('CERT_CNPJ'))
                 ]);
             } else {
-                $arrMsg[] = "<h5>Caminho para CONFIG_BASEURL não localizado.<h5/>";
+                $arrMsg[] = "<h5>Ambiente não informado no parâmetro CONFIG_ENVIRONMENT.<h5/>";
                 $configOk = FALSE;
             }
         }
