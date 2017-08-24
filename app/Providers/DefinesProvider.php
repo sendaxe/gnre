@@ -71,6 +71,15 @@ class DefinesProvider extends ServiceProvider {
                 $arrMsg[] = "<h5>Caminho para CONFIG_BASEURL não localizado.<h5/>";
                 $configOk = FALSE;
             }
+            if (!empty(env('CONFIG_ENVIRONMENT'))) {
+                app('db')->update("UPDATE senda.cad_01_02_a1 SET gnre_ambiente=? WHERE gera_gnre = 'T' AND EXISTS (SELECT emp.codigo FROM senda.cad_01_02 emp WHERE emp.codigo = senda.cad_01_02_a1.cod_empresa AND TRANSLATE(cnpj,'/-().','') = ? LIMIT 1) ", [
+                    Util::getValue(env('CONFIG_ENVIRONMENT')),
+                    Util::getValue(env('CERT_CNPJ'))
+                ]);
+            } else {
+                $arrMsg[] = "<h5>Caminho para CONFIG_BASEURL não localizado.<h5/>";
+                $configOk = FALSE;
+            }
         }
         if (!$configOk) {
             print "<h3>Variáveis de inicialização não configuradas corretamente.<h3/>";
