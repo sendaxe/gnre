@@ -19,7 +19,7 @@ class Lotes extends Controller {
 
     public function enviar() {
         $config = new GnreSetup;
-        $lotes = app('db')->select("SELECT lote.* FROM senda.com_03_02_01_a10 lote WHERE status = ? AND tipo = 'PORTAL' AND cnpj = ?", [STATUS_INCLUIDO, env('CERT_CNPJ')]);
+        $lotes = app('db')->select("SELECT lote.*, (SELECT nf.numero_nf FROM senda.com_03_02_01 nf WHERE nf.id = lote.id_nf) AS numero_nf FROM senda.com_03_02_01_a10 lote WHERE status = ? AND tipo = 'PORTAL' AND cnpj = ?", [STATUS_INCLUIDO, env('CERT_CNPJ')]);
         echo '<pre>';
         foreach ($lotes as $key => $valLote) {
             $lote = new Lote();
@@ -143,6 +143,9 @@ class Lotes extends Controller {
             //var_dump($lote);
             //echo $lote->toXml();
             //die();
+            
+            $this->salvarXMLLote($lote, "{$valLote->id}_{$valLote->numero_nf}.xml");
+            
             $webService = new Connection($config, $lote->getHeaderSoap(), $lote->toXml());
             $soapResponse = $webService->doRequest($lote->soapAction());
             $soapResponse = str_replace(['ns1:'], [], $soapResponse);
@@ -361,5 +364,20 @@ class Lotes extends Controller {
         $webService = new Connection($config, $consulta->getHeaderSoap(), $consulta->toXml());
         return $webService->doRequest($consulta->soapAction());
     }
-
+    
+    private function salvarXMLLote($lote,$file){
+        if (!file_exists(env('CONFIG_XMLPATH'))) {
+            mkdir(env('CONFIG_XMLPATH'), 0777, true);
+        }
+        if (file_exists(env('CONFIG_XMLPATH'))) {
+            $lote->toXml(env('CONFIG_XMLPATH') . "/{$file}");
+            if (file_exists(env('CONFIG_XMLPATH') . "/{$file}")) {
+                echo '<h4>XML Gerado em: ' . env('CONFIG_XMLPATH') . "/{$file}" . '</h4>';
+            } else {
+                echo '<h3>Falha ao gerar arquivo em: ' . env('CONFIG_XMLPATH') . "/{$file}" . '</h4>';
+            }
+        } else {
+            echo '<h3>Pasta para geração de arquivos XML não definida ou inexistente nos parâmetros de configuração.</h3>';
+        }
+    }
 }
