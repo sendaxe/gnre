@@ -67,7 +67,7 @@ class Lote extends LoteGnre
     /**
      * {@inheritdoc}
      */
-    public function toXml()
+    public function toXml($file=null)
     {
         $gnre = new \DOMDocument('1.0', 'UTF-8');
         $gnre->formatOutput = false;
@@ -173,6 +173,9 @@ class Lote extends LoteGnre
             $loteGnre->appendChild($guia);
         }
         $this->getSoapEnvelop($gnre, $loteGnre);
+        if (!empty($file)){
+            $gnre->save($file);
+        }
         return $gnre->saveXML();
     }
     /**
