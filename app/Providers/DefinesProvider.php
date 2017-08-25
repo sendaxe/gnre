@@ -68,7 +68,7 @@ class DefinesProvider extends ServiceProvider {
                     Util::getValue(env('CERT_CNPJ'))
                 ]);
             } else {
-                $arrMsg[] = "<h5>Caminho para CONFIG_BASEURL não localizado.<h5/>";
+                $arrMsg[] = "<h5>Caminho para CONFIG_BASEURL não informado.<h5/>";
                 $configOk = FALSE;
             }
             if (!empty(env('CONFIG_ENVIRONMENT'))) {
@@ -78,6 +78,15 @@ class DefinesProvider extends ServiceProvider {
                 ]);
             } else {
                 $arrMsg[] = "<h5>Ambiente não informado no parâmetro CONFIG_ENVIRONMENT.<h5/>";
+                $configOk = FALSE;
+            }
+            if (!empty(env('CONFIG_XMLPATH')) && file_exists(env('CONFIG_XMLPATH'))) {
+                app('db')->update("UPDATE senda.cad_01_02_a1 SET gnre_pasta_xml=? WHERE gera_gnre = 'T' AND EXISTS (SELECT emp.codigo FROM senda.cad_01_02 emp WHERE emp.codigo = senda.cad_01_02_a1.cod_empresa AND TRANSLATE(cnpj,'/-().','') = ? LIMIT 1) ", [
+                    Util::getValue(env('CONFIG_XMLPATH')),
+                    Util::getValue(env('CERT_CNPJ'))
+                ]);
+            } else {
+                $arrMsg[] = "<h5>Caminho para CONFIG_XMLPATH não localizado.<h5/>";
                 $configOk = FALSE;
             }
         }
