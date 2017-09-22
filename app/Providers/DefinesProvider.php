@@ -49,21 +49,15 @@ class DefinesProvider extends ServiceProvider {
             $arrMsg[] = "<h5>CERT_CNPJ inválido ou não informado.<h5/>";
             $configOk = FALSE;
         } else {
-            $aux = app('db')->select("SELECT emp.* FROM senda.cad_01_02_a1 emp WHERE EXISTS (SELECT e.codigo FROM senda.cad_01_02 e WHERE e.codigo = emp.cod_empresa AND TRANSLATE(e.cnpj,'/-().','') = ? LIMIT 1) ", [env('CERT_CNPJ')]);
+            $aux = app('db')->select("SELECT emp.* FROM senda.cad_01_02_a1 emp WHERE gera_gnre = 'T' AND EXISTS (SELECT e.codigo FROM senda.cad_01_02 e WHERE e.codigo = emp.cod_empresa AND TRANSLATE(e.cnpj,'/-().','') = ? LIMIT 1) LIMIT 1", [env('CERT_CNPJ')]);
             foreach ($aux as $key => $empresa) {
                 if (!empty($empresa->gnre_pasta_guias) && file_exists($this->tratarPath($empresa->gnre_pasta_guias))) {
-                    if (defined(CONFIG_PDFPATH)){
-                        runkit_constant_remove(CONFIG_PDFPATH);
-                    }
                     define('CONFIG_PDFPATH', $this->tratarPath($empresa->gnre_pasta_guias));
                 } else {
                     $arrMsg[] = "<h5>Caminho para Pasta PDF não localizado.<h5/>";
                     $configOk = FALSE;
                 }
                 if (!empty($empresa->gnre_pasta_xml) && file_exists($this->tratarPath($empresa->gnre_pasta_xml))) {
-                    if (defined(CONFIG_XMLPATH)){
-                        runkit_constant_remove(CONFIG_XMLPATH);
-                    }
                     define('CONFIG_XMLPATH', $this->tratarPath($empresa->gnre_pasta_xml));
                 } else {
                     $arrMsg[] = "<h5>Caminho para Pasta XML não localizado.<h5/>";
@@ -74,21 +68,15 @@ class DefinesProvider extends ServiceProvider {
                     $configOk = FALSE;
                 }
                 if (!empty($empresa->gnre_ambiente)) {
-                    if (defined(CONFIG_ENVIRONMENT)){
-                        runkit_constant_remove(CONFIG_ENVIRONMENT);
-                    }
                     define('CONFIG_ENVIRONMENT', $empresa->gnre_ambiente);
                 } else {
-                    $arrMsg[] = "<h5>Ambiente não informado no parâmetro CONFIG_ENVIRONMENT.<h5/>";
+                    $arrMsg[] = "<h5>Ambiente não informado nos parâmetros de configuração.<h5/>";
                     $configOk = FALSE;
                 }
                 if (!empty($empresa->gnre_url_servico)) {
-                    if (defined(CONFIG_BASEURL)){
-                        runkit_constant_remove(CONFIG_BASEURL);
-                    }
                     define('CONFIG_BASEURL', $empresa->gnre_url_servico);
                 } else {
-                    $arrMsg[] = "<h5>Ambiente não informado no parâmetro CONFIG_ENVIRONMENT.<h5/>";
+                    $arrMsg[] = "<h5>URL não informada nos parâmetros de configuração.<h5/>";
                     $configOk = FALSE;
                 }
             }
@@ -102,6 +90,6 @@ class DefinesProvider extends ServiceProvider {
         }
     }
     public function tratarPath($path){
-        return str_replace('\\', '/', $path);
+        return strtolower( trim(str_replace('\\', '/', $path)) );
     }
 }
