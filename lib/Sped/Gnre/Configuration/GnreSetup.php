@@ -7,7 +7,7 @@ class GnreSetup extends Setup
 
     public function getBaseUrl()
     {
-      return env('CONFIG_BASEURL', 'http://localhost/');
+      return CONFIG_BASEURL;
     }
 
     public function getCertificateCnpj()
@@ -37,7 +37,7 @@ class GnreSetup extends Setup
 
     public function getEnvironment()
     {
-      return env('CONFIG_ENVIRONMENT', '1');
+      return CONFIG_ENVIRONMENT;
     }
 
     public function getPrivateKey()

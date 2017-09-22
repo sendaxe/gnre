@@ -75,10 +75,10 @@ class ConsultarUF extends Controller {
 
     public function consultarUf($receita, $estado) {
         $configUF = new ConfigUf;
-        $configUF->setEnvironment(env('CONFIG_ENVIRONMENT', 1));
+        $configUF->setEnvironment(CONFIG_ENVIRONMENT);
         $configUF->setReceita($receita);
         $configUF->setEstado(strtoupper($estado));
-        if (env('CONFIG_ENVIRONMENT', 1) == '2') {
+        if (CONFIG_ENVIRONMENT == '2') {
             $configUF->utilizarAmbienteDeTeste(true);
         }
         if (!empty($configUF->getEnvironment()) && !empty($configUF->getReceita()) && !empty($configUF->getEstado())) {
@@ -186,10 +186,10 @@ class ConsultarUF extends Controller {
                     }
                     $posUltima = strpos($produto, '</produto>', $posUltima + strlen('</produto>'));
                 }
-                $arrRetorno['ambiente'] = env('CONFIG_ENVIRONMENT', 1);
+                $arrRetorno['ambiente'] = CONFIG_ENVIRONMENT;
             } else {
                 $arrRetorno = NULL;
-                echo "<h4>Não foi possível consultar UF: {$estado}, Receita: {$receita}, Ambiente: " . env('CONFIG_ENVIRONMENT', 1) . ", Código Retorno: {$codigoRetorno}, Mensagem: {$mensagemRetorno}</h4>";
+                echo "<h4>Não foi possível consultar UF: {$estado}, Receita: {$receita}, Ambiente: " . CONFIG_ENVIRONMENT . ", Código Retorno: {$codigoRetorno}, Mensagem: {$mensagemRetorno}</h4>";
             }
             //echo '<pre>';
             //var_dump($arrRetorno);

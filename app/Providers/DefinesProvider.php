@@ -49,45 +49,36 @@ class DefinesProvider extends ServiceProvider {
             $arrMsg[] = "<h5>CERT_CNPJ inválido ou não informado.<h5/>";
             $configOk = FALSE;
         } else {
-            if (!empty(env('CONFIG_PDFPATH')) && file_exists(env('CONFIG_PDFPATH'))) {
-                app('db')->update("UPDATE senda.cad_01_02_a1 SET gnre_pasta_guias=? WHERE gera_gnre = 'T' AND EXISTS (SELECT emp.codigo FROM senda.cad_01_02 emp WHERE emp.codigo = senda.cad_01_02_a1.cod_empresa AND TRANSLATE(cnpj,'/-().','') = ? LIMIT 1) ", [
-                    Util::getValue(env('CONFIG_PDFPATH')),
-                    Util::getValue(env('CERT_CNPJ'))
-                ]);
-            } else {
-                $arrMsg[] = "<h5>Caminho para CONFIG_PDFPATH não localizado.<h5/>";
-                $configOk = FALSE;
-            }
-            if (empty(env('CERT_DIR')) || !file_exists(env('CERT_DIR'))) {
-                $arrMsg[] = "<h5>Caminho para CERT_DIR não localizado.<h5/>";
-                $configOk = FALSE;
-            }
-            if (!empty(env('CONFIG_BASEURL'))) {
-                app('db')->update("UPDATE senda.cad_01_02_a1 SET gnre_url_servico=? WHERE gera_gnre = 'T' AND EXISTS (SELECT emp.codigo FROM senda.cad_01_02 emp WHERE emp.codigo = senda.cad_01_02_a1.cod_empresa AND TRANSLATE(cnpj,'/-().','') = ? LIMIT 1) ", [
-                    Util::getValue(env('CONFIG_BASEURL')),
-                    Util::getValue(env('CERT_CNPJ'))
-                ]);
-            } else {
-                $arrMsg[] = "<h5>Caminho para CONFIG_BASEURL não informado.<h5/>";
-                $configOk = FALSE;
-            }
-            if (!empty(env('CONFIG_ENVIRONMENT'))) {
-                app('db')->update("UPDATE senda.cad_01_02_a1 SET gnre_ambiente=? WHERE gera_gnre = 'T' AND EXISTS (SELECT emp.codigo FROM senda.cad_01_02 emp WHERE emp.codigo = senda.cad_01_02_a1.cod_empresa AND TRANSLATE(cnpj,'/-().','') = ? LIMIT 1) ", [
-                    Util::getValue(env('CONFIG_ENVIRONMENT')),
-                    Util::getValue(env('CERT_CNPJ'))
-                ]);
-            } else {
-                $arrMsg[] = "<h5>Ambiente não informado no parâmetro CONFIG_ENVIRONMENT.<h5/>";
-                $configOk = FALSE;
-            }
-            if (!empty(env('CONFIG_XMLPATH')) && file_exists(env('CONFIG_XMLPATH'))) {
-                app('db')->update("UPDATE senda.cad_01_02_a1 SET gnre_pasta_xml=? WHERE gera_gnre = 'T' AND EXISTS (SELECT emp.codigo FROM senda.cad_01_02 emp WHERE emp.codigo = senda.cad_01_02_a1.cod_empresa AND TRANSLATE(cnpj,'/-().','') = ? LIMIT 1) ", [
-                    Util::getValue(env('CONFIG_XMLPATH')),
-                    Util::getValue(env('CERT_CNPJ'))
-                ]);
-            } else {
-                $arrMsg[] = "<h5>Caminho para CONFIG_XMLPATH não localizado.<h5/>";
-                $configOk = FALSE;
+            $aux = app('db')->select("SELECT emp.* FROM senda.cad_01_02_a1 emp WHERE EXISTS (SELECT e.codigo FROM senda.cad_01_02 e WHERE e.codigo = emp.cod_empresa AND TRANSLATE(e.cnpj,'/-().','') = ? LIMIT 1) ", [env('CERT_CNPJ')]);
+            foreach ($aux as $key => $empresa) {
+                if (!empty($empresa->gnre_pasta_guias) && file_exists($this->tratarPath($empresa->gnre_pasta_guias))) {
+                    define('CONFIG_PDFPATH', $this->tratarPath($empresa->gnre_pasta_guias));
+                } else {
+                    $arrMsg[] = "<h5>Caminho para Pasta PDF não localizado.<h5/>";
+                    $configOk = FALSE;
+                }
+                if (!empty($empresa->gnre_pasta_xml) && file_exists($this->tratarPath($empresa->gnre_pasta_xml))) {
+                    define('CONFIG_XMLPATH', $this->tratarPath($empresa->gnre_pasta_xml));
+                } else {
+                    $arrMsg[] = "<h5>Caminho para Pasta XML não localizado.<h5/>";
+                    $configOk = FALSE;
+                }
+                if (empty(env('CERT_DIR')) || !file_exists(env('CERT_DIR'))) {
+                    $arrMsg[] = "<h5>Caminho para CERT_DIR não localizado.<h5/>";
+                    $configOk = FALSE;
+                }
+                if (!empty($empresa->gnre_ambiente)) {
+                    define('CONFIG_ENVIRONMENT', $empresa->gnre_ambiente);
+                } else {
+                    $arrMsg[] = "<h5>Ambiente não informado no parâmetro CONFIG_ENVIRONMENT.<h5/>";
+                    $configOk = FALSE;
+                }
+                if (!empty($empresa->gnre_url_servico)) {
+                    define('CONFIG_BASEURL', $empresa->gnre_url_servico);
+                } else {
+                    $arrMsg[] = "<h5>Ambiente não informado no parâmetro CONFIG_ENVIRONMENT.<h5/>";
+                    $configOk = FALSE;
+                }
             }
         }
         if (!$configOk) {
@@ -98,5 +89,7 @@ class DefinesProvider extends ServiceProvider {
             die();
         }
     }
-
+    public function tratarPath($path){
+        return str_replace('\\', '/', $path);
+    }
 }

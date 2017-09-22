@@ -18,9 +18,21 @@ class Lotes extends Controller {
     }
 
     public function enviar() {
-        $config = new GnreSetup;
-        $lotes = app('db')->select("SELECT lote.*, (SELECT nf.numero_nf FROM senda.com_03_02_01 nf WHERE nf.id = lote.id_nf) AS numero_nf FROM senda.com_03_02_01_a10 lote WHERE status = ? AND tipo = 'PORTAL' AND cnpj = ?", [STATUS_INCLUIDO, env('CERT_CNPJ')]);
+        $lotes = app('db')->select("SELECT lote.id FROM senda.com_03_02_01_a10 lote WHERE status = ? AND tipo = 'PORTAL' AND cnpj = ?", [STATUS_INCLUIDO, env('CERT_CNPJ')]);
         echo '<pre>';
+        foreach ($lotes as $key => $valLote) {
+           $this->enviarById($valLote->id);
+        }
+        if (count($lotes) > 0) {
+            echo '<a href="../home">Voltar</a>';
+        }else{
+            echo '</pre><h3>Todos os lotes já foram enviados</h3> <br/> <a href="../home">Voltar</a>';
+        }
+    }
+    
+    public function enviarById($id) {
+        $config = new GnreSetup;
+        $lotes = app('db')->select("SELECT lote.*, (SELECT nf.numero_nf FROM senda.com_03_02_01 nf WHERE nf.id = lote.id_nf) AS numero_nf FROM senda.com_03_02_01_a10 lote WHERE id = ? AND status = ? AND tipo = 'PORTAL' AND cnpj = ?", [$id, STATUS_INCLUIDO, env('CERT_CNPJ')]);
         foreach ($lotes as $key => $valLote) {
             $lote = new Lote();
             if ($valLote->ambiente == '2') {
@@ -143,9 +155,9 @@ class Lotes extends Controller {
             //var_dump($lote);
             //echo $lote->toXml();
             //die();
-            
+
             $this->salvarXMLLote($lote, "{$valLote->id}_{$valLote->numero_nf}.xml");
-            
+
             $webService = new Connection($config, $lote->getHeaderSoap(), $lote->toXml());
             $soapResponse = $webService->doRequest($lote->soapAction());
             $soapResponse = str_replace(['ns1:'], [], $soapResponse);
@@ -203,20 +215,26 @@ class Lotes extends Controller {
                 5000,
                 ($aviso == AVISO_TRANSMISSAO_OK)?'T':'F'
             ]);
-            print_r($arrRetorno);
+            //print_r($arrRetorno);
             echo '<br/>';
         }
-        if (count($lotes) > 0) {
-            echo '<a href="../home">Voltar</a>';
-        }else{
-            echo '</pre><h3>Todos os lotes já foram enviados</h3> <br/> <a href="../home">Voltar</a>';
-        }
-        return;
+        unset($config);
     }
-
+    
     public function consultar() {
+        $lotes = app('db')->select("SELECT lote.id FROM senda.com_03_02_01_a10 lote WHERE status = ? AND tipo = 'PORTAL' AND cnpj = ?", [STATUS_ENVIADO, env('CERT_CNPJ')]);
+        foreach ($lotes as $key => $valLote) {
+            $this->consultarById($valLote->id);
+        }
+        if (count($lotes) == 0) {
+            echo '<h3>Nenhum Lote Disponível Para Consulta</h3>';
+        }
+        echo '<br/> <a href="../home">Voltar</a>';
+    }
+    
+    public function consultarById($id) {
         $config = new GnreSetup;
-        $lotes = app('db')->select("SELECT lote.* FROM senda.com_03_02_01_a10 lote WHERE status = ? AND tipo = 'PORTAL' AND cnpj = ?", [STATUS_ENVIADO, env('CERT_CNPJ')]);
+        $lotes = app('db')->select("SELECT lote.* FROM senda.com_03_02_01_a10 lote WHERE id = ? AND status = ? AND tipo = 'PORTAL' AND cnpj = ?", [$id, STATUS_ENVIADO, env('CERT_CNPJ')]);
         foreach ($lotes as $key => $valLote) {
             app('db')->insert("INSERT INTO senda.com_03_02_01_a10_a3(id_lote,id_nf,codigo,usuario,ip_usuario,destino,timeout,autoclose) VALUES (?,?,?,?,?,?,?,?) RETURNING id", [
                 Util::getValue($valLote->id),
@@ -261,7 +279,7 @@ class Lotes extends Controller {
             } elseif ($arrRetorno['codigo'] == '403') {
                 $arrRetorno['status'] = STATUS_PENDENCIA;
                 $aviso = AVISO_CONSULTA_PENDENCIA;
-            } elseif (empty($arrRetorno['codigo'])) {
+            } elseif (empty($arrRetorno['codigo']) || $arrRetorno['codigo'] == '404') {
                 $arrRetorno['status'] = STATUS_FALHA;
                 $aviso = AVISO_CONSULTA_FALHA;
             }
@@ -340,18 +358,23 @@ class Lotes extends Controller {
                 print_r($arrRetorno);
             }
         }
-        if (count($lotes) == 0) {
-            echo '<h3>Nenhum Lote Disponível Para Consulta</h3>';
-        }
-        echo '<br/> <a href="../home">Voltar</a>';
-        return;
+        unset($config);
     }
-
+    
     public function enviarConsultarGerar() {
         $this->enviar();
+        sleep(5);
         $this->consultar();
         $gerar = new GerarGuias();
         $gerar->pdfLotes();
+    }
+    
+    public function enviarConsultarGerarById($id) {
+        $this->enviarById($id);
+        sleep(5);
+        $this->consultarById($id);
+        $gerar = new GerarGuias();
+        $gerar->pdfGuia($id);
     }
 
     public function consultarRecibo($numero) {
@@ -366,15 +389,15 @@ class Lotes extends Controller {
     }
     
     private function salvarXMLLote($lote,$file){
-        if (!file_exists(env('CONFIG_XMLPATH'))) {
-            mkdir(env('CONFIG_XMLPATH'), 0777, true);
+        if (!file_exists(CONFIG_XMLPATH)) {
+            mkdir(CONFIG_XMLPATH, 0777, true);
         }
-        if (file_exists(env('CONFIG_XMLPATH'))) {
-            $lote->toXml(env('CONFIG_XMLPATH') . "/{$file}");
-            if (file_exists(env('CONFIG_XMLPATH') . "/{$file}")) {
-                echo '<h4>XML Gerado em: ' . env('CONFIG_XMLPATH') . "/{$file}" . '</h4>';
+        if (file_exists(CONFIG_XMLPATH)) {
+            $lote->toXml(CONFIG_XMLPATH . "/{$file}");
+            if (file_exists(CONFIG_XMLPATH . "/{$file}")) {
+                echo '<h4>XML Gerado em: ' . CONFIG_XMLPATH . "/{$file}" . '</h4>';
             } else {
-                echo '<h3>Falha ao gerar arquivo em: ' . env('CONFIG_XMLPATH') . "/{$file}" . '</h4>';
+                echo '<h3>Falha ao gerar arquivo em: ' . CONFIG_XMLPATH . "/{$file}" . '</h4>';
             }
         } else {
             echo '<h3>Pasta para geração de arquivos XML não definida ou inexistente nos parâmetros de configuração.</h3>';
