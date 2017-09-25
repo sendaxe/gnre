@@ -18,34 +18,34 @@ SENDA - GNRE é baseado no projeto: https://github.com/nfephp-org/sped-gnre mant
   - php_pdo_pgsql
 - Ajustar o parametro max_execution_time no php.ini para 500;
 
-## Após configurar o PHP.ini - Adicionar a pasta xampp/apache/bin às variáveis de ambiente:
+#### Após configurar o PHP.ini - Adicionar a pasta xampp/apache/bin às variáveis de ambiente:
 - Siga até as configurações do sistema, mais especificamente nas variáveis de ambiente do sistema. 
 - Adicione o caminho de instalação do xampp, exemplo: "C:\xampp\apache\bin" em PATH.
 - Pare o XAMPP e inicie novamente como administrador.
 
-### Verificando a instalação
+#### Verificando a instalação
 - Antes de processeguir verifique através do terminal se o openssl esta instalado corretamente, através do comando:
 ```terminal
 openssl version
 ```
 - Verifique se o comando foi reconhecido pelo sistema, caso contrário verifique novamente se a variável de ambiente foi configurada corretamente (pode ser necessário fechar o terminal CMD e abrir novamente).
 
-## Estrutura de Pastas
+#### Estrutura de Pastas
 - Recomenda-se utilizar a seguinte estrutura de pasta para instalação:
--> ..xampp/htdocs
-    -> senda
-        -> empresa
-            ->certificado
-            ->senda-gnre (copiar para esta pasta a aplicação baixada)
-        -> empresa
-            ->certificado
-            ->senda-gnre (copiar para esta pasta a aplicação baixada)
+  * [..xampp/htdocs]
+    * [senda]
+        * [empresa]
+            * [certificado]
+            * [senda-gnre] (copiar para esta pasta a aplicação baixada)
+        * [empresa]
+            * [certificado]
+            * [senda-gnre] (copiar para esta pasta a aplicação baixada)
 
-### Ajustando o arquvivo de configuração .ENV
+#### Ajustando o arquvivo de configuração .ENV
 - Assim que as dependências forem baixadas e o serviço esteja devidamente configurado conforme os passos anteriores, acesse a pasta raiz onde foi realizada a instalação.
 - Abra o arquivo [.env](http://github.com/sendaxe/senda-gnre/blob/master/.env) que esta na raiz do projeto e configure os dados de acesso conforme o arquivo [.env.example](http://github.com/sendaxe/senda-gnre/blob/master/.env.example)
 
-### Preparando o senda para gerar GNRE
+#### Preparando o senda para gerar GNRE
 - Antes de iniciar a aplicação PHP verifique as configurações do senda no cadastro de empresas.
 - No cadastro de empresas, marque a opção "Gera GNRE" na aba Configurações - Contábil/Fiscal - Principal.
 - Após marcar a opção "Gera GNRE", configure as informações da guia GNRE.
