@@ -21,7 +21,7 @@ SENDA - GNRE é baseado no projeto: https://github.com/nfephp-org/sped-gnre mant
 #### Após configurar o PHP.ini - Adicionar a pasta xampp/apache/bin às variáveis de ambiente:
 - Siga até as configurações do sistema, mais especificamente nas variáveis de ambiente do sistema. 
 - Adicione o caminho de instalação do xampp, exemplo: "C:\xampp\apache\bin" em PATH.
-- Pare o XAMPP e inicie novamente como administrador.
+- Pare o XAMPP e inicie novamente como ADMINISTRADOR (para extrair os dados do certificado).
 
 #### Verificando a instalação
 - Antes de processeguir verifique através do terminal se o openssl esta instalado corretamente, através do comando:
@@ -65,12 +65,16 @@ pause
 REM Acesse a url: http://localhost:8000 através de um navegador.
 ```
 
-### Atualizando o certificado
-- Sempre que o certificado estiver expirando será necessário atualizar o arquivo através da URL: "/configuracoes" disponível na aplicação.
+### Atualizando/Extraindo os dados do certificado
+- Este procedimento precisa estar com o XAMPP rodando em modo administrador
+- Sempre que o certificado estiver expirando será necessário atualizar/extrair o certificado novo do cliente através da URL: "/configuracoes" disponível na aplicação.
 - No primeiro acesso também deverá ser realziado este procedimento.
+- Confira se os dados do certificado foram extraidos corretamente:
+    * Após extrair o certificado, verifique a pasta informada em CERT_PATH no arquivo .ENV. Deverá ser criado automaticamente pelo sistema a pasta "metadata" dentro desta pasta.
+    * Confira na pasta "metadata" se a mesma possui 2 arquivos: "certificado_certKEY.pem" e "certificado_privKEY.pem"
 
 ### Atualizando as receitas
-- Assim que os passos anteriores forem realziados, abra a aplicação e acesse a opção para atualizar receitas, neste momento deverá atualizar as informações específicas de cada estado.
+- Assim que os passos anteriores forem realziados, acesse a opção "Atualizar Receitas", neste momento a aplicação deverá baixar as informações específicas de cada estado, salvando os dados na aplicação Senda.
 - No primeiro acesso também deverá ser realziado este procedimento.
 
 ## Licença
