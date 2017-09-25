@@ -46,14 +46,14 @@ openssl version
 - Configurando os dados da conexão e certificado do cliente:
     * Abra o arquivo [.env](http://github.com/sendaxe/senda-gnre/blob/master/.env) que esta na raiz do projeto e configure os dados de acesso conforme o arquivo [.env.example](http://github.com/sendaxe/senda-gnre/blob/master/.env.example)
 
-#### Preparando o senda para gerar GNRE
-- Antes de iniciar a aplicação PHP verifique as configurações do senda no cadastro de empresas.
-- No cadastro de empresas, marque a opção "Gera GNRE" na aba Configurações - Contábil/Fiscal - Principal.
-- Após marcar a opção "Gera GNRE", configure as informações da guia GNRE.
-- Informe a url que estará sendo utilizada para rodar o serviço GNRE. 
-  Exemplos: "http://192.168.133.1/senda/empresa/senda-gnre/public",  
-            "http://endereco-ip/senda/empresa/senda-gnre/public", 
-            "http://nome-da-maquina-na-rede/senda/empresa/senda-gnre/public"
+#### Preparando o Senda para gerar GNRE
+- Antes de iniciar a aplicação PHP verifique as configurações no cadastro de empresas do Senda.
+- No cadastro de empresas, marque a opção "Gera GNRE" na aba "Configurações" - "Contábil/Fiscal" - "Principal".
+- Após marcar a opção "Gera GNRE", configure as informações que estarão disponíveis na aba GNRE.
+- Informe a url que estará sendo utilizada para rodar o serviço GNRE na opção URL. Exemplos: 
+    * http://192.168.133.1/senda/empresa/senda-gnre/public
+    * http://endereco-ip/senda/empresa/senda-gnre/public
+    * http://nome-da-maquina-na-rede/senda/empresa/senda-gnre/public
 
 ### Configurando a URL de Acesso
 - Acesse o sistema através da URL da pasta raiz, por exemplo: "http://localhost/sendaxe/senda-gnre/public" 
