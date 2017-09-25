@@ -16,25 +16,43 @@ SENDA - GNRE é baseado no projeto: https://github.com/nfephp-org/sped-gnre mant
   - php_openssl
   - php_gd2
   - php_pdo_pgsql
+- Ajustar o parametro max_execution_time no php.ini para 500;
 
-## Requisitos
-- Apache
-- PHP = 7.0 *Problema de comunicação com a Sefaz na versão >= 7.1 do PHP.
-- Openssl
-- DOMDocument
-- Habilitar Extenções PHP no arquivo php.ini:
-  - php_soap
-  - php_openssl
-  - php_gd2
-  - php_pdo_pgsql
-- Poderá ser necessário modificar o parâmetro max_execution_time no php.ini, sugestão de valor: 500.
+## Após configurar o PHP.ini - Adicionar a pasta xampp/apache/bin às variáveis de ambiente:
+- Siga até as configurações do sistema, mais especificamente nas variáveis de ambiente do sistema. 
+- Adicione o caminho de instalação do xampp, exemplo: "C:\xampp\apache\bin" em PATH.
+- Pare o XAMPP e inicie novamente como administrador.
 
+### Verificando a instalação
+- Antes de processeguir verifique através do terminal se o openssl esta instalado corretamente, através do comando:
+```terminal
+openssl version
+```
+- Verifique se o comando foi reconhecido pelo sistema, caso contrário verifique novamente se a variável de ambiente foi configurada corretamente (pode ser necessário fechar o terminal CMD e abrir novamente).
+
+## Estrutura de Pastas
+- Recomenda-se utilizar a seguinte estrutura de pasta para instalação:
+-> ..xampp/htdocs
+    -> senda
+        -> empresa
+            ->certificado
+            ->senda-gnre (copiar para esta pasta a aplicação baixada)
+        -> empresa
+            ->certificado
+            ->senda-gnre (copiar para esta pasta a aplicação baixada)
 
 ### Ajustando o arquvivo de configuração .ENV
-- Assim que as dependências forem baixadas, acesse a pasta raiz onde foi realizada a instalação.
+- Assim que as dependências forem baixadas e o serviço esteja devidamente configurado conforme os passos anteriores, acesse a pasta raiz onde foi realizada a instalação.
 - Abra o arquivo [.env](http://github.com/sendaxe/senda-gnre/blob/master/.env) que esta na raiz do projeto e configure os dados de acesso conforme o arquivo [.env.example](http://github.com/sendaxe/senda-gnre/blob/master/.env.example)
 
-
+### Preparando o senda para gerar GNRE
+- Antes de iniciar a aplicação PHP verifique as configurações do senda no cadastro de empresas.
+- No cadastro de empresas, marque a opção "Gera GNRE" na aba Configurações - Contábil/Fiscal - Principal.
+- Após marcar a opção "Gera GNRE", configure as informações da guia GNRE.
+- Informe a url que estará sendo utilizada para rodar o serviço GNRE. 
+  Exemplos: "http://192.168.133.1/senda/empresa/senda-gnre/public",  
+            "http://endereco-ip/senda/empresa/senda-gnre/public", 
+            "http://nome-da-maquina-na-rede/senda/empresa/senda-gnre/public"
 
 ### Configurando a URL de Acesso
 - Acesse o sistema atraves da URL: "http://localhost/sendaxe/senda-gnre/public" 
@@ -45,14 +63,14 @@ php -S localhost:8000 -t ./public
 pause
 REM Acesse a url: http://localhost:8000 através de um navegador.
 ```
-### Atualizando o Certificado.
-- Antes de processeguir verifique através do terminal se o openssl esta instalado corretamente, através do comando:
-```terminal
-openssl version
-```
-Pois o php também deverá utilizar parte deste comando para extração das chaves
+
+### Atualizando o certificado
 - Sempre que o certificado estiver expirando será necessário atualizar o arquivo através da URL: /configuracoes disponível na aplicação.
-```No primeiro acesso será necessário realizar esse upload```
+- No primeiro também será necessário fazer este procedimento.
+
+### Atualizando as receitas
+- Assim que os passos anteriores forem realziados, abra a aplicação e acesse a opção para atualizar receitas, neste momento deverá atualizar as informações específicas de cada estado.
+- No primeiro também será necessário fazer este procedimento.
 
 ## Licença
 [MIT license](http://opensource.org/licenses/MIT)
