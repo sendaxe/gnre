@@ -32,18 +32,19 @@ openssl version
 
 #### Estrutura de Pastas
 - Recomenda-se utilizar a seguinte estrutura de pasta para instalação:
-  * [..xampp/htdocs]
-    * [senda]
-        * [empresa]
-            * [certificado]
-            * [senda-gnre] (copiar para esta pasta a aplicação baixada)
-        * [empresa]
-            * [certificado]
-            * [senda-gnre] (copiar para esta pasta a aplicação baixada)
+  * ..xampp/htdocs
+    * senda
+        * empresa
+            * certificado
+            * senda-gnre (copiar para esta pasta a aplicação baixada - pasta raiz da aplicação)
+        * empresa
+            * certificado
+            * senda-gnre (copiar para esta pasta a aplicação baixada - pasta raiz da aplicação)
 
 #### Ajustando o arquvivo de configuração .ENV
 - Assim que as dependências forem baixadas e o serviço esteja devidamente configurado conforme os passos anteriores, acesse a pasta raiz onde foi realizada a instalação.
-- Abra o arquivo [.env](http://github.com/sendaxe/senda-gnre/blob/master/.env) que esta na raiz do projeto e configure os dados de acesso conforme o arquivo [.env.example](http://github.com/sendaxe/senda-gnre/blob/master/.env.example)
+- Configurando os dados da conexão e certificado do cliente:
+    * Abra o arquivo [.env](http://github.com/sendaxe/senda-gnre/blob/master/.env) que esta na raiz do projeto e configure os dados de acesso conforme o arquivo [.env.example](http://github.com/sendaxe/senda-gnre/blob/master/.env.example)
 
 #### Preparando o senda para gerar GNRE
 - Antes de iniciar a aplicação PHP verifique as configurações do senda no cadastro de empresas.
@@ -55,7 +56,7 @@ openssl version
             "http://nome-da-maquina-na-rede/senda/empresa/senda-gnre/public"
 
 ### Configurando a URL de Acesso
-- Acesse o sistema atraves da URL: "http://localhost/sendaxe/senda-gnre/public" 
+- Acesse o sistema através da URL da pasta raiz, por exemplo: "http://localhost/sendaxe/senda-gnre/public" 
 - Se preferir crie um arquivo .BAT (windows) com os comandos abaixo:
 ``` terminal
 cd C:\xampp\htdocs\sendaxe\senda-gnre
@@ -65,12 +66,12 @@ REM Acesse a url: http://localhost:8000 através de um navegador.
 ```
 
 ### Atualizando o certificado
-- Sempre que o certificado estiver expirando será necessário atualizar o arquivo através da URL: /configuracoes disponível na aplicação.
-- No primeiro também será necessário fazer este procedimento.
+- Sempre que o certificado estiver expirando será necessário atualizar o arquivo através da URL: "/configuracoes" disponível na aplicação.
+- No primeiro acesso também deverá ser realziado este procedimento.
 
 ### Atualizando as receitas
 - Assim que os passos anteriores forem realziados, abra a aplicação e acesse a opção para atualizar receitas, neste momento deverá atualizar as informações específicas de cada estado.
-- No primeiro também será necessário fazer este procedimento.
+- No primeiro acesso também deverá ser realziado este procedimento.
 
 ## Licença
 [MIT license](http://opensource.org/licenses/MIT)
