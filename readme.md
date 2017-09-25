@@ -7,7 +7,7 @@ SENDA - GNRE é baseado no projeto: https://github.com/nfephp-org/sped-gnre mant
 
 ## Instalando o Servidor PHP
 ### Para plataforma windows:
-- Recomenda-se instalar para servidor, o XAMPP com versão PHP 7.0.
+- Recomenda-se baixar o XAMPP com a versão PHP 7.0.
 - Download do XAMPP: "https://www.apachefriends.org/xampp-files/7.0.23/xampp-win32-7.0.23-0-VC14-installer.exe" 
 - Após concluir o download do XAMPP, executar o arquivo recém baixado e seguir os passos do assistente de instalação.
 - Antes de iniciar o serviço, verifique se a porta padrão a ser utilizada pelo XAMPP não está em uso por outra aplicação (Por padrão o XAMPP utiliza as portas 80 e 443). Caso tenha o skype instalado, verificar se o mesmo não esta usando as portas 80 e 443 (Menu Ferramentas - Opções - Avançado - Conexão).
@@ -18,7 +18,7 @@ SENDA - GNRE é baseado no projeto: https://github.com/nfephp-org/sped-gnre mant
   - php_pdo_pgsql
 - Ajustar o parametro max_execution_time no php.ini para 500;
 
-#### Após configurar o PHP.ini - Adicionar a pasta xampp/apache/bin às variáveis de ambiente:
+#### Após configurar o PHP.ini - Adicionar a pasta "c:/xampp/apache/bin" às variáveis de ambiente:
 - Siga até as configurações do sistema, mais especificamente nas variáveis de ambiente do sistema. 
 - Adicione o caminho de instalação do xampp, exemplo: "C:\xampp\apache\bin" em PATH.
 - Pare o XAMPP e inicie novamente como ADMINISTRADOR (para extrair os dados do certificado).
