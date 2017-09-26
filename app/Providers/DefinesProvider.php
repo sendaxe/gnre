@@ -33,6 +33,7 @@ class DefinesProvider extends ServiceProvider {
         define('AVISO_GUIA', '50');
         define('AVISO_GUIA_FALHA', '51');
         define('AVISO_GUIA_OK', '60');
+        define('AVISO_SENDA_FALHA_URL', '91');
         
         define('AVISO_DESTINO_POPUP', '0');
         define('AVISO_DESTINO_OUTRO', '1');
