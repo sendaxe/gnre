@@ -363,7 +363,7 @@ class Lotes extends Controller {
     
     public function enviarConsultarGerar() {
         $this->enviar();
-        sleep(5);
+        sleep(10);
         $this->consultar();
         $gerar = new GerarGuias();
         $gerar->pdfLotes();
@@ -371,7 +371,7 @@ class Lotes extends Controller {
     
     public function enviarConsultarGerarById($id) {
         $this->enviarById($id);
-        sleep(5);
+        sleep(10);
         $this->consultarById($id);
         $gerar = new GerarGuias();
         $gerar->pdfGuia($id);
