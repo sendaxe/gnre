@@ -17,6 +17,8 @@ SENDA - GNRE é baseado no projeto: https://github.com/nfephp-org/sped-gnre mant
   - php_gd2
   - php_pdo_pgsql
 - Ajustar o parametro max_execution_time no php.ini para 500;
+- Exemplos
+![Screenshot](./tests/exemplos/img01.png);
 
 #### Após configurar o PHP.ini - Adicionar a pasta "c:/xampp/apache/bin" às variáveis de ambiente:
 - Siga até as configurações do sistema, mais especificamente nas variáveis de ambiente do sistema. 
