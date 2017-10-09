@@ -99,14 +99,20 @@ pause
 REM Acesse a url: http://192.168.133.59 através do navegador.
 ```
 
-### Atualizando/Extraindo os dados do certificado
+### Atualizando/Extraindo os dados do certificado (sempre que estiver expirando)
 - Este procedimento precisa estar com o XAMPP rodando em modo administrador
 - Sempre que o certificado estiver expirando será necessário atualizar/extrair o certificado novo do cliente através da URL: "/configuracoes" disponível na aplicação.
-- No primeiro acesso também deverá ser realziado este procedimento.
-- Confira se os dados do certificado foram extraidos corretamente:
-    * Após extrair o certificado, verifique a pasta informada em CERT_PATH no arquivo .ENV. Deverá ser criado automaticamente pelo sistema a pasta "metadata" dentro desta pasta.
+- No primeiro acesso também deverá ser realizado este procedimento.
+- Exemplos
+  - Acessando as configurações da aplicação
+    ![Screenshot](./tests/exemplos/img15.png)
+- Confira se os dados do certificado foram extraídos corretamente
+    * Após extrair o certificado, verifique a pasta informada em CERT_DIR no arquivo .ENV. Deverá ser criado automaticamente pelo sistema a pasta "metadata" dentro desta pasta.
     * Confira na pasta "metadata" se a mesma possui 2 arquivos: "certificado_certKEY.pem" e "certificado_privKEY.pem"
-
+- Exemplos
+  - Conferindo se os dados do certificado foram extraídos
+    ![Screenshot](./tests/exemplos/img16.png)
+    ![Screenshot](./tests/exemplos/img17.png)
 ### Atualizando as receitas
 - Assim que os passos anteriores forem realziados, acesse a opção "Atualizar Receitas", neste momento a aplicação deverá baixar as informações específicas de cada estado, salvando os dados na aplicação Senda.
 - No primeiro acesso também deverá ser realziado este procedimento.
