@@ -115,10 +115,18 @@ REM Acesse a url: http://192.168.133.59 através do navegador.
     ![Screenshot](./tests/exemplos/img17.png)
 
 ### Atualizando as receitas
-- Assim que os passos anteriores forem realziados, acesse a opção "Atualizar Receitas", neste momento a aplicação deverá baixar as informações específicas de cada estado, salvando os dados no Senda.
+- Assim que os passos anteriores forem realizados, acesse a opção "Atualizar Receitas" na aplicação PHP. Neste momento a aplicação deverá baixar as informações específicas de cada estado (campos obrigatórios, códigos de produto, códigos de detalhamento de receita etc..) salvando essas informações no Senda.
 - No primeiro acesso também deverá ser realziado este procedimento.
 - Exemplos
-  - Atualizando as regras do portal referente aos estados e receitas (campos obrigatórios, códigos de produto, códigos de detalhamento de receita etc..).
+  - Atualizando as regras do portal referente aos estados e receitas.
     ![Screenshot](./tests/exemplos/img18.png)
+
+### Configurando as informações no cadastro de estados - Senda ERP
+- Após atualizar as receitas, acesse o cadastro de estados no Senda ERP e configure os códigos de "Detalhamento de Receita" e "Código de Produto" para cada estado no qual o cliente irá gerar as guias.
+- As informações estarão disponíveis conforme regras atualizadas do portal GNRE. Alguns estados obrigam informar "Detalhamento de Receita" e/ou "Código de Produto", estas informações variam conforme estado e receita.
+- Exemplos
+  - Configurando as informações no cadastro de estados - Senda ERP.
+    ![Screenshot](./tests/exemplos/img19.png)
+
 ## Licença
 [MIT license](http://opensource.org/licenses/MIT)
