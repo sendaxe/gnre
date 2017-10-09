@@ -129,7 +129,7 @@ REM Acesse a url: http://192.168.133.59 através do navegador.
     ![Screenshot](./tests/exemplos/img19.png)
 
 ### Alterando a porta padrão do serviço PHP
-- Caso o servidor já tenha algum serviço rodando nas portas padrões do XAMPP (80 e 443), é possível alterar as portas que o XAMPP estará utilizando. Para isso basta seguir os exemplos abaixo:
+- Caso o servidor já tenha algum serviço rodando nas portas padrões do XAMPP (80 e 443) (o xampp não irá iniciar e irá alertar que existe um outro serviço rodando em uma destas portas), é possível alterar as portas que o XAMPP estará trabalhando. Para isso, basta seguir os exemplos abaixo:
 - Exemplos
     ![Screenshot](./tests/exemplos/img20.png)
     ![Screenshot](./tests/exemplos/img21.png)
