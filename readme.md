@@ -13,7 +13,7 @@ SENDA - GNRE é baseado no projeto: https://github.com/nfephp-org/sped-gnre mant
 - Antes de iniciar o serviço, verifique se a porta padrão a ser utilizada pelo XAMPP não está em uso por outra aplicação (Por padrão o XAMPP utiliza as portas 80 e 443). Caso tenha o skype instalado, verificar se o mesmo não esta usando as portas 80 e 443 (Menu Ferramentas - Opções - Avançado - Conexão). Desmarque a opção "Use as portas 80 e 443 como conexões de entrada adicionais" caso a mesma esteja marcada.
 - Exemplos:
   - Removendo o uso da porta 80 e 443 do Skype
-  - ![Screenshot](./tests/exemplos/img02.png)
+    ![Screenshot](./tests/exemplos/img02.png)
 - Habilitar Extenções PHP no arquivo "C:\xampp\php\php.ini" - Retire o ";" antes das extenções:
   - php_soap
   - php_openssl
