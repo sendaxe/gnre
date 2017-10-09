@@ -83,6 +83,12 @@ openssl version
   - Informações a serem configuradas no cadastro de empresas do Senda ERP.
     ![Screenshot](./tests/exemplos/img13.png)
 
+### Acessando a aplicação PHP
+- Acesse no navegador a url: "http://endereco-ip/senda/empresa/senda-gnre/public" o caminho pode variar conforme for configurado a estrutura de pastas nos passos anteriores.
+- Exemplos
+  - Acesso ao serviço pelo navegador
+    ![Screenshot](./tests/exemplos/img14.png)
+
 ### Configurando a URL de Acesso
 - Acesse o sistema através da URL da pasta raiz, por exemplo: "http://localhost/sendaxe/senda-gnre/public" 
 - Se preferir crie um arquivo .BAT (windows) com os comandos abaixo:
