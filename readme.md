@@ -91,12 +91,12 @@ openssl version
 
 ### Configurando a URL de Acesso
 - Acesse o sistema através da URL da pasta raiz, por exemplo: "http://localhost/sendaxe/senda-gnre/public" 
-- Se preferir crie um arquivo .BAT (windows) com os comandos abaixo:
+- Se preferir utilizar um endereço de acesso reduzido, crie um arquivo .BAT (windows) com os comandos abaixo:
 ``` terminal
-cd C:\xampp\htdocs\sendaxe\senda-gnre
-php -S localhost:8000 -t ./public
+cd C:\xampp\htdocs\sendaxe\empresa\senda-gnre
+php -S 192.168.133.59:80 -t ./public
 pause
-REM Acesse a url: http://localhost:8000 através de um navegador.
+REM Acesse a url: http://192.168.133.59 através do navegador.
 ```
 
 ### Atualizando/Extraindo os dados do certificado
