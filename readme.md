@@ -30,6 +30,10 @@ SENDA - GNRE é baseado no projeto: https://github.com/nfephp-org/sped-gnre mant
 #### Após configurar o PHP.ini - Adicionar a pasta "c:/xampp/apache/bin" às variáveis de ambiente:
 - Siga até as configurações do sistema, mais especificamente nas variáveis de ambiente do sistema. 
 - Adicione o caminho de instalação do xampp, exemplo: "C:\xampp\apache\bin" em PATH.
+- Exemplos
+  - Adicionando o caminho nas variáveis de ambiente
+    ![Screenshot](./tests/exemplos/img05.png)
+    ![Screenshot](./tests/exemplos/img06.png)
 - Pare o XAMPP e inicie novamente como ADMINISTRADOR (para extrair os dados do certificado).
 
 #### Verificando a instalação
