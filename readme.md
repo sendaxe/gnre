@@ -90,7 +90,7 @@ openssl version
     ![Screenshot](./tests/exemplos/img14.png)
 
 ### Configurando a URL de Acesso
-- Acesse o sistema através da URL da pasta raiz, por exemplo: "http://localhost/sendaxe/senda-gnre/public" 
+- Acesse o sistema através da URL da pasta raiz, por exemplo: "http://192.168.133.59/sendaxe/empresa/senda-gnre/public" 
 - Se preferir utilizar um endereço de acesso reduzido, crie um arquivo .BAT (windows) com os comandos abaixo:
 ``` terminal
 cd C:\xampp\htdocs\sendaxe\empresa\senda-gnre
