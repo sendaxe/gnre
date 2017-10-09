@@ -133,6 +133,7 @@ REM Acesse a url: http://192.168.133.59 através do navegador.
 - Exemplos
     ![Screenshot](./tests/exemplos/img20.png)
     ![Screenshot](./tests/exemplos/img21.png)
-
+- Após alterar as configurações, parar o Apache e executar novamente para carregar as novas configurações.
+- Caso a porta seja diferente de "80", lembrar de atualizar a URL da aplicação no Cadastro de Empresas (Senda ERP) para incluir a porta especificada logo após o endereço ip, por exemplo: "http://192.168.133.59:8000/sendaxe/empresa/senda-gnre/public/"
 ## Licença
 [MIT license](http://opensource.org/licenses/MIT)
