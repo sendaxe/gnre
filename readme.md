@@ -65,6 +65,9 @@ openssl version
 - Assim que as dependências forem baixadas e o serviço esteja devidamente configurado conforme os passos anteriores, acesse a pasta raiz onde foi realizada a instalação.
 - Configurando os dados da conexão e certificado do cliente:
     * Abra o arquivo [.env](http://github.com/sendaxe/senda-gnre/blob/master/.env) que esta na raiz do projeto e configure os dados de acesso conforme o arquivo [.env.example](http://github.com/sendaxe/senda-gnre/blob/master/.env.example)
+- Exemplos
+  - Definindo as configurações iniciais da aplicação (arquivo ".env" na raiz da aplicação)
+    ![Screenshot](./tests/exemplos/img11.png)
 
 #### Preparando o Senda para gerar GNRE
 - Antes de iniciar a aplicação PHP verifique as configurações no cadastro de empresas do Senda.
@@ -74,6 +77,11 @@ openssl version
     * http://192.168.133.1/senda/empresa/senda-gnre/public
     * http://endereco-ip/senda/empresa/senda-gnre/public
     * http://nome-da-maquina-na-rede/senda/empresa/senda-gnre/public
+- Exemplos
+  - Configurando as informações no cadastro de empresa para que as máquinas cliente possam 'enxergar' a aplicação php que esta funcionando no servidor.
+    ![Screenshot](./tests/exemplos/img12.png)
+  - Informações a serem configuradas no cadastro de empresas do Senda ERP
+    ![Screenshot](./tests/exemplos/img13.png)
 
 ### Configurando a URL de Acesso
 - Acesse o sistema através da URL da pasta raiz, por exemplo: "http://localhost/sendaxe/senda-gnre/public" 
