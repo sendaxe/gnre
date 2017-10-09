@@ -11,7 +11,7 @@ SENDA - GNRE é baseado no projeto: https://github.com/nfephp-org/sped-gnre mant
 - Download do XAMPP: "https://www.apachefriends.org/xampp-files/7.0.23/xampp-win32-7.0.23-0-VC14-installer.exe" 
 - Após concluir o download do XAMPP, executar o arquivo recém baixado e seguir os passos do assistente de instalação.
 - Antes de iniciar o serviço, verifique se a porta padrão a ser utilizada pelo XAMPP não está em uso por outra aplicação (Por padrão o XAMPP utiliza as portas 80 e 443). Caso tenha o skype instalado, verificar se o mesmo não esta usando as portas 80 e 443 (Menu Ferramentas - Opções - Avançado - Conexão). Desmarque a opção "Use as portas 80 e 443 como conexões de entrada adicionais" caso a mesma esteja marcada.
-- Exemplos:
+- Exemplos
   - Removendo o uso da porta 80 e 443 do Skype
     ![Screenshot](./tests/exemplos/img02.png)
 - Habilitar Extenções PHP no arquivo "C:\xampp\php\php.ini" - Retire o ";" antes das extenções:
@@ -20,7 +20,7 @@ SENDA - GNRE é baseado no projeto: https://github.com/nfephp-org/sped-gnre mant
   - php_gd2
   - php_pdo_pgsql
 - Ajustar o parametro max_execution_time no php.ini para 500;
-- Exemplos:
+- Exemplos
   - Atalho para o php.ini
     ![Screenshot](./tests/exemplos/img01.png)
   - Arquivo php.ini
@@ -45,7 +45,9 @@ SENDA - GNRE é baseado no projeto: https://github.com/nfephp-org/sped-gnre mant
 openssl version
 ```
 - Verifique se o comando foi reconhecido pelo sistema, caso contrário verifique novamente se a variável de ambiente foi configurada corretamente (pode ser necessário fechar o terminal CMD e abrir novamente).
-
+- Exemplos
+  - Verificando se o sistema operacional encontrou a variável de ambiente configurada.
+    ![Screenshot](./tests/exemplos/img09.png)
 #### Estrutura de Pastas
 - Recomenda-se utilizar a seguinte estrutura de pasta para instalação:
   * ..xampp/htdocs
