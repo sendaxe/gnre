@@ -35,7 +35,10 @@ SENDA - GNRE é baseado no projeto: https://github.com/nfephp-org/sped-gnre mant
     ![Screenshot](./tests/exemplos/img05.png)
     ![Screenshot](./tests/exemplos/img06.png)
 - Pare o XAMPP e inicie novamente como ADMINISTRADOR (para extrair os dados do certificado).
-
+- Exemplos
+  - Parar o XAMPP e executar novamente como administrador
+    ![Screenshot](./tests/exemplos/img07.png)
+    ![Screenshot](./tests/exemplos/img08.png)
 #### Verificando a instalação
 - Antes de processeguir verifique através do terminal se o openssl esta instalado corretamente, através do comando:
 ```terminal
