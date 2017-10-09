@@ -113,9 +113,12 @@ REM Acesse a url: http://192.168.133.59 através do navegador.
   - Conferindo se os dados do certificado foram extraídos
     ![Screenshot](./tests/exemplos/img16.png)
     ![Screenshot](./tests/exemplos/img17.png)
-### Atualizando as receitas
-- Assim que os passos anteriores forem realziados, acesse a opção "Atualizar Receitas", neste momento a aplicação deverá baixar as informações específicas de cada estado, salvando os dados na aplicação Senda.
-- No primeiro acesso também deverá ser realziado este procedimento.
 
+### Atualizando as receitas
+- Assim que os passos anteriores forem realziados, acesse a opção "Atualizar Receitas", neste momento a aplicação deverá baixar as informações específicas de cada estado, salvando os dados no Senda.
+- No primeiro acesso também deverá ser realziado este procedimento.
+- Exemplos
+  - Atualizando as regras do portal referente aos estados e receitas (campos obrigatórios, códigos de produto, códigos de detalhamento de receita etc..).
+    ![Screenshot](./tests/exemplos/img18.png)
 ## Licença
 [MIT license](http://opensource.org/licenses/MIT)
