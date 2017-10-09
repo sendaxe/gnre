@@ -58,7 +58,9 @@ openssl version
         * empresa
             * certificado
             * senda-gnre (copiar para esta pasta a aplicação baixada - pasta raiz da aplicação)
-
+- Exemplos
+  - Estrutura de pastas
+    ![Screenshot](./tests/exemplos/img10.png)
 #### Ajustando o arquvivo de configuração .ENV
 - Assim que as dependências forem baixadas e o serviço esteja devidamente configurado conforme os passos anteriores, acesse a pasta raiz onde foi realizada a instalação.
 - Configurando os dados da conexão e certificado do cliente:
