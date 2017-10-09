@@ -25,6 +25,7 @@ SENDA - GNRE é baseado no projeto: https://github.com/nfephp-org/sped-gnre mant
     ![Screenshot](./tests/exemplos/img01.png)
   - Arquivo php.ini
     ![Screenshot](./tests/exemplos/img03.png)
+    ![Screenshot](./tests/exemplos/img04.png)
 
 #### Após configurar o PHP.ini - Adicionar a pasta "c:/xampp/apache/bin" às variáveis de ambiente:
 - Siga até as configurações do sistema, mais especificamente nas variáveis de ambiente do sistema. 
