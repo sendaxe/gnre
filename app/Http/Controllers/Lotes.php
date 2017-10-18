@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 use Sped\Gnre\Sefaz\Lote;
 use Sped\Gnre\Sefaz\Guia;
 use Sped\Gnre\Sefaz\Consulta;
@@ -17,22 +20,35 @@ class Lotes extends Controller {
         parent::__construct();
     }
 
-    public function enviar() {
-        $lotes = app('db')->select("SELECT lote.id FROM senda.com_03_02_01_a10 lote WHERE status = ? AND tipo = 'PORTAL' AND cnpj = ?", [STATUS_INCLUIDO, env('CERT_CNPJ')]);
-        echo '<pre>';
+    public function enviar($id_empresa) {
+        $this->getEmpresaById($id_empresa);
+        $lotes = app('db')->select("SELECT lote.id FROM senda.com_03_02_01_a10 lote WHERE status = ? AND tipo = 'PORTAL' AND cnpj = ?", [STATUS_INCLUIDO, str_replace(['/', '.', '-'], [], $this->getEmpresa()->cnpj)]);
+        $arrMensagens = [];
         foreach ($lotes as $key => $valLote) {
-           $this->enviarById($valLote->id);
+            $this->enviarById($id_empresa, $valLote->id);
+            $aux = $this->getNotificacoesLote($valLote->id);
+            $arrMensagens[] = ['mensagem' => 'LOTE: ' . $valLote->id];
+            foreach ($aux as $row) {
+                $arrMensagens[] = ['mensagem' => "{$row->tipo_mensagem}: {$row->codigo} - {$row->mensagem}"];
+            }
+            $arrMensagens[] = ['mensagem' => '-------------------------------------------------------'];
         }
-        if (count($lotes) > 0) {
-            echo '<a href="../home">Voltar</a>';
-        }else{
-            echo '</pre><h3>Todos os lotes já foram enviados</h3> <br/> <a href="../home">Voltar</a>';
+        if (count($lotes) == 0) {
+            $arrMensagens[] = ['mensagem' => 'Sem lotes disponíveis para envio.'];
+        } else {
+            $arrMensagens[] = ['mensagem' => 'Concluído envio de lotes.'];
         }
+        return view('lotes', [
+            'empresa' => $this->getEmpresaById($id_empresa),
+            'mensagens' => $arrMensagens
+        ]);
     }
-    
-    public function enviarById($id) {
-        $config = new GnreSetup;
-        $lotes = app('db')->select("SELECT lote.*, (SELECT nf.numero_nf FROM senda.com_03_02_01 nf WHERE nf.id = lote.id_nf) AS numero_nf FROM senda.com_03_02_01_a10 lote WHERE id = ? AND status = ? AND tipo = 'PORTAL' AND cnpj = ?", [$id, STATUS_INCLUIDO, env('CERT_CNPJ')]);
+
+    public function enviarById($id_empresa, $id) {
+        $this->getEmpresaById($id_empresa);
+        $config = NULL;
+        $config = new GnreSetup($this->getEmpresa());
+        $lotes = app('db')->select("SELECT lote.*, (SELECT nf.numero_nf FROM senda.com_03_02_01 nf WHERE nf.id = lote.id_nf) AS numero_nf FROM senda.com_03_02_01_a10 lote WHERE id = ? AND status = ? AND tipo = 'PORTAL' AND cnpj = ?", [$id, STATUS_INCLUIDO, str_replace(['/', '.', '-'], [], $this->getEmpresa()->cnpj)]);
         foreach ($lotes as $key => $valLote) {
             $lote = new Lote();
             if ($valLote->ambiente == '2') {
@@ -151,16 +167,16 @@ class Lotes extends Controller {
                 }
                 $lote->addGuia($guia);
             }
-            //header('Content-Type: text/xml');
-            //var_dump($lote);
-            //echo $lote->toXml();
-            //die();
 
-            $this->salvarXMLLote($lote, "{$valLote->id}_{$valLote->numero_nf}.xml");
+            $arrMensagens = $this->salvarXMLLote($lote, "{$valLote->id}_{$valLote->numero_nf}.xml", $this->getEmpresa()->gnre_pasta_xml);
 
             $webService = new Connection($config, $lote->getHeaderSoap(), $lote->toXml());
             $soapResponse = $webService->doRequest($lote->soapAction());
             $soapResponse = str_replace(['ns1:'], [], $soapResponse);
+            //header('Content-Type: text/xml');
+            //echo $soapResponse;
+            //die();
+
             $arrRetorno = [
                 'id' => $valLote->id,
                 'ambiente' => Util::getTag($soapResponse, 'ambiente'),
@@ -196,7 +212,7 @@ class Lotes extends Controller {
                 $arrRetorno['reciboTempoProcessamento'],
                 $arrRetorno['id']
             ]);
-            if ($arrRetorno['status'] != STATUS_ENVIADO){
+            if ($arrRetorno['status'] != STATUS_ENVIADO) {
                 app('db')->delete("DELETE FROM senda.fin_03_02_01 cpa WHERE cpa.id_nf = ? AND saldo = valor_titulo;", [$valLote->id_nf]);
             }
             $aviso = AVISO_TRANSMISSAO_FALHA;
@@ -213,28 +229,31 @@ class Lotes extends Controller {
                 $valLote->ip_usuario_inc,
                 AVISO_DESTINO_POPUP,
                 5000,
-                ($aviso == AVISO_TRANSMISSAO_OK)?'T':'F'
+                ($aviso == AVISO_TRANSMISSAO_OK) ? 'T' : 'F'
             ]);
             //print_r($arrRetorno);
             echo '<br/>';
         }
         unset($config);
     }
-    
-    public function consultar() {
-        $lotes = app('db')->select("SELECT lote.id FROM senda.com_03_02_01_a10 lote WHERE status = ? AND tipo = 'PORTAL' AND cnpj = ?", [STATUS_ENVIADO, env('CERT_CNPJ')]);
+
+    public function consultar($id_empresa) {
+        $this->getEmpresaById($id_empresa);
+        $lotes = app('db')->select("SELECT lote.id FROM senda.com_03_02_01_a10 lote WHERE status = ? AND tipo = 'PORTAL' AND cnpj = ?", [STATUS_ENVIADO, str_replace(['/', '.', '-'], [], $this->getEmpresa()->cnpj)]);
         foreach ($lotes as $key => $valLote) {
-            $this->consultarById($valLote->id);
+            $this->consultarById($id_empresa, $valLote->id);
         }
         if (count($lotes) == 0) {
             echo '<h3>Nenhum Lote Disponível Para Consulta</h3>';
         }
         echo '<br/> <a href="../home">Voltar</a>';
     }
-    
-    public function consultarById($id) {
-        $config = new GnreSetup;
-        $lotes = app('db')->select("SELECT lote.* FROM senda.com_03_02_01_a10 lote WHERE id = ? AND status = ? AND tipo = 'PORTAL' AND cnpj = ?", [$id, STATUS_ENVIADO, env('CERT_CNPJ')]);
+
+    public function consultarById($id_empresa, $id) {
+        $this->getEmpresaById($id_empresa);
+        $config = NULL;
+        $config = new GnreSetup($this->getEmpresa());
+        $lotes = app('db')->select("SELECT lote.* FROM senda.com_03_02_01_a10 lote WHERE id = ? AND status = ? AND tipo = 'PORTAL' AND cnpj = ?", [$id, STATUS_ENVIADO, str_replace(['/', '.', '-'], [], $this->getEmpresa()->cnpj)]);
         foreach ($lotes as $key => $valLote) {
             app('db')->insert("INSERT INTO senda.com_03_02_01_a10_a3(id_lote,id_nf,codigo,usuario,ip_usuario,destino,timeout,autoclose) VALUES (?,?,?,?,?,?,?,?) RETURNING id", [
                 Util::getValue($valLote->id),
@@ -291,7 +310,7 @@ class Lotes extends Controller {
                 $arrRetorno['resultado'],
                 $arrRetorno['id']
             ]);
-            if ($arrRetorno['status'] != STATUS_ENVIADO && $arrRetorno['status'] != STATUS_PROCESSADO){
+            if ($arrRetorno['status'] != STATUS_ENVIADO && $arrRetorno['status'] != STATUS_PROCESSADO) {
                 app('db')->delete("DELETE FROM senda.fin_03_02_01 cpa WHERE cpa.id_nf = ? AND saldo = valor_titulo;", [$valLote->id_nf]);
             }
             if (!empty($aviso)) {
@@ -303,12 +322,12 @@ class Lotes extends Controller {
                     $valLote->ip_usuario_inc,
                     AVISO_DESTINO_POPUP,
                     5000,
-                    ($aviso == AVISO_CONSULTA_OK)?'T':'F'
+                    ($aviso == AVISO_CONSULTA_OK) ? 'T' : 'F'
                 ]);
             }
             $parser = new SefazRetorno($arrRetorno['resultado']);
             $loteRetorno = $parser->getLote();
-            echo '<pre>';
+
             foreach ($loteRetorno->getGuias() as $key2 => $valGuia) {
                 $arrRetorno = [
                     'id_lote' => $valLote->id,
@@ -349,7 +368,7 @@ class Lotes extends Controller {
                     Util::getValue($arrRetorno['erros_validacao_descricao']),
                     Util::getValue($arrRetorno['numero_controle'])
                 ]); //$arrRetorno['id'] = app('db')->getPdo()->lastInsertId();
-                if (!empty(trim($arrRetorno['numero_controle'],'0'))) {
+                if (!empty(trim($arrRetorno['numero_controle'], '0'))) {
                     app('db')->update("UPDATE senda.fin_03_02_01 SET gnre_numero_controle=? WHERE codigo=?", [
                         Util::getValue($arrRetorno['numero_controle']),
                         Util::getValue($arrRetorno['id_cpa'])
@@ -360,47 +379,45 @@ class Lotes extends Controller {
         }
         unset($config);
     }
-    
-    public function enviarConsultarGerar() {
-        $this->enviar();
-        sleep(5);
-        $this->consultar();
+
+    public function enviarConsultarGerar($id_empresa) {
+        $this->getEmpresaById($id_empresa);
+        $this->enviar($id_empresa);
+        sleep(10);
+        $this->consultar($id_empresa);
         $gerar = new GerarGuias();
-        $gerar->pdfLotes();
-    }
-    
-    public function enviarConsultarGerarById($id) {
-        $this->enviarById($id);
-        sleep(5);
-        $this->consultarById($id);
-        $gerar = new GerarGuias();
-        $gerar->pdfGuia($id);
+        $gerar->pdfLotes($id_empresa);
     }
 
-    public function consultarRecibo($numero) {
-        $config = new GnreSetup;
-        $consulta = new Consulta();
-        $consulta->setRecibo($numero);
-        $consulta->setEnvironment($config->getEnvironment());
-        $consulta->utilizarAmbienteDeTeste($config->getEnvironment());
-        header('Content-Type: text/xml');
-        $webService = new Connection($config, $consulta->getHeaderSoap(), $consulta->toXml());
-        return $webService->doRequest($consulta->soapAction());
+    public function enviarConsultarGerarById($id_empresa, $id) {
+        $this->getEmpresaById($id_empresa);
+        $this->enviarById($id_empresa, $id);
+        sleep(10);
+        $this->consultarById($id_empresa, $id);
+        $gerar = new GerarGuias();
+        $gerar->pdfGuia($id_empresa, $id);
     }
-    
-    private function salvarXMLLote($lote,$file){
-        if (!file_exists(CONFIG_XMLPATH)) {
-            mkdir(CONFIG_XMLPATH, 0777, true);
+
+    private function salvarXMLLote($lote, $file, $xmlPath) {
+        $arrMensagens = [];
+        if (!file_exists($xmlPath)) {
+            mkdir($xmlPath, 0777, true);
         }
-        if (file_exists(CONFIG_XMLPATH)) {
-            $lote->toXml(CONFIG_XMLPATH . "/{$file}");
-            if (file_exists(CONFIG_XMLPATH . "/{$file}")) {
-                echo '<h4>XML Gerado em: ' . CONFIG_XMLPATH . "/{$file}" . '</h4>';
+        if (file_exists($xmlPath)) {
+            $lote->toXml($xmlPath . DIRECTORY_SEPARATOR . $file);
+            if (file_exists($xmlPath . DIRECTORY_SEPARATOR . $file)) {
+                $arrMensagens[] = ['mensagem' => 'XML Gerado em: ' . $xmlPath . DIRECTORY_SEPARATOR . $file];
             } else {
-                echo '<h3>Falha ao gerar arquivo em: ' . CONFIG_XMLPATH . "/{$file}" . '</h4>';
+                $arrMensagens[] = ['mensagem' => 'Falha ao gerar arquivo em: ' . $xmlPath . DIRECTORY_SEPARATOR . $file];
             }
         } else {
-            echo '<h3>Pasta para geração de arquivos XML não definida ou inexistente nos parâmetros de configuração.</h3>';
+            $arrMensagens[] = ['mensagem' => 'Pasta para geração de arquivos XML inacessível ou não definida nos parâmetros de configuração.'];
         }
+        return $arrMensagens;
     }
+
+    private function getNotificacoesLote($id_lote) {
+        return app('db')->select("SELECT msg.* FROM senda.vcom_03_02_01_a10_msg msg WHERE msg.id_lote = ?", [$id_lote]);
+    }
+
 }

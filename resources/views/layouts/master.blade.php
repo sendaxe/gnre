@@ -5,8 +5,8 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Senda GNRE - @yield('title')</title>
-        <link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">
-        <link rel="stylesheet" href="vendor/custom/css/style.css">
+        <link rel="stylesheet" href="/vendor/bootstrap/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/vendor/custom/css/style.css">
     </head>
     <body>
         @section('sidebar')
@@ -20,28 +20,35 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="#">Senda GNRE</a>
+                    <a class="navbar-brand" href="/">SENDA GNRE</a>
                 </div>
                 <div id="navbar" class="collapse navbar-collapse">
+                    @if(isset($empresa))
                     <ul class="nav navbar-nav">
-                        <!--<li class="{{(app('request')->is('/') || app('request')->is('home'))?'active':''}}"><a href="home">Home</a></li>-->
-                        <li class="{{app('request')->is('configuracoes')?'active':''}}"><a href="configuracoes">Configurações</a></li>
-                        <li class="{{app('request')->is('sefaz/enviar-lote')?'active':''}}"><a href="sefaz/enviar-lote">Enviar Lotes</a></li>
-                        <li class="{{app('request')->is('sefaz/consultar-lote')?'active':''}}"><a href="sefaz/consultar-lote">Consultar Lotes</a></li>
-                        <li class="{{app('request')->is('sefaz/gerar-guias')?'active':''}}"><a href="sefaz/gerar-guias">Gerar Guias</a></li>
-                        <li class="{{app('request')->is('sefaz/atualizar-receitas')?'active':''}}"><a href="sefaz/atualizar-receitas">Atualizar Receitas</a></li>
+                        <li class="{{app('request')->is('config')?'active':''}}"><a href="/{{$empresa->codigo}}/config">Configurações</a></li>
+                        <li role="presentation" class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Lotes</a>
+                            <ul class="dropdown-menu">
+                                <li class="{{app('request')->is('sefaz/enviar-lote')?'active':''}}"><a href="/{{$empresa->codigo}}/sefaz/enviar-lote">Enviar Lotes</a></li>
+                                <li class="{{app('request')->is('sefaz/consultar-lote')?'active':''}}"><a href="/{{$empresa->codigo}}/sefaz/consultar-lote">Consultar Lotes</a></li>
+                                <li class="{{app('request')->is('sefaz/gerar-guias')?'active':''}}"><a href="/{{$empresa->codigo}}/sefaz/gerar-guias">Gerar Guias</a></li>
+                            </ul>
+                        </li>
                     </ul>
+                    @endif
                 </div><!--/.nav-collapse -->
             </div>
         </nav>
-
         @show
-
         <div class="container">
             @yield('content')
-        </div><!-- /.container -->
+        </div>
+        @include('modal')
+        <footer class="footer navbar-fixed-bottom">
+        @include('layouts/footer')
+        </footer>
     </body>
 </html>
-<script src="vendor/jquery/jquery.min.js"></script>
-<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
-<script src="vendor/custom/js/custom.js"></script>
+<script src="/vendor/jquery/jquery.min.js"></script>
+<script src="/vendor/bootstrap/js/bootstrap.min.js"></script>
+<script src="/vendor/custom/js/custom.js"></script>

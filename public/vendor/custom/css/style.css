@@ -1,8 +1,13 @@
+html, body {
+    margin: 0;
+    height: 100%;
+}
 body {
-    padding-top: 50px;
+    padding-top: 35px;
 }
 .content-principal {
     padding-top: 15px;
+    padding-bottom: 60px;
     text-align: left;
 }
 .content-title{
@@ -27,4 +32,42 @@ body {
     background: white;
     cursor: inherit;
     display: block;
+}
+.footer {
+    width: 100%;
+    line-height: 45px;
+    background-color: #e6e6e6;
+}
+.cursor-pointer{
+    cursor: pointer;
+}
+.margin-top{
+    margin-top: 15px;
+}
+.margin-bottom{
+    margin-bottom: 15px;
+}
+.margin-left{
+    margin-left: 15px;
+}
+.margin-right{
+    margin-right: 15px;
+}
+.margin-top-lg{
+    margin-top: 30px;
+}
+.margin-bottom-lg{
+    margin-bottom: 30px;
+}
+.no-margin{
+    margin: none;
+}
+.no-padding{
+    padding: none;
+}
+.padding-left{
+    padding-left: 15px;
+}
+.padding-right{
+    padding-right: 15px;
 }

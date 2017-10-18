@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 use Sped\Gnre\Sefaz\ConfigUf;
 use Sped\Gnre\Parser\Util;
 use Sped\Gnre\Configuration\GnreSetup;
@@ -13,7 +16,8 @@ class ConsultarUF extends Controller {
         parent::__construct();
     }
 
-    public function atualizar() {
+    public function atualizar(Request $request, $id_empresa) {
+        $this->getEmpresaById($id_empresa);
         $arrUF = [
             'AC', 'AL', 'AM', 'AP', 'BA', 'CE', 'DF', 'GO',
             'MA', 'MG', 'MS', 'MT', 'PA', 'PB', 'PE', 'PI',
@@ -21,10 +25,11 @@ class ConsultarUF extends Controller {
         ];
         $arrUF = app('db')->select("SELECT codigo, sigla FROM senda.cad_01_14 WHERE sigla IN (" . "'" . implode("','", $arrUF) . "')");
         $arrReceitas = ['100102', '100129', '100099']; //receitas utilizadas hoje
+        $arrMensagens = [];
         foreach ($arrUF as $key => $row) {
             foreach ($arrReceitas as $key2 => $receita) {
-                $arrRetorno = $this->consultarUf($receita, $row->sigla);
-                if (!empty($arrRetorno)) {
+                $arrRetorno = $this->consultarUf($id_empresa, $receita, $row->sigla);
+                if (!empty($arrRetorno) && !isset($arrRetorno['erro'])) {
                     $arrRetorno['id_estado'] = $row->codigo;
                     $arrDetReceita = $arrRetorno['detalhamento_receita'];
                     $arrCamposAdic = $arrRetorno['campos_adicionais'];
@@ -36,7 +41,7 @@ class ConsultarUF extends Controller {
                     app('db')->table('senda.com_03_02_01_a9')->insert($arrRetorno);
                     $id = app('db')->getPdo()->lastInsertId();
                     if (!empty($id) && !empty($arrDetReceita) && count($arrDetReceita) > 0) {
-                        foreach ($arrDetReceita as $key =>$rowDet) {
+                        foreach ($arrDetReceita as $key => $rowDet) {
                             $rowDet['id_receita'] = $id;
                             $rowDet['uf'] = $row->sigla;
                             $rowDet['receita'] = $receita;
@@ -44,7 +49,7 @@ class ConsultarUF extends Controller {
                         }
                     }
                     if (!empty($id) && !empty($arrCamposAdic) && count($arrCamposAdic) > 0) {
-                        foreach ($arrCamposAdic as $key =>$rowCamposAdic) {
+                        foreach ($arrCamposAdic as $key => $rowCamposAdic) {
                             $rowCamposAdic['id_receita'] = $id;
                             $rowCamposAdic['uf'] = $row->sigla;
                             $rowCamposAdic['receita'] = $receita;
@@ -52,18 +57,24 @@ class ConsultarUF extends Controller {
                         }
                     }
                     if (!empty($id) && !empty($arrProduto) && count($arrProduto) > 0) {
-                        foreach ($arrProduto as $key =>$rowProduto) {
+                        foreach ($arrProduto as $key => $rowProduto) {
                             $rowProduto['id_receita'] = $id;
                             $rowProduto['uf'] = $row->sigla;
                             $rowProduto['receita'] = $receita;
                             app('db')->table('senda.com_03_02_01_a9_a3')->insert($rowProduto);
                         }
                     }
+                } else {
+                    $arrMensagens[] = ['mensagem' => "Não foi possível consultar UF: {$row->sigla}, Receita: {$receita}, Ambiente: " . $this->getEmpresa()->gnre_ambiente . ", Código Retorno: {$arrRetorno['erro']['codigo']}, Mensagem: {$arrRetorno['erro']['mensagem']}"];
                 }
             }
         }
-        echo "<h4>Concluido atualização de receitas</h4>";
-        echo '<br/> <a href="../home">Voltar</a>';
+        $arrMensagens[] = ['mensagem' =>'Concluido atualização de receitas'];
+        return view('consultaruf', [
+            'empresa' => $this->getEmpresaById($id_empresa),
+            'mensagens' => $arrMensagens
+        ]);
+
         /* todas receitas
           $arrReceitas = [
           '100064', '100013', '100110', '100102', '100145',
@@ -73,22 +84,24 @@ class ConsultarUF extends Controller {
           ]; */
     }
 
-    public function consultarUf($receita, $estado) {
+    public function consultarUf($id_empresa, $receita, $estado) {
+        $this->getEmpresaById($id_empresa);
         $configUF = new ConfigUf;
-        $configUF->setEnvironment(CONFIG_ENVIRONMENT);
+        $configUF->setEnvironment($this->getEmpresa()->gnre_ambiente);
         $configUF->setReceita($receita);
         $configUF->setEstado(strtoupper($estado));
-        if (CONFIG_ENVIRONMENT == '2') {
+        if ($configUF->getEnvironment() == '2') {
             $configUF->utilizarAmbienteDeTeste(true);
         }
         if (!empty($configUF->getEnvironment()) && !empty($configUF->getReceita()) && !empty($configUF->getEstado())) {
-            $config = new GnreSetup;
+            $config = new GnreSetup($this->getEmpresa());
             $webService = new Connection($config, $configUF->getHeaderSoap(), $configUF->toXml());
             $soapResponse = $webService->doRequest($configUF->soapAction());
             $soapResponse = str_replace(['ns1:'], [], $soapResponse);
-            //header('Content-Type: text/xml');
-            //echo $soapResponse;
-            //die();
+            /**
+              header('Content-Type: text/xml');
+              echo $soapResponse;
+              die(); * */
             $arrRetorno = [
                 'uf' => NULL,
                 'exigeUfFavorecida' => NULL,
@@ -134,14 +147,14 @@ class ConsultarUF extends Controller {
                 /*
                   regras semelhantes aos campos: detalhamentosReceita, porém será salvo em json.
                   $arrRetorno['tiposDocumentosOrigem'] = Util::getTag($soapResponse, 'tiposDocumentosOrigem');
-                */
+                 */
                 $arrRetorno['exigeContribuinteDestinatario'] = str_replace(['S', 'N'], ['T', 'F'], Util::getTag($soapResponse, 'exigeContribuinteDestinatario'));
                 $arrRetorno['exigeDataVencimento'] = str_replace(['S', 'N'], ['T', 'F'], Util::getTag($soapResponse, 'exigeDataVencimento'));
                 $arrRetorno['exigeDataPagamento'] = str_replace(['S', 'N'], ['T', 'F'], Util::getTag($soapResponse, 'exigeDataPagamento'));
                 $arrRetorno['exigeConvenio'] = str_replace(['S', 'N'], ['T', 'F'], Util::getTag($soapResponse, 'exigeConvenio'));
                 $arrRetorno['exigeCamposAdicionais'] = str_replace(['S', 'N'], ['T', 'F'], Util::getTag($soapResponse, 'exigeCamposAdicionais'));
-                
-                /** detalhamentos de receitas **/
+
+                /** detalhamentos de receitas * */
                 $detReceita = Util::getTag($soapResponse, 'detalhamentosReceita');
                 $posUltima = 0;
                 for ($index = 0; $index < substr_count($detReceita, '</detalhamentoReceita>'); $index++) {
@@ -154,8 +167,8 @@ class ConsultarUF extends Controller {
                     }
                     $posUltima = strpos($detReceita, '</detalhamentoReceita>', $posUltima + strlen('</detalhamentoReceita>'));
                 }
-                
-                /** campos adicionais **/
+
+                /** campos adicionais * */
                 $camposAdic = Util::getTag($soapResponse, 'camposAdicionais');
                 $posUltima = 0;
                 for ($index = 0; $index < substr_count($camposAdic, '</campoAdicional>'); $index++) {
@@ -172,8 +185,8 @@ class ConsultarUF extends Controller {
                     }
                     $posUltima = strpos($camposAdic, '</campoAdicional>', $posUltima + strlen('</campoAdicional>'));
                 }
-                
-                /** produtos **/
+
+                /** produtos * */
                 $produto = Util::getTag($soapResponse, 'produtos');
                 $posUltima = 0;
                 for ($index = 0; $index < substr_count($produto, '</produto>'); $index++) {
@@ -186,16 +199,14 @@ class ConsultarUF extends Controller {
                     }
                     $posUltima = strpos($produto, '</produto>', $posUltima + strlen('</produto>'));
                 }
-                $arrRetorno['ambiente'] = CONFIG_ENVIRONMENT;
+                $arrRetorno['ambiente'] = $configUF->getEnvironment();
             } else {
                 $arrRetorno = NULL;
-                echo "<h4>Não foi possível consultar UF: {$estado}, Receita: {$receita}, Ambiente: " . CONFIG_ENVIRONMENT . ", Código Retorno: {$codigoRetorno}, Mensagem: {$mensagemRetorno}</h4>";
+                $arrRetorno = ['erro' => ['codigo' => $codigoRetorno, 'mensagem' => $mensagemRetorno]];
             }
-            //echo '<pre>';
-            //var_dump($arrRetorno);
             return $arrRetorno;
         } else {
-            print ("Parametros obrigatórios não informados. Informar: Ambiente, Receita e Estado");
+            
         }
         return null;
     }

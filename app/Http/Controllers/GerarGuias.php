@@ -11,25 +11,29 @@ use Sped\Gnre\Parser\Util;
 
 class GerarGuias extends Controller {
 
-    public function __construct() {
-        parent::__construct();
-    }
-
-    public function pdfLotes() {
-        $lotes = app('db')->select("SELECT lote.id, ambiente FROM senda.com_03_02_01_a10 lote WHERE status = ? AND tipo = 'PORTAL' AND cnpj = ?", [STATUS_PROCESSADO, env('CERT_CNPJ')]);
+    public function pdfLotes($id_empresa) {
+        $this->getEmpresaById($id_empresa);
+        $arrMensagens = [];
+        $lotes = app('db')->select("SELECT lote.id, ambiente FROM senda.com_03_02_01_a10 lote WHERE status = ? AND tipo = 'PORTAL' AND cnpj = ?", [STATUS_PROCESSADO, str_replace(['/', '.', '-'], [], $this->getEmpresa()->cnpj)]);
         foreach ($lotes as $key => $valLote) {
-            $this->pdfGuia($valLote->id);
+            foreach ($this->pdfGuia($id_empresa, $valLote->id) as $row) {
+                var_dump($row);
+            }
         }
-        if(count($lotes) == 0){
-            echo '<h3>Nenhum registro disponível para geração de guia</h3>';
+        if (count($lotes) == 0) {
+            $arrMensagens[] = 'Nenhum registro disponível para geração de guia.';
         }
+        var_dump($arrMensagens);
         echo '<br/> <a href="../home">Voltar</a>';
     }
-    
-    public function pdfGuia($id) {
-        require '../vendor/dompdf/dompdf/dompdf_config.inc.php';
-        
-        $lotes = app('db')->select("SELECT lote.id, ambiente FROM senda.com_03_02_01_a10 lote WHERE id = ? AND status = ? AND tipo = 'PORTAL' AND cnpj = ?", [$id, STATUS_PROCESSADO, env('CERT_CNPJ')]);
+
+    public function pdfGuia($id_empresa, $id) {
+        $this->getEmpresaById($id_empresa);
+
+        require app()->basePath() . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'dompdf' . DIRECTORY_SEPARATOR . 'dompdf' . DIRECTORY_SEPARATOR . 'dompdf_config.inc.php';
+
+        $arrMensagens = [];
+        $lotes = app('db')->select("SELECT lote.id, ambiente FROM senda.com_03_02_01_a10 lote WHERE id = ? AND status = ? AND tipo = 'PORTAL' AND cnpj = ?", [$id, STATUS_PROCESSADO, str_replace(['/', '.', '-'], [], $this->getEmpresa()->cnpj)]);
         foreach ($lotes as $key => $valLote) {
             $guias = app('db')->select("
                     SELECT env.*, ret.informacoes_complementares, ret.atualizacao_monetaria, ret.numero_controle, ret.codigo_barras, ret.representacao_numerica, ret.juros, ret.multa
@@ -47,7 +51,7 @@ class GerarGuias extends Controller {
                 $rowLote = $val;
                 break;
             }
-            if(empty($rowLote)){
+            if (empty($rowLote)) {
                 return;
             }
             app('db')->insert("INSERT INTO senda.com_03_02_01_a10_a3(id_lote,id_nf,codigo,usuario,ip_usuario,destino,timeout,autoclose) VALUES (?,?,?,?,?,?,?,?) RETURNING id", [
@@ -107,19 +111,19 @@ class GerarGuias extends Controller {
             $html->create($lote);
 
             $pdf = new Pdf();
-            if (!file_exists(CONFIG_PDFPATH)) {
-                mkdir(CONFIG_PDFPATH, 0777, true);
+            if (!file_exists($this->getEmpresa()->gnre_pasta_guias)) {
+                mkdir($this->getEmpresa()->gnre_pasta_guias, 0777, true);
             }
-            if (file_exists(CONFIG_PDFPATH)) {
+            if (file_exists($this->getEmpresa()->gnre_pasta_guias)) {
                 //gerar na tela
                 //$pdf->create($html)->stream('gnre.pdf', ['Attachment' => 0]);
                 //gerar no arquivo
-                $valNF = app('db')->select('SELECT nf.numero_nf FROM senda.com_03_02_01 nf WHERE nf.id = (SELECT lote.id_nf FROM senda.com_03_02_01_a10 lote WHERE lote.id = ?)',[$valLote->id]);
+                $valNF = app('db')->select('SELECT nf.numero_nf FROM senda.com_03_02_01 nf WHERE nf.id = (SELECT lote.id_nf FROM senda.com_03_02_01_a10 lote WHERE lote.id = ?)', [$valLote->id]);
                 foreach ($valNF as $key => $row) {
                     $valNF = $row;
                 }
-                $pdf->create($html, CONFIG_PDFPATH . "/{$valLote->id}_{$valNF->numero_nf}.pdf");
-                if (file_exists(CONFIG_PDFPATH . "/{$valLote->id}_{$valNF->numero_nf}.pdf")) {
+                $pdf->create($html, $this->getEmpresa()->gnre_pasta_guias . DIRECTORY_SEPARATOR . "{$valLote->id}_{$valNF->numero_nf}.pdf");
+                if (file_exists($this->getEmpresa()->gnre_pasta_guias . DIRECTORY_SEPARATOR . "{$valLote->id}_{$valNF->numero_nf}.pdf")) {
                     app('db')->update("UPDATE senda.com_03_02_01_a10 SET status=? WHERE id=?", [STATUS_GUIAGERADA, $valLote->id]);
                     app('db')->insert("INSERT INTO senda.com_03_02_01_a10_a3(id_lote,id_nf,codigo,usuario,ip_usuario,destino,timeout,autoclose) VALUES (?,?,?,?,?,?,?,?) RETURNING id", [
                         Util::getValue($valLote->id),
@@ -131,7 +135,7 @@ class GerarGuias extends Controller {
                         5000,
                         'F'
                     ]);
-                    echo '<h4>Guia Gerada em: ' . CONFIG_PDFPATH . "/{$valLote->id}_{$valNF->numero_nf}.pdf" . '</h4>';
+                    $arrMensagens[] = ['mensagem' => 'Guia Gerada em: ' . $this->getEmpresa()->gnre_pasta_guias . DIRECTORY_SEPARATOR . "{$valLote->id}_{$valNF->numero_nf}.pdf"];
                 } else {
                     app('db')->insert("INSERT INTO senda.com_03_02_01_a10_a3(id_lote,id_nf,codigo,usuario,ip_usuario,destino,timeout,autoclose) VALUES (?,?,?,?,?,?,?,?) RETURNING id", [
                         Util::getValue($valLote->id),
@@ -143,12 +147,13 @@ class GerarGuias extends Controller {
                         5000,
                         'F'
                     ]);
-                    echo '<h3>Falha ao gerar arquivo em: ' . CONFIG_PDFPATH . "/{$valLote->id}_{$numero_nf}.pdf" . '</h4>';
+                    $arrMensagens[] = ['mensagem' => 'Falha ao gerar arquivo em: ' . $this->getEmpresa()->gnre_pasta_guias . DIRECTORY_SEPARATOR . "{$valLote->id}_{$numero_nf}.pdf"];
                 }
             } else {
-                echo '<h3>Pasta para geração de arquivos PDF não definida ou inexistente nos parâmetros de configuração.</h3>';
+                $arrMensagens[] = ['mensagem' => 'Pasta para geração de arquivos PDF não definida ou inexistente nos parâmetros de configuração.'];
             }
         }
+        return $arrMensagens;
     }
 
 }

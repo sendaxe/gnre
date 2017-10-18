@@ -8,15 +8,15 @@ class ComposerStaticInita9478cc0a85c7bfbfd00a3ab13ec1949
 {
     public static $files = array (
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
-        '5255c38a0faeba867671b61dfda6d864' => __DIR__ . '/..' . '/paragonie/random_compat/lib/random.php',
-        '72579e7bd17821bb1321b87411366eae' => __DIR__ . '/..' . '/illuminate/support/helpers.php',
-        'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
-        'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
         '1d1b89d124cc9cb8219922c9d5569199' => __DIR__ . '/..' . '/hamcrest/hamcrest-php/hamcrest/Hamcrest.php',
+        '5255c38a0faeba867671b61dfda6d864' => __DIR__ . '/..' . '/paragonie/random_compat/lib/random.php',
+        '72579e7bd17821bb1321b87411366eae' => __DIR__ . '/..' . '/illuminate/support/helpers.php',
         '253c157292f75eb38082b5acb06f3f01' => __DIR__ . '/..' . '/nikic/fast-route/src/functions.php',
-        'bee9632da3ca00a99623b9c35d0c4f8b' => __DIR__ . '/..' . '/laravel/lumen-framework/src/helpers.php',
+        'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
+        'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
         'f084d01b0a599f67676cffef638aa95b' => __DIR__ . '/..' . '/smarty/smarty/libs/bootstrap.php',
+        'bee9632da3ca00a99623b9c35d0c4f8b' => __DIR__ . '/..' . '/laravel/lumen-framework/src/helpers.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -51,13 +51,13 @@ class ComposerStaticInita9478cc0a85c7bfbfd00a3ab13ec1949
             'Symfony\\Component\\Console\\' => 26,
             'Symfony\\Component\\Config\\' => 25,
             'Sped\\Gnre\\' => 10,
-            'Satooshi\\' => 9,
         ),
         'P' => 
         array (
             'Psr\\Log\\' => 8,
             'Psr\\Http\\Message\\' => 17,
             'Psr\\Container\\' => 14,
+            'PhpCoveralls\\' => 13,
         ),
         'M' => 
         array (
@@ -65,6 +65,7 @@ class ComposerStaticInita9478cc0a85c7bfbfd00a3ab13ec1949
         ),
         'L' => 
         array (
+            'League\\Flysystem\\' => 17,
             'Laravel\\Lumen\\' => 14,
         ),
         'I' => 
@@ -108,6 +109,7 @@ class ComposerStaticInita9478cc0a85c7bfbfd00a3ab13ec1949
         array (
             'Dotenv\\' => 7,
             'Doctrine\\Instantiator\\' => 22,
+            'Doctrine\\Common\\Inflector\\' => 26,
             'DeepCopy\\' => 9,
         ),
         'C' => 
@@ -204,10 +206,6 @@ class ComposerStaticInita9478cc0a85c7bfbfd00a3ab13ec1949
         array (
             0 => __DIR__ . '/../..' . '/lib/Sped/Gnre',
         ),
-        'Satooshi\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/satooshi/php-coveralls/src/Satooshi',
-        ),
         'Psr\\Log\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
@@ -220,9 +218,17 @@ class ComposerStaticInita9478cc0a85c7bfbfd00a3ab13ec1949
         array (
             0 => __DIR__ . '/..' . '/psr/container/src',
         ),
+        'PhpCoveralls\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/satooshi/php-coveralls/src',
+        ),
         'Monolog\\' => 
         array (
             0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
+        ),
+        'League\\Flysystem\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/league/flysystem/src',
         ),
         'Laravel\\Lumen\\' => 
         array (
@@ -348,6 +354,10 @@ class ComposerStaticInita9478cc0a85c7bfbfd00a3ab13ec1949
         array (
             0 => __DIR__ . '/..' . '/doctrine/instantiator/src/Doctrine/Instantiator',
         ),
+        'Doctrine\\Common\\Inflector\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/doctrine/inflector/lib/Doctrine/Common/Inflector',
+        ),
         'DeepCopy\\' => 
         array (
             0 => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy',
@@ -379,13 +389,6 @@ class ComposerStaticInita9478cc0a85c7bfbfd00a3ab13ec1949
             'Mockery' => 
             array (
                 0 => __DIR__ . '/..' . '/mockery/mockery/library',
-            ),
-        ),
-        'D' => 
-        array (
-            'Doctrine\\Common\\Inflector\\' => 
-            array (
-                0 => __DIR__ . '/..' . '/doctrine/inflector/lib',
             ),
         ),
     );

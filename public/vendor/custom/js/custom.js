@@ -21,5 +21,11 @@ $(function () {
             }
         });
     });
+    
+    $('.view-home #sel-empresa').change(function () {
+        if(this.value){
+            location.href = this.value;
+        }
+    });
+    $('#msg-modal').modal();
 });
-  

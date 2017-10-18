@@ -33,23 +33,29 @@ class DefinesProvider extends ServiceProvider {
         define('AVISO_GUIA', '50');
         define('AVISO_GUIA_FALHA', '51');
         define('AVISO_GUIA_OK', '60');
+        define('AVISO_SENDA_FALHA_URL', '901');
+        define('AVISO_SENDA_NAOGERA_ES', '902');
+        define('AVISO_SENDA_NAOGERA_RJ', '903');
+        define('AVISO_SENDA_NAOGERA_SP', '904');
         
         define('AVISO_DESTINO_POPUP', '0');
         define('AVISO_DESTINO_OUTRO', '1');
         
         define('DOMPDF_ENABLE_AUTOLOAD', false);
-
-        define('CERT_NAME', 'certificado.pfx');
-        define('CERT_PEMFILE', env('CERT_DIR') . '/metadata/certificado_certKEY.pem');
-        define('CERT_PRIVATEKEY', env('CERT_DIR') . '/metadata/certificado_privKEY.pem');
         
-        $configOk = TRUE;
+        define('CERT_DIR', 'certs'.DIRECTORY_SEPARATOR);
+        
+        /*define('CERT_NAME', 'certificado.pfx');
+        define('CERT_PEMFILE', env('CERT_DIR') . '/metadata/certificado_certKEY.pem');
+        define('CERT_PRIVATEKEY', env('CERT_DIR') . '/metadata/certificado_privKEY.pem');*/
+
+        /*$configOk = TRUE;
         $arrMsg = [];
         if (empty(env('CERT_CNPJ'))) {
             $arrMsg[] = "<h5>CERT_CNPJ inválido ou não informado.<h5/>";
             $configOk = FALSE;
         } else {
-            $aux = app('db')->select("SELECT emp.* FROM senda.cad_01_02_a1 emp WHERE EXISTS (SELECT e.codigo FROM senda.cad_01_02 e WHERE e.codigo = emp.cod_empresa AND TRANSLATE(e.cnpj,'/-().','') = ? LIMIT 1) ", [env('CERT_CNPJ')]);
+            $aux = app('db')->select("SELECT emp.* FROM senda.cad_01_02_a1 emp WHERE gera_gnre = 'T' AND EXISTS (SELECT e.codigo FROM senda.cad_01_02 e WHERE e.codigo = emp.cod_empresa AND TRANSLATE(e.cnpj,'/-().','') = ? LIMIT 1) LIMIT 1", [env('CERT_CNPJ')]);
             foreach ($aux as $key => $empresa) {
                 if (!empty($empresa->gnre_pasta_guias) && file_exists($this->tratarPath($empresa->gnre_pasta_guias))) {
                     define('CONFIG_PDFPATH', $this->tratarPath($empresa->gnre_pasta_guias));
@@ -70,13 +76,13 @@ class DefinesProvider extends ServiceProvider {
                 if (!empty($empresa->gnre_ambiente)) {
                     define('CONFIG_ENVIRONMENT', $empresa->gnre_ambiente);
                 } else {
-                    $arrMsg[] = "<h5>Ambiente não informado no parâmetro CONFIG_ENVIRONMENT.<h5/>";
+                    $arrMsg[] = "<h5>Ambiente não informado nos parâmetros de configuração.<h5/>";
                     $configOk = FALSE;
                 }
                 if (!empty($empresa->gnre_url_servico)) {
                     define('CONFIG_BASEURL', $empresa->gnre_url_servico);
                 } else {
-                    $arrMsg[] = "<h5>Ambiente não informado no parâmetro CONFIG_ENVIRONMENT.<h5/>";
+                    $arrMsg[] = "<h5>URL não informada nos parâmetros de configuração.<h5/>";
                     $configOk = FALSE;
                 }
             }
@@ -87,9 +93,9 @@ class DefinesProvider extends ServiceProvider {
                 print $msg;
             }
             die();
-        }
+        }*/
     }
-    public function tratarPath($path){
-        return str_replace('\\', '/', $path);
-    }
+    /*public function tratarPath($path){
+        return strtolower( trim(str_replace('\\', '/', $path)) );
+    }*/
 }
