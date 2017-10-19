@@ -24,7 +24,7 @@
                 </div><!--/.nav-collapse -->
             </div>
         </nav>
-        <div class="container">
+        <div class="container margin-top">
             <div class="content-principal view-config">
                 <div class="row">
                     <div class="panel panel-default margin-bottom">

@@ -32,6 +32,7 @@
                                 <li class="{{app('request')->is('sefaz/enviar-lote')?'active':''}}"><a href="/{{$empresa->codigo}}/sefaz/enviar-lote">Enviar Lotes</a></li>
                                 <li class="{{app('request')->is('sefaz/consultar-lote')?'active':''}}"><a href="/{{$empresa->codigo}}/sefaz/consultar-lote">Consultar Lotes</a></li>
                                 <li class="{{app('request')->is('sefaz/gerar-guias')?'active':''}}"><a href="/{{$empresa->codigo}}/sefaz/gerar-guias">Gerar Guias</a></li>
+                                <li class="{{app('request')->is('sefaz/gerar-guias')?'active':''}}"><a href="/{{$empresa->codigo}}/sefaz/enviar-consultar-gerar">Enviar Consultar e Gerar</a></li>
                             </ul>
                         </li>
                     </ul>

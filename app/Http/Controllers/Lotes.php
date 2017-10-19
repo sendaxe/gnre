@@ -14,33 +14,36 @@ use Sped\Gnre\Configuration\GnreSetup;
 use Sped\Gnre\Webservice\Connection;
 use App\Http\Controllers\GerarGuias;
 
-class Lotes extends Controller {
+class Lotes extends ControllerLotes {
+
+    protected $mensagens;
 
     public function __construct() {
         parent::__construct();
+        $this->mensagens = [];
     }
 
     public function enviar($id_empresa) {
         $this->getEmpresaById($id_empresa);
         $lotes = app('db')->select("SELECT lote.id FROM senda.com_03_02_01_a10 lote WHERE status = ? AND tipo = 'PORTAL' AND cnpj = ?", [STATUS_INCLUIDO, str_replace(['/', '.', '-'], [], $this->getEmpresa()->cnpj)]);
-        $arrMensagens = [];
+        $this->mensagens = [];
         foreach ($lotes as $key => $valLote) {
+            $this->mensagens[] = ['mensagem' => 'LOTE: ' . $valLote->id];
             $this->enviarById($id_empresa, $valLote->id);
             $aux = $this->getNotificacoesLote($valLote->id);
-            $arrMensagens[] = ['mensagem' => 'LOTE: ' . $valLote->id];
             foreach ($aux as $row) {
-                $arrMensagens[] = ['mensagem' => "{$row->tipo_mensagem}: {$row->codigo} - {$row->mensagem}"];
+                $this->mensagens[] = ['mensagem' => "{$row->tipo_mensagem}: {$row->codigo} - {$row->mensagem}"];
             }
-            $arrMensagens[] = ['mensagem' => '-------------------------------------------------------'];
+            $this->mensagens[] = ['mensagem' => '-------------------------------------------------------'];
         }
         if (count($lotes) == 0) {
-            $arrMensagens[] = ['mensagem' => 'Sem lotes disponíveis para envio.'];
+            $this->mensagens[] = ['mensagem' => 'Sem lotes disponíveis para envio.'];
         } else {
-            $arrMensagens[] = ['mensagem' => 'Concluído envio de lotes.'];
+            $this->mensagens[] = ['mensagem' => 'CONCLUÍDO ENVIO DE LOTES'];
         }
         return view('lotes', [
             'empresa' => $this->getEmpresaById($id_empresa),
-            'mensagens' => $arrMensagens
+            'mensagens' => $this->mensagens
         ]);
     }
 
@@ -168,7 +171,7 @@ class Lotes extends Controller {
                 $lote->addGuia($guia);
             }
 
-            $arrMensagens = $this->salvarXMLLote($lote, "{$valLote->id}_{$valLote->numero_nf}.xml", $this->getEmpresa()->gnre_pasta_xml);
+            $this->salvarXMLLote($lote, "{$valLote->id}_{$valLote->numero_nf}.xml", $this->getEmpresa()->gnre_pasta_xml);
 
             $webService = new Connection($config, $lote->getHeaderSoap(), $lote->toXml());
             $soapResponse = $webService->doRequest($lote->soapAction());
@@ -240,13 +243,25 @@ class Lotes extends Controller {
     public function consultar($id_empresa) {
         $this->getEmpresaById($id_empresa);
         $lotes = app('db')->select("SELECT lote.id FROM senda.com_03_02_01_a10 lote WHERE status = ? AND tipo = 'PORTAL' AND cnpj = ?", [STATUS_ENVIADO, str_replace(['/', '.', '-'], [], $this->getEmpresa()->cnpj)]);
+        $this->mensagens = [];
         foreach ($lotes as $key => $valLote) {
+            $this->mensagens[] = ['mensagem' => 'LOTE: ' . $valLote->id];
             $this->consultarById($id_empresa, $valLote->id);
+            $aux = $this->getNotificacoesLote($valLote->id);
+            foreach ($aux as $row) {
+                $this->mensagens[] = ['mensagem' => "{$row->tipo_mensagem}: {$row->codigo} - {$row->mensagem}"];
+            }
+            $this->mensagens[] = ['mensagem' => '-------------------------------------------------------'];
         }
         if (count($lotes) == 0) {
-            echo '<h3>Nenhum Lote Disponível Para Consulta</h3>';
+            $this->mensagens[] = ['mensagem' => 'Sem lotes disponíveis para consulta.'];
+        } else {
+            $this->mensagens[] = ['mensagem' => 'CONCLUÍDO CONSULTA DE LOTES'];
         }
-        echo '<br/> <a href="../home">Voltar</a>';
+        return view('lotes', [
+            'empresa' => $this->getEmpresaById($id_empresa),
+            'mensagens' => $this->mensagens
+        ]);
     }
 
     public function consultarById($id_empresa, $id) {
@@ -374,19 +389,54 @@ class Lotes extends Controller {
                         Util::getValue($arrRetorno['id_cpa'])
                     ]);
                 }
-                print_r($arrRetorno);
+                if (isset($arrRetorno['sequencial_guia']) && !empty($arrRetorno['sequencial_guia'])) {
+                    $this->mensagens[] = ['mensagem' => 'Guia: ' . $arrRetorno['sequencial_guia']];
+                }
+                if (isset($arrRetorno['informacoes_complementares']) && !empty($arrRetorno['informacoes_complementares'])) {
+                    $this->mensagens[] = ['mensagem' => 'Inf. Complementares: ' . $arrRetorno['informacoes_complementares']];
+                }
+                if (isset($arrRetorno['codigo_barras']) && !empty($arrRetorno['codigo_barras'])) {
+                    $this->mensagens[] = ['mensagem' => 'Cód Barras: ' . $arrRetorno['codigo_barras']];
+                }
+                if (isset($arrRetorno['situacao_guia']) && !empty($arrRetorno['situacao_guia'])) {
+                    $this->mensagens[] = ['mensagem' => 'Situação Guia: ' . $arrRetorno['situacao_guia']];
+                }
+                if (isset($arrRetorno['erros_validacao_campo']) && !empty($arrRetorno['erros_validacao_campo'])) {
+                    $this->mensagens[] = ['mensagem' => 'Erros de Validação - Campo: ' . $arrRetorno['erros_validacao_campo']];
+                }
+                if (isset($arrRetorno['erros_validacao_codigo']) && !empty($arrRetorno['erros_validacao_codigo'])) {
+                    $this->mensagens[] = ['mensagem' => 'Erros de Validação - Código: ' . $arrRetorno['erros_validacao_codigo']];
+                }
+                if (isset($arrRetorno['erros_validacao_descricao']) && !empty($arrRetorno['erros_validacao_descricao'])) {
+                    $this->mensagens[] = ['mensagem' => 'Erros de Validação - Descrição: ' . $arrRetorno['erros_validacao_descricao']];
+                }
+                if (isset($arrRetorno['numero_controle']) && !empty($arrRetorno['numero_controle'])) {
+                    $this->mensagens[] = ['mensagem' => 'Número Controle: ' . $arrRetorno['numero_controle']];
+                }
+                $this->mensagens[] = ['mensagem' => '-------------------------------------------------------'];
             }
         }
         unset($config);
     }
 
     public function enviarConsultarGerar($id_empresa) {
+        $arrMensagens = [];
         $this->getEmpresaById($id_empresa);
+        $arrMensagens[] = ['mensagem' => 'INICIO - ENVIO DOS LOTES'];
         $this->enviar($id_empresa);
+        $arrMensagens = array_merge($arrMensagens, $this->mensagens);
         sleep(10);
+        $arrMensagens[] = ['mensagem' => 'INICIO - CONSULTA DE RESULTADO DOS LOTES'];
         $this->consultar($id_empresa);
+        $arrMensagens = array_merge($arrMensagens, $this->mensagens);
+        $arrMensagens[] = ['mensagem' => 'INICIO - GERAÇÃO DE PDF DAS GUIAS'];
         $gerar = new GerarGuias();
         $gerar->pdfLotes($id_empresa);
+        $arrMensagens = array_merge($arrMensagens, $this->mensagens);
+        return view('lotes', [
+            'empresa' => $this->getEmpresaById($id_empresa),
+            'mensagens' => $arrMensagens
+        ]);
     }
 
     public function enviarConsultarGerarById($id_empresa, $id) {
@@ -399,25 +449,19 @@ class Lotes extends Controller {
     }
 
     private function salvarXMLLote($lote, $file, $xmlPath) {
-        $arrMensagens = [];
         if (!file_exists($xmlPath)) {
             mkdir($xmlPath, 0777, true);
         }
         if (file_exists($xmlPath)) {
             $lote->toXml($xmlPath . DIRECTORY_SEPARATOR . $file);
             if (file_exists($xmlPath . DIRECTORY_SEPARATOR . $file)) {
-                $arrMensagens[] = ['mensagem' => 'XML Gerado em: ' . $xmlPath . DIRECTORY_SEPARATOR . $file];
+                $this->mensagens[] = ['mensagem' => 'XML Gerado em: ' . $xmlPath . DIRECTORY_SEPARATOR . $file];
             } else {
-                $arrMensagens[] = ['mensagem' => 'Falha ao gerar arquivo em: ' . $xmlPath . DIRECTORY_SEPARATOR . $file];
+                $this->mensagens[] = ['mensagem' => 'Falha ao gerar arquivo em: ' . $xmlPath . DIRECTORY_SEPARATOR . $file];
             }
         } else {
-            $arrMensagens[] = ['mensagem' => 'Pasta para geração de arquivos XML inacessível ou não definida nos parâmetros de configuração.'];
+            $this->mensagens[] = ['mensagem' => 'Pasta para geração de arquivos XML inacessível ou não definida nos parâmetros de configuração.'];
         }
-        return $arrMensagens;
-    }
-
-    private function getNotificacoesLote($id_lote) {
-        return app('db')->select("SELECT msg.* FROM senda.vcom_03_02_01_a10_msg msg WHERE msg.id_lote = ?", [$id_lote]);
     }
 
 }

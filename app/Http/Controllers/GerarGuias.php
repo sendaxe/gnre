@@ -9,22 +9,37 @@ use Sped\Gnre\Render\Pdf;
 use Illuminate\Support\Facades\Storage;
 use Sped\Gnre\Parser\Util;
 
-class GerarGuias extends Controller {
+class GerarGuias extends ControllerLotes {
+
+    protected $mensagens;
+
+    public function __construct() {
+        parent::__construct();
+        $this->mensagens = [];
+    }
 
     public function pdfLotes($id_empresa) {
         $this->getEmpresaById($id_empresa);
-        $arrMensagens = [];
+        $this->mensagens = [];
         $lotes = app('db')->select("SELECT lote.id, ambiente FROM senda.com_03_02_01_a10 lote WHERE status = ? AND tipo = 'PORTAL' AND cnpj = ?", [STATUS_PROCESSADO, str_replace(['/', '.', '-'], [], $this->getEmpresa()->cnpj)]);
         foreach ($lotes as $key => $valLote) {
-            foreach ($this->pdfGuia($id_empresa, $valLote->id) as $row) {
-                var_dump($row);
+            $this->mensagens[] = ['mensagem' => 'LOTE: ' . $valLote->id];
+            $this->pdfGuia($id_empresa, $valLote->id);
+            $aux = $this->getNotificacoesLote($valLote->id);
+            foreach ($aux as $row) {
+                $this->mensagens[] = ['mensagem' => "{$row->tipo_mensagem}: {$row->codigo} - {$row->mensagem}"];
             }
+            $this->mensagens[] = ['mensagem' => '-------------------------------------------------------'];
         }
         if (count($lotes) == 0) {
-            $arrMensagens[] = 'Nenhum registro disponível para geração de guia.';
+            $this->mensagens[] = ['mensagem' => 'Nenhum registro disponível para geração de guia.'];
+        }else{
+            $this->mensagens[] = ['mensagem' => 'CONCLUÍDO GERAÇÃO DAS GUIAS'];
         }
-        var_dump($arrMensagens);
-        echo '<br/> <a href="../home">Voltar</a>';
+        return view('lotes', [
+            'empresa' => $this->getEmpresaById($id_empresa),
+            'mensagens' => $this->mensagens
+        ]);
     }
 
     public function pdfGuia($id_empresa, $id) {
@@ -32,7 +47,6 @@ class GerarGuias extends Controller {
 
         require app()->basePath() . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'dompdf' . DIRECTORY_SEPARATOR . 'dompdf' . DIRECTORY_SEPARATOR . 'dompdf_config.inc.php';
 
-        $arrMensagens = [];
         $lotes = app('db')->select("SELECT lote.id, ambiente FROM senda.com_03_02_01_a10 lote WHERE id = ? AND status = ? AND tipo = 'PORTAL' AND cnpj = ?", [$id, STATUS_PROCESSADO, str_replace(['/', '.', '-'], [], $this->getEmpresa()->cnpj)]);
         foreach ($lotes as $key => $valLote) {
             $guias = app('db')->select("
@@ -135,7 +149,7 @@ class GerarGuias extends Controller {
                         5000,
                         'F'
                     ]);
-                    $arrMensagens[] = ['mensagem' => 'Guia Gerada em: ' . $this->getEmpresa()->gnre_pasta_guias . DIRECTORY_SEPARATOR . "{$valLote->id}_{$valNF->numero_nf}.pdf"];
+                    $this->mensagens[] = ['mensagem' => 'Guia Gerada em: ' . $this->getEmpresa()->gnre_pasta_guias . DIRECTORY_SEPARATOR . "{$valLote->id}_{$valNF->numero_nf}.pdf"];
                 } else {
                     app('db')->insert("INSERT INTO senda.com_03_02_01_a10_a3(id_lote,id_nf,codigo,usuario,ip_usuario,destino,timeout,autoclose) VALUES (?,?,?,?,?,?,?,?) RETURNING id", [
                         Util::getValue($valLote->id),
@@ -147,13 +161,12 @@ class GerarGuias extends Controller {
                         5000,
                         'F'
                     ]);
-                    $arrMensagens[] = ['mensagem' => 'Falha ao gerar arquivo em: ' . $this->getEmpresa()->gnre_pasta_guias . DIRECTORY_SEPARATOR . "{$valLote->id}_{$numero_nf}.pdf"];
+                    $this->mensagens[] = ['mensagem' => 'Falha ao gerar arquivo em: ' . $this->getEmpresa()->gnre_pasta_guias . DIRECTORY_SEPARATOR . "{$valLote->id}_{$numero_nf}.pdf"];
                 }
             } else {
-                $arrMensagens[] = ['mensagem' => 'Pasta para geração de arquivos PDF não definida ou inexistente nos parâmetros de configuração.'];
+                $this->mensagens[] = ['mensagem' => 'Pasta para geração de arquivos PDF não definida ou inexistente nos parâmetros de configuração.'];
             }
         }
-        return $arrMensagens;
     }
 
 }
