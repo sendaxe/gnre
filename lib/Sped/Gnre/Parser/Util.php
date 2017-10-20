@@ -49,7 +49,7 @@ class Util {
     }
 
     public static function getValue($value) {
-        return (empty($value) && $value <> "0") ? NULL : $value;
+        return (empty($value) && $value <> "0") ? NULL : utf8_encode($value);
     }
 
     public static function convertDateDB($dateDB) {

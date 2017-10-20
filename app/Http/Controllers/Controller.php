@@ -25,10 +25,14 @@ class Controller extends BaseController {
                     "FROM senda.cad_01_02 emp " .
                     "LEFT JOIN senda.cad_01_02_a1 aux ON (aux.cod_empresa = emp.codigo)" .
                     "WHERE emp.codigo = ?" .
+                    "AND aux.gera_gnre = 'T'" .
                     "LIMIT 1"
                     , [$id_empresa]
             );
             $this->empresa = end($this->empresa);
+        }
+        if(!$this->empresa){
+            $this->empresa = NULL;
         }
         return $this->empresa;
     }
@@ -40,4 +44,37 @@ class Controller extends BaseController {
     function setEmpresa($empresa) {
         $this->empresa = $empresa;
     }
+
+    function validarParametrosEmpresa($empresa = NULL) {
+        if (empty($empresa)) {
+            $empresa = $this->empresa;
+        }
+        $arrMensagens = [];
+        if (!empty($empresa)) {
+            if (empty($empresa->gnre_pasta_guias)) {
+                $arrMensagens[] = ['mensagem' => 'Pasta para geração de PDF não informado no cadastro de empresas.'];
+            } else {
+                if (!file_exists($empresa->gnre_pasta_guias)) {
+                    $arrMensagens[] = ['mensagem' => 'Pasta para geração de PDF não está acessível.'];
+                }
+            }
+            if (empty($empresa->gnre_pasta_xml)) {
+                $arrMensagens[] = ['mensagem' => 'Pasta para geração de XML não informado no cadastro de empresas.'];
+            } else {
+                if (!file_exists($empresa->gnre_pasta_xml)) {
+                    $arrMensagens[] = ['mensagem' => 'Pasta para geração de XML não está acessível.'];
+                }
+            }
+            if (empty($empresa->gnre_ambiente) && $empresa->gnre_ambiente != 0) {
+                $arrMensagens[] = ['mensagem' => 'Ambiente não informado no cadastro de empresas.'];
+            }
+        } else {
+            $arrMensagens[] = ['mensagem' => 'Empresa não habilitada ou indisponível.'];
+        }
+        if(!empty($arrMensagens)){
+            array_unshift($arrMensagens,['mensagem' => 'VERIFICAR CONFIGURAÇÕES']);
+        }
+        return $arrMensagens;
+    }
+
 }

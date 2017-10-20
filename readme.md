@@ -49,15 +49,8 @@ openssl version
   - Verificando se o sistema operacional encontrou a variável de ambiente configurada.
     ![Screenshot](./tests/exemplos/img09.png)
 #### Estrutura de Pastas
-- Recomenda-se utilizar a seguinte estrutura de pasta para instalação:
-  * ..xampp/htdocs
-    * senda
-        * empresa
-            * certificado
-            * senda-gnre (copiar para esta pasta a aplicação baixada - pasta raiz da aplicação)
-        * empresa
-            * certificado
-            * senda-gnre (copiar para esta pasta a aplicação baixada - pasta raiz da aplicação)
+- Recomenda-se salvar a aplicação baixada na pasta raiz do serviço PHP.
+  * C:/xampp/htdocs/senda-gnre (copiar para esta pasta a aplicação baixada)
 - Exemplos
   - Estrutura de pastas
     ![Screenshot](./tests/exemplos/img10.png)
