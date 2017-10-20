@@ -78,15 +78,16 @@ openssl version
 
 ### Acessando a aplicação PHP
 - Acesse no navegador a url: "http://endereco-ip/senda-gnre/public" o caminho pode variar conforme for configurado a estrutura de pastas nos passos anteriores.
+- Caso a porta configurada no XAMPP for diferente da porta padrão (80) informar a mesma logo após o IP/Nome do servidor precedido por ":". Exemplo "http://endereco-ip:8000/senda-gnre/public" o caminho pode variar conforme for configurado a estrutura de pastas nos passos anteriores.
 - Exemplos
   - Acesso ao serviço pelo navegador
     ![Screenshot](./tests/exemplos/img14.png)
 
 ### Configurando a URL de Acesso
-- Acesse o sistema através da URL da pasta raiz, por exemplo: "http://192.168.133.59/sendaxe/empresa/senda-gnre/public" 
+- Acesse o sistema através da URL da pasta raiz, por exemplo: "http://192.168.133.59/senda-gnre/public" 
 - Se preferir utilizar um endereço de acesso reduzido, crie um arquivo .BAT (windows) com os comandos abaixo:
 ``` terminal
-cd C:\xampp\htdocs\sendaxe\empresa\senda-gnre
+cd C:\xampp\htdocs\senda-gnre
 php -S 192.168.133.59:80 -t ./public
 pause
 REM Acesse a url: http://192.168.133.59 através do navegador.
@@ -99,13 +100,6 @@ REM Acesse a url: http://192.168.133.59 através do navegador.
 - Exemplos
   - Acessando as configurações da aplicação
     ![Screenshot](./tests/exemplos/img15.png)
-- Confira se os dados do certificado foram extraídos corretamente
-    * Após extrair o certificado, verifique a pasta informada em CERT_DIR no arquivo .ENV. Deverá ser criado automaticamente pelo sistema a pasta "metadata" dentro desta pasta.
-    * Confira na pasta "metadata" se a mesma possui 2 arquivos: "certificado_certKEY.pem" e "certificado_privKEY.pem"
-- Exemplos
-  - Conferindo se os dados do certificado foram extraídos
-    ![Screenshot](./tests/exemplos/img16.png)
-    ![Screenshot](./tests/exemplos/img17.png)
 
 ### Atualizando as receitas
 - Assim que os passos anteriores forem realizados, acesse a opção "Atualizar Receitas" na aplicação PHP. Neste momento a aplicação deverá baixar as informações específicas de cada estado (campos obrigatórios, códigos de produto, códigos de detalhamento de receita etc..) salvando essas informações no Senda.
