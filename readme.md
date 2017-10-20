@@ -67,9 +67,9 @@ openssl version
 - No cadastro de empresas, marque a opção "Gera GNRE" na aba "Configurações" - "Contábil/Fiscal" - "Principal".
 - Após marcar a opção "Gera GNRE", configure as informações que estarão disponíveis na aba GNRE.
 - Informe a url que estará sendo utilizada para rodar o serviço GNRE na opção URL (definir pelo endereço ip ou nome do servidor na rede para que todas as máquinas cliente tenham acesso a esta url). Exemplos: 
-    * http://192.168.133.1/senda/empresa/senda-gnre/public
-    * http://endereco-ip/senda/empresa/senda-gnre/public
-    * http://nome-da-maquina-na-rede/senda/empresa/senda-gnre/public
+    * http://192.168.133.1/senda-gnre/public
+    * http://endereco-ip/senda-gnre/public
+    * http://nome-da-maquina-na-rede/senda-gnre/public
 - Exemplos
   - Configurando as informações no cadastro de empresa para que as máquinas cliente possam 'enxergar' a aplicação php que esta funcionando no servidor.
     ![Screenshot](./tests/exemplos/img12.png)
@@ -77,7 +77,7 @@ openssl version
     ![Screenshot](./tests/exemplos/img13.png)
 
 ### Acessando a aplicação PHP
-- Acesse no navegador a url: "http://endereco-ip/senda/empresa/senda-gnre/public" o caminho pode variar conforme for configurado a estrutura de pastas nos passos anteriores.
+- Acesse no navegador a url: "http://endereco-ip/senda-gnre/public" o caminho pode variar conforme for configurado a estrutura de pastas nos passos anteriores.
 - Exemplos
   - Acesso ao serviço pelo navegador
     ![Screenshot](./tests/exemplos/img14.png)
