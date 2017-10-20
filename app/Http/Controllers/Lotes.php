@@ -239,8 +239,6 @@ class Lotes extends ControllerLotes {
                     5000,
                     ($aviso == AVISO_TRANSMISSAO_OK) ? 'T' : 'F'
                 ]);
-                //print_r($arrRetorno);
-                echo '<br/>';
             }
             unset($config);
         }
