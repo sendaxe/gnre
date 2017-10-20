@@ -389,7 +389,7 @@ class Lotes extends ControllerLotes {
                         Util::getValue($arrRetorno['sequencial_guia']),
                         Util::getValue($arrRetorno['erros_validacao_campo']),
                         Util::getValue($arrRetorno['erros_validacao_codigo']),
-                        Util::getValue($arrRetorno['erros_validacao_descricao']),
+                        Util::getValue(iconv("UTF-8", "ISO-8859-1//TRANSLIT", $arrRetorno['erros_validacao_descricao'])),
                         Util::getValue($arrRetorno['numero_controle'])
                     ]); //$arrRetorno['id'] = app('db')->getPdo()->lastInsertId();
                     if (!empty(trim($arrRetorno['numero_controle'], '0'))) {
