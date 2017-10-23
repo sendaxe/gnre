@@ -6,7 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Senda GNRE - @yield('title')</title>
         <link rel="stylesheet" href="{{ url('/') }}/vendor/bootstrap/css/bootstrap.min.css">
-        <link rel="stylesheet" href="{{ url('/') }}/vendor/custom/css/style.css"> 
+        <link rel="stylesheet" href="{{ url('/') }}/vendor/custom/css/style.css">
     </head>
     <body>
         @section('sidebar')
