@@ -26,7 +26,7 @@
     <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 pull-left">
             <div class="row">
-                <a class="btn btn-default" href="/{{$empresa->codigo}}/config">Voltar</a>
+                <a class="btn btn-default" href="{{ url('/') }}/{{$empresa->codigo}}/config">Voltar</a>
             </div>
         </div>
     </div>

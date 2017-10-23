@@ -5,8 +5,9 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Senda GNRE - @yield('error-code')</title>
-        <link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">
-        <link rel="stylesheet" href="vendor/custom/css/style.css">
+        <link rel="stylesheet" href="{{ url('/') }}/vendor/bootstrap/css/bootstrap.min.css">
+        <link rel="stylesheet" href="{{ url('/') }}/vendor/custom/css/style.css">
+        
     </head>
     <body>
         <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -43,6 +44,6 @@
         </div>
     </body>
 </html>
-<script src="vendor/jquery/jquery.min.js"></script>
-<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
-<script src="vendor/custom/js/custom.js"></script>
+<script src="{{ url('/') }}/vendor/jquery/jquery.min.js"></script>
+<script src="{{ url('/') }}/vendor/bootstrap/js/bootstrap.min.js"></script>
+<script src="{{ url('/') }}/vendor/custom/js/custom.js"></script>

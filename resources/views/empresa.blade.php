@@ -50,7 +50,7 @@
     <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 pull-left">
             <div class="row">
-                <a class="btn btn-default" href="/">Voltar</a>
+                <a class="btn btn-default" href="{{ url('/') }}">Voltar</a>
             </div>
         </div>
     </div>

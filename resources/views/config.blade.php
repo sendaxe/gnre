@@ -15,7 +15,7 @@
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 panel panel-default margin-bottom">
             <div class="panel-body">
                 <span class="panel-title">Certificado Digital</span>
-                <form id='form-certificado' class="margin-top" action="/{{$empresa->codigo}}/config/upload-cert" method="post" enctype="multipart/form-data" autocomplete="off">
+                <form id='form-certificado' class="margin-top" action="{{ url('/') }}/{{$empresa->codigo}}/config/upload-cert" method="post" enctype="multipart/form-data" autocomplete="off">
                     <div class="row">
                         <div class="col-xs-12 col-sm-4 col-md-6 col-lg-4">
                             <div class="form-group">
@@ -56,7 +56,7 @@
             <div class="panel-body">
                 <span class="panel-title">Portal Nacional GNRE</span>
                 @if(isset($empresa))
-                <a type="button" href="/{{$empresa->codigo}}/sefaz/atualizar-receitas" class="btn btn-primary pull-right margin-top">Atualizar Receitas</a>
+                <a type="button" href="{{ url('/') }}/{{$empresa->codigo}}/sefaz/atualizar-receitas" class="btn btn-primary pull-right margin-top">Atualizar Receitas</a>
                 @endif
             </div>
         </div>
@@ -65,7 +65,7 @@
     <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 pull-left">
             <div class="row">
-                <a class="btn btn-default " href="/{{$empresa->codigo}}">Voltar</a>
+                <a class="btn btn-default " href="{{ url('/') }}/{{$empresa->codigo}}">Voltar</a>
             </div>
         </div>
     </div>

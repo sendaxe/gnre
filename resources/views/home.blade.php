@@ -22,7 +22,7 @@
                                 <select class="form-control cursor-pointer" id="sel-empresa" required="required">
                                     <option value=""> Selecionar Empresa</option>
                                     @foreach($arrEmpresas as $row)
-                                    <option value="{{$row->codigo}}">{{str_pad($row->codigo, 3,'0', STR_PAD_LEFT)}} - {{$row->nome}} - {{str_replace(['.','/','-'],[],$row->cnpj)}}</option>
+                                    <option value="{{ url('/') }}/{{$row->codigo}}">{{str_pad($row->codigo, 3,'0', STR_PAD_LEFT)}} - {{$row->nome}} - {{str_replace(['.','/','-'],[],$row->cnpj)}}</option>
                                     @endforeach
                                 </select>
                             </div>
