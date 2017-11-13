@@ -176,7 +176,7 @@ class Lotes extends ControllerLotes {
                     $lote->addGuia($guia);
                 }
 
-                $this->salvarXMLLote($lote, "{$valLote->id}_{$valLote->numero_nf}.xml", $this->getEmpresa()->gnre_pasta_xml);
+                $this->salvarXMLLote($lote, "{$valLote->id}_{$valLote->numero_nf}.xml", $this->getEmpresa()->pasta_xml);
 
                 $webService = new Connection($config, $lote->getHeaderSoap(), $lote->toXml());
                 $soapResponse = $webService->doRequest($lote->soapAction());
