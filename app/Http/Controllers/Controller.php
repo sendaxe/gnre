@@ -22,6 +22,8 @@ class Controller extends BaseController {
                     "   emp.cnpj, " .
                     "   (SELECT COUNT(1) FROM senda.cad_01_02_a1 a WHERE a.gera_gnre = 'T') AS qtd_habilitadas, " .
                     "   aux.* " .
+                    "   REPLACE(aux.gnre_pasta_guias, chr(92), chr(92)||chr(92)) AS pasta_guias, " .
+                    "   REPLACE(aux.gnre_pasta_xml, chr(92), chr(92)||chr(92)) AS pasta_xml " .
                     "FROM senda.cad_01_02 emp " .
                     "LEFT JOIN senda.cad_01_02_a1 aux ON (aux.cod_empresa = emp.codigo)" .
                     "WHERE emp.codigo = ?" .
@@ -51,17 +53,17 @@ class Controller extends BaseController {
         }
         $arrMensagens = [];
         if (!empty($empresa)) {
-            if (empty($empresa->gnre_pasta_guias)) {
+            if (empty($empresa->pasta_guias)) {
                 $arrMensagens[] = ['mensagem' => 'Pasta para geração de PDF não informado no cadastro de empresas.'];
             } else {
-                if (!file_exists($empresa->gnre_pasta_guias)) {
+                if (!file_exists($empresa->pasta_guias)) {
                     $arrMensagens[] = ['mensagem' => 'Pasta para geração de PDF não está acessível.'];
                 }
             }
-            if (empty($empresa->gnre_pasta_xml)) {
+            if (empty($empresa->pasta_xml)) {
                 $arrMensagens[] = ['mensagem' => 'Pasta para geração de XML não informado no cadastro de empresas.'];
             } else {
-                if (!file_exists($empresa->gnre_pasta_xml)) {
+                if (!file_exists($empresa->pasta_xml)) {
                     $arrMensagens[] = ['mensagem' => 'Pasta para geração de XML não está acessível.'];
                 }
             }
