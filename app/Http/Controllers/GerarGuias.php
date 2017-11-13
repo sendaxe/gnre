@@ -130,10 +130,10 @@ class GerarGuias extends ControllerLotes {
                 $html->create($lote);
 
                 $pdf = new Pdf();
-                if (!file_exists($this->getEmpresa()->gnre_pasta_guias)) {
-                    mkdir($this->getEmpresa()->gnre_pasta_guias, 0777, true);
+                if (!file_exists($this->getEmpresa()->pasta_guias)) {
+                    mkdir($this->getEmpresa()->pasta_guias, 0777, true);
                 }
-                if (file_exists($this->getEmpresa()->gnre_pasta_guias)) {
+                if (file_exists($this->getEmpresa()->pasta_guias)) {
                     //gerar na tela
                     //$pdf->create($html)->stream('gnre.pdf', ['Attachment' => 0]);
                     //gerar no arquivo
@@ -141,8 +141,8 @@ class GerarGuias extends ControllerLotes {
                     foreach ($valNF as $key => $row) {
                         $valNF = $row;
                     }
-                    $pdf->create($html, $this->getEmpresa()->gnre_pasta_guias . DIRECTORY_SEPARATOR . "{$valLote->id}_{$valNF->numero_nf}.pdf");
-                    if (file_exists($this->getEmpresa()->gnre_pasta_guias . DIRECTORY_SEPARATOR . "{$valLote->id}_{$valNF->numero_nf}.pdf")) {
+                    $pdf->create($html, $this->getEmpresa()->pasta_guias . DIRECTORY_SEPARATOR . "{$valLote->id}_{$valNF->numero_nf}.pdf");
+                    if (file_exists($this->getEmpresa()->pasta_guias . DIRECTORY_SEPARATOR . "{$valLote->id}_{$valNF->numero_nf}.pdf")) {
                         app('db')->update("UPDATE senda.com_03_02_01_a10 SET status=? WHERE id=?", [STATUS_GUIAGERADA, $valLote->id]);
                         app('db')->insert("INSERT INTO senda.com_03_02_01_a10_a3(id_lote,id_nf,codigo,usuario,ip_usuario,destino,timeout,autoclose) VALUES (?,?,?,?,?,?,?,?) RETURNING id", [
                             Util::getValue($valLote->id),
@@ -154,7 +154,7 @@ class GerarGuias extends ControllerLotes {
                             5000,
                             'F'
                         ]);
-                        $this->mensagens[] = ['mensagem' => 'Guia Gerada em: ' . $this->getEmpresa()->gnre_pasta_guias . DIRECTORY_SEPARATOR . "{$valLote->id}_{$valNF->numero_nf}.pdf"];
+                        $this->mensagens[] = ['mensagem' => 'Guia Gerada em: ' . $this->getEmpresa()->pasta_guias . DIRECTORY_SEPARATOR . "{$valLote->id}_{$valNF->numero_nf}.pdf"];
                     } else {
                         app('db')->insert("INSERT INTO senda.com_03_02_01_a10_a3(id_lote,id_nf,codigo,usuario,ip_usuario,destino,timeout,autoclose) VALUES (?,?,?,?,?,?,?,?) RETURNING id", [
                             Util::getValue($valLote->id),
@@ -166,7 +166,7 @@ class GerarGuias extends ControllerLotes {
                             5000,
                             'F'
                         ]);
-                        $this->mensagens[] = ['mensagem' => 'Falha ao gerar arquivo em: ' . $this->getEmpresa()->gnre_pasta_guias . DIRECTORY_SEPARATOR . "{$valLote->id}_{$numero_nf}.pdf"];
+                        $this->mensagens[] = ['mensagem' => 'Falha ao gerar arquivo em: ' . $this->getEmpresa()->pasta_guias . DIRECTORY_SEPARATOR . "{$valLote->id}_{$numero_nf}.pdf"];
                     }
                 } else {
                     $this->mensagens[] = ['mensagem' => 'Pasta para geração de arquivos PDF não definida ou inexistente nos parâmetros de configuração.'];
