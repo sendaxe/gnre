@@ -49,8 +49,9 @@ class GerarGuias extends ControllerLotes {
 
         $arrMsgParamsEmp = $this->validarParametrosEmpresa();
         $this->mensagens = array_merge($this->mensagens, $arrMsgParamsEmp);
-
-        require app()->basePath() . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'dompdf' . DIRECTORY_SEPARATOR . 'dompdf' . DIRECTORY_SEPARATOR . 'dompdf_config.inc.php';
+        
+        require app()->basePath() . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'dompdf' . DIRECTORY_SEPARATOR . 'dompdf' . DIRECTORY_SEPARATOR .'src'.DIRECTORY_SEPARATOR.'Autoloader.php';
+        
         if (empty($arrMsgParamsEmp)) {
             $lotes = app('db')->select("SELECT lote.id, ambiente FROM senda.com_03_02_01_a10 lote WHERE id = ? AND status = ? AND tipo = 'PORTAL' AND cnpj = ?", [$id, STATUS_PROCESSADO, str_replace(['/', '.', '-'], [], $this->getEmpresa()->cnpj)]);
             foreach ($lotes as $key => $valLote) {
