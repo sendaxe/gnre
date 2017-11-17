@@ -15,9 +15,12 @@
  * Livre(FSF) Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+
+
 namespace Sped\Gnre\Render;
 
 use Sped\Gnre\Render\Html;
+use Dompdf\Dompdf;
 
 /**
  * Classe que contém a estrutura para gerar o pdf da guia de pagamento.
@@ -38,7 +41,7 @@ class Pdf
      */
     protected function getDomPdf()
     {
-        return new \DOMPDF();
+        return new DOMPDF();
     }
 
     /**
