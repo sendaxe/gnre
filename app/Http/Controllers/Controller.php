@@ -7,7 +7,7 @@ use Laravel\Lumen\Routing\Controller as BaseController;
 class Controller extends BaseController {
 
     private $empresa;
-
+    
     public function __construct() {
         
     }
@@ -21,7 +21,7 @@ class Controller extends BaseController {
                     "   emp.apelido, " .
                     "   emp.cnpj, " .
                     "   (SELECT COUNT(1) FROM senda.cad_01_02_a1 a WHERE a.gera_gnre = 'T') AS qtd_habilitadas, " .
-                    "   aux.* " .
+                    "   aux.*, " .
                     "   REPLACE(aux.gnre_pasta_guias, chr(92), chr(92)||chr(92)) AS pasta_guias, " .
                     "   REPLACE(aux.gnre_pasta_xml, chr(92), chr(92)||chr(92)) AS pasta_xml " .
                     "FROM senda.cad_01_02 emp " .
@@ -32,6 +32,8 @@ class Controller extends BaseController {
                     , [$id_empresa]
             );
             $this->empresa = end($this->empresa);
+            $this->empresa->pasta_guias = env('CONFIG_PDFPATH', $this->empresa->pasta_guias);
+            $this->empresa->pasta_xml = env('CONFIG_XMLPATH', $this->empresa->pasta_xml);
         }
         if(!$this->empresa){
             $this->empresa = NULL;
@@ -45,6 +47,8 @@ class Controller extends BaseController {
 
     function setEmpresa($empresa) {
         $this->empresa = $empresa;
+        $this->empresa->pasta_guias = env('CONFIG_PDFPATH', $this->empresa->pasta_guias);
+        $this->empresa->pasta_xml = env('CONFIG_XMLPATH', $this->empresa->pasta_xml);
     }
 
     function validarParametrosEmpresa($empresa = NULL) {
