@@ -12,6 +12,7 @@ return array(
     'Zend\\ServiceManager\\' => array($vendorDir . '/zendframework/zend-servicemanager/src'),
     'Zend\\Barcode\\' => array($vendorDir . '/zendframework/zend-barcode/src'),
     'Webmozart\\Assert\\' => array($vendorDir . '/webmozart/assert/src'),
+    'Symfony\\Polyfill\\Php70\\' => array($vendorDir . '/symfony/polyfill-php70'),
     'Symfony\\Polyfill\\Mbstring\\' => array($vendorDir . '/symfony/polyfill-mbstring'),
     'Symfony\\Component\\Yaml\\' => array($vendorDir . '/symfony/yaml'),
     'Symfony\\Component\\Translation\\' => array($vendorDir . '/symfony/translation'),

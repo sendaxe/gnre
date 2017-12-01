@@ -39,7 +39,7 @@ class ArrayNodeDefinition extends NodeDefinition implements ParentNodeDefinition
     /**
      * {@inheritdoc}
      */
-    public function __construct($name, NodeParentInterface $parent = null)
+    public function __construct(?string $name, NodeParentInterface $parent = null)
     {
         parent::__construct($name, $parent);
 
@@ -424,7 +424,7 @@ class ArrayNodeDefinition extends NodeDefinition implements ParentNodeDefinition
                 $node->setKeyAttribute($this->key, $this->removeKeyItem);
             }
 
-            if (true === $this->atLeastOne) {
+            if (true === $this->atLeastOne || false === $this->allowEmptyValue) {
                 $node->setMinNumberOfElements(1);
             }
 
@@ -449,6 +449,7 @@ class ArrayNodeDefinition extends NodeDefinition implements ParentNodeDefinition
         $node->addEquivalentValue(false, $this->falseEquivalent);
         $node->setPerformDeepMerging($this->performDeepMerging);
         $node->setRequired($this->required);
+        $node->setDeprecated($this->deprecationMessage);
         $node->setIgnoreExtraKeys($this->ignoreExtraKeys, $this->removeExtraKeys);
         $node->setNormalizeKeys($this->normalizeKeys);
 
@@ -482,6 +483,10 @@ class ArrayNodeDefinition extends NodeDefinition implements ParentNodeDefinition
             throw new InvalidDefinitionException(
                 sprintf('->useAttributeAsKey() is not applicable to concrete nodes at path "%s"', $path)
             );
+        }
+
+        if (false === $this->allowEmptyValue) {
+            throw new InvalidDefinitionException(sprintf('->cannotBeEmpty() is not applicable to concrete nodes at path "%s"', $path));
         }
 
         if (true === $this->atLeastOne) {
