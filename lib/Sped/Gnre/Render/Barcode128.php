@@ -70,7 +70,7 @@ class Barcode128
             'drawText' => false
         );
 
-        $barcode = new \Zend\Barcode\Object\Code128();
+        $barcode = new \Zend\Barcode\Object\Code25interleaved();
         $barcode->setOptions($options);
 
         $barcodeOBj = \Zend\Barcode\Barcode::factory($barcode);

@@ -72,7 +72,7 @@ class ResourceCheckerConfigCache implements ConfigCacheInterface
             $this->resourceCheckers = iterator_to_array($this->resourceCheckers);
         }
 
-        if (!count($this->resourceCheckers)) {
+        if (!\count($this->resourceCheckers)) {
             return true; // shortcut - if we don't have any checkers we don't need to bother with the meta file at all
         }
 
@@ -158,7 +158,7 @@ class ResourceCheckerConfigCache implements ConfigCacheInterface
         $meta = false;
         $signalingException = new \UnexpectedValueException();
         $prevUnserializeHandler = ini_set('unserialize_callback_func', '');
-        $prevErrorHandler = set_error_handler(function ($type, $msg, $file, $line, $context) use (&$prevErrorHandler, $signalingException) {
+        $prevErrorHandler = set_error_handler(function ($type, $msg, $file, $line, $context = array()) use (&$prevErrorHandler, $signalingException) {
             if (E_WARNING === $type && 'Class __PHP_Incomplete_Class has no unserializer' === $msg) {
                 throw $signalingException;
             }
