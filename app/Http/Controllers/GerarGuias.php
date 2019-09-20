@@ -119,7 +119,7 @@ class GerarGuias extends ControllerLotes {
                     $guia->retornoAtualizacaoMonetaria = $valGuia->atualizacao_monetaria;
                     $guia->retornoNumeroDeControle = $valGuia->numero_controle;
                     $guia->retornoCodigoDeBarras = $valGuia->codigo_barras;
-                    $guia->retornoRepresentacaoNumerica = $this->mascaraLinhaDig($valGuia->representacao_numerica);
+                    $guia->retornoRepresentacaoNumerica = $valGuia->representacao_numerica;
                     $guia->retornoJuros = $valGuia->juros;
                     $guia->retornoMulta = $valGuia->multa;
                     $guia->mes = $valGuia->c05_referencia_mes;
@@ -176,13 +176,5 @@ class GerarGuias extends ControllerLotes {
             }
         }
     }
-    public function mascaraLinhaDig($strLinhaDig) {
-        $aux = '';
-        for($i=0; $i < strlen($strLinhaDig); $i++ ){
-            $aux .= $strLinhaDig[$i];
-            if (in_array($i,[10,11,22,23,34,35,46]))
-                $aux .= ' ';
-        }
-        return $aux;
-    }
+
 }

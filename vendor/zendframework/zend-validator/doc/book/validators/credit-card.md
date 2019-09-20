@@ -33,7 +33,6 @@ The following issuing institutes are accepted:
 - Solo
 - Visa
 - Visa Electron
-- Russia Mir
 
 > ### Invalid institutes
 >

@@ -100,8 +100,6 @@ class SmartyBC extends Smarty
      * @param string $function_impl the name of the PHP function to register
      * @param bool   $cacheable
      * @param mixed  $cache_attrs
-     *
-     * @throws \SmartyException
      */
     public function register_function($function, $function_impl, $cacheable = true, $cache_attrs = null)
     {
@@ -155,8 +153,6 @@ class SmartyBC extends Smarty
      * @param string $block_impl PHP function to register
      * @param bool   $cacheable
      * @param mixed  $cache_attrs
-     *
-     * @throws \SmartyException
      */
     public function register_block($block, $block_impl, $cacheable = true, $cache_attrs = null)
     {
@@ -179,8 +175,6 @@ class SmartyBC extends Smarty
      * @param string $function      name of template function
      * @param string $function_impl name of PHP function to register
      * @param bool   $cacheable
-     *
-     * @throws \SmartyException
      */
     public function register_compiler_function($function, $function_impl, $cacheable = true)
     {
@@ -202,8 +196,6 @@ class SmartyBC extends Smarty
      *
      * @param string $modifier      name of template modifier
      * @param string $modifier_impl name of PHP function to register
-     *
-     * @throws \SmartyException
      */
     public function register_modifier($modifier, $modifier_impl)
     {
@@ -246,8 +238,6 @@ class SmartyBC extends Smarty
      * to a template before compiling
      *
      * @param callable $function
-     *
-     * @throws \SmartyException
      */
     public function register_prefilter($function)
     {
@@ -269,8 +259,6 @@ class SmartyBC extends Smarty
      * to a compiled template after compilation
      *
      * @param callable $function
-     *
-     * @throws \SmartyException
      */
     public function register_postfilter($function)
     {
@@ -292,8 +280,6 @@ class SmartyBC extends Smarty
      * to a template output
      *
      * @param callable $function
-     *
-     * @throws \SmartyException
      */
     public function register_outputfilter($function)
     {
@@ -315,8 +301,6 @@ class SmartyBC extends Smarty
      *
      * @param string $type filter type
      * @param string $name filter name
-     *
-     * @throws \SmartyException
      */
     public function load_filter($type, $name)
     {
@@ -357,9 +341,7 @@ class SmartyBC extends Smarty
      * @param  string $cache_id
      * @param  string $compile_id
      *
-     * @return bool
-     * @throws \Exception
-     * @throws \SmartyException
+     * @return boolean
      */
     public function is_cached($tpl_file, $cache_id = null, $compile_id = null)
     {
@@ -395,8 +377,7 @@ class SmartyBC extends Smarty
      *
      * @param  string $tpl_file
      *
-     * @return bool
-     * @throws \SmartyException
+     * @return boolean
      */
     public function template_exists($tpl_file)
     {

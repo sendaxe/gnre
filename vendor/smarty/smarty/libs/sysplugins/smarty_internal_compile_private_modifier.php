@@ -26,7 +26,6 @@ class Smarty_Internal_Compile_Private_Modifier extends Smarty_Internal_CompileBa
      *
      * @return string compiled code
      * @throws \SmartyCompilerException
-     * @throws \SmartyException
      */
     public function compile($args, Smarty_Internal_TemplateCompilerBase $compiler, $parameter)
     {
@@ -35,7 +34,6 @@ class Smarty_Internal_Compile_Private_Modifier extends Smarty_Internal_CompileBa
         $output = $parameter[ 'value' ];
         // loop over list of modifiers
         foreach ($parameter[ 'modifierlist' ] as $single_modifier) {
-            /* @var string $modifier */
             $modifier = $single_modifier[ 0 ];
             $single_modifier[ 0 ] = $output;
             $params = implode(',', $single_modifier);
@@ -50,13 +48,20 @@ class Smarty_Internal_Compile_Private_Modifier extends Smarty_Internal_CompileBa
                     case 1:
                         // registered modifier
                         if (isset($compiler->smarty->registered_plugins[ Smarty::PLUGIN_MODIFIER ][ $modifier ])) {
-                            if (is_callable($compiler->smarty->registered_plugins[ Smarty::PLUGIN_MODIFIER ][ $modifier ][ 0 ])) {
-                                $output =
-                                    sprintf('call_user_func_array($_smarty_tpl->registered_plugins[ \'%s\' ][ %s ][ 0 ], array( %s ))',
-                                            Smarty::PLUGIN_MODIFIER, var_export($modifier, true), $params);
-                                $compiler->known_modifier_type[ $modifier ] = $type;
-                                break 2;
+                            $function =
+                                $compiler->smarty->registered_plugins[ Smarty::PLUGIN_MODIFIER ][ $modifier ][ 0 ];
+                            if (!is_array($function)) {
+                                $output = "{$function}({$params})";
+                            } else {
+                                if (is_object($function[ 0 ])) {
+                                    $output = '$_smarty_tpl->smarty->registered_plugins[Smarty::PLUGIN_MODIFIER][\'' .
+                                              $modifier . '\'][0][0]->' . $function[ 1 ] . '(' . $params . ')';
+                                } else {
+                                    $output = $function[ 0 ] . '::' . $function[ 1 ] . '(' . $params . ')';
+                                }
                             }
+                            $compiler->known_modifier_type[ $modifier ] = $type;
+                            break 2;
                         }
                         break;
                     case 2:
@@ -130,8 +135,8 @@ class Smarty_Internal_Compile_Private_Modifier extends Smarty_Internal_CompileBa
                                     }
                                 }
                             }
-                            if (isset($compiler->required_plugins[ 'nocache' ][ $modifier ][ Smarty::PLUGIN_MODIFIER ][ 'file' ]) ||
-                                isset($compiler->required_plugins[ 'compiled' ][ $modifier ][ Smarty::PLUGIN_MODIFIER ][ 'file' ])
+                            if (isset($compiler->parent_compiler->template->compiled->required_plugins[ 'nocache' ][ $modifier ][ Smarty::PLUGIN_MODIFIER ][ 'file' ]) ||
+                                isset($compiler->parent_compiler->template->compiled->required_plugins[ 'compiled' ][ $modifier ][ Smarty::PLUGIN_MODIFIER ][ 'file' ])
                             ) {
                                 // was a plugin
                                 $compiler->known_modifier_type[ $modifier ] = 4;
@@ -143,7 +148,7 @@ class Smarty_Internal_Compile_Private_Modifier extends Smarty_Internal_CompileBa
                 }
             }
             if (!isset($compiler->known_modifier_type[ $modifier ])) {
-                $compiler->trigger_template_error("unknown modifier '{$modifier}'", null, true);
+                $compiler->trigger_template_error("unknown modifier \"" . $modifier . "\"", null, true);
             }
         }
 

@@ -104,7 +104,7 @@ abstract class Smarty_CacheResource_KeyValueStore extends Smarty_CacheResource
             }
         }
         if (isset($content)) {
-            eval('?>' . $content);
+            eval("?>" . $content);
 
             return true;
         }
@@ -180,8 +180,7 @@ abstract class Smarty_CacheResource_KeyValueStore extends Smarty_CacheResource
      * @param  string  $compile_id    compile id
      * @param  integer $exp_time      expiration time [being ignored]
      *
-     * @return int number of cache files deleted [always -1]
-     * @throws \SmartyException
+     * @return integer number of cache files deleted [always -1]
      * @uses buildCachedFilepath() to generate the CacheID
      * @uses invalidate() to mark CacheIDs parent chain as outdated
      * @uses delete() to remove CacheID from cache
@@ -273,8 +272,8 @@ abstract class Smarty_CacheResource_KeyValueStore extends Smarty_CacheResource
      */
     protected function addMetaTimestamp(&$content)
     {
-        $mt = explode(' ', microtime());
-        $ts = pack('NN', $mt[ 1 ], (int) ($mt[ 0 ] * 100000000));
+        $mt = explode(" ", microtime());
+        $ts = pack("NN", $mt[ 1 ], (int) ($mt[ 0 ] * 100000000));
         $content = $ts . $content;
     }
 
@@ -371,7 +370,7 @@ abstract class Smarty_CacheResource_KeyValueStore extends Smarty_CacheResource
 
     /**
      * Translate a CacheID into the list of applicable InvalidationKeys.
-     * Splits 'some|chain|into|an|array' into array( '#clearAll#', 'some', 'some|chain', 'some|chain|into', ... )
+     * Splits "some|chain|into|an|array" into array( '#clearAll#', 'some', 'some|chain', 'some|chain|into', ... )
      *
      * @param  string $cid           CacheID to translate
      * @param  string $resource_name template name

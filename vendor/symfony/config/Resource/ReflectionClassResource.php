@@ -11,9 +11,6 @@
 
 namespace Symfony\Component\Config\Resource;
 
-use Symfony\Component\DependencyInjection\ServiceSubscriberInterface;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-
 /**
  * @author Nicolas Grekas <p@tchwork.com>
  */
@@ -40,11 +37,11 @@ class ReflectionClassResource implements SelfCheckingResourceInterface, \Seriali
         }
 
         foreach ($this->files as $file => $v) {
-            if (false === $filemtime = @filemtime($file)) {
+            if (!file_exists($file)) {
                 return false;
             }
 
-            if ($filemtime > $timestamp) {
+            if (@filemtime($file) > $timestamp) {
                 return $this->hash === $this->computeHash();
             }
         }
@@ -81,7 +78,7 @@ class ReflectionClassResource implements SelfCheckingResourceInterface, \Seriali
             $file = $class->getFileName();
             if (false !== $file && file_exists($file)) {
                 foreach ($this->excludedVendors as $vendor) {
-                    if (0 === strpos($file, $vendor) && false !== strpbrk(substr($file, \strlen($vendor), 1), '/'.\DIRECTORY_SEPARATOR)) {
+                    if (0 === strpos($file, $vendor) && false !== strpbrk(substr($file, strlen($vendor), 1), '/'.DIRECTORY_SEPARATOR)) {
                         $file = false;
                         break;
                     }
@@ -117,9 +114,7 @@ class ReflectionClassResource implements SelfCheckingResourceInterface, \Seriali
 
     private function generateSignature(\ReflectionClass $class)
     {
-        yield $class->getDocComment();
-        yield (int) $class->isFinal();
-        yield (int) $class->isAbstract();
+        yield $class->getDocComment().$class->getModifiers();
 
         if ($class->isTrait()) {
             yield print_r(class_uses($class->name), true);
@@ -138,7 +133,7 @@ class ReflectionClassResource implements SelfCheckingResourceInterface, \Seriali
             }
         }
 
-        if (\defined('HHVM_VERSION')) {
+        if (defined('HHVM_VERSION')) {
             foreach ($class->getMethods(\ReflectionMethod::IS_PUBLIC | \ReflectionMethod::IS_PROTECTED) as $m) {
                 // workaround HHVM bug with variadics, see https://github.com/facebook/hhvm/issues/5762
                 yield preg_replace('/^  @@.*/m', '', new ReflectionMethodHhvmWrapper($m->class, $m->name));
@@ -153,20 +148,6 @@ class ReflectionClassResource implements SelfCheckingResourceInterface, \Seriali
                 }
                 yield print_r($defaults, true);
             }
-        }
-
-        if ($class->isAbstract() || $class->isInterface() || $class->isTrait()) {
-            return;
-        }
-
-        if (interface_exists(EventSubscriberInterface::class, false) && $class->isSubclassOf(EventSubscriberInterface::class)) {
-            yield EventSubscriberInterface::class;
-            yield print_r(\call_user_func(array($class->name, 'getSubscribedEvents')), true);
-        }
-
-        if (interface_exists(ServiceSubscriberInterface::class, false) && $class->isSubclassOf(ServiceSubscriberInterface::class)) {
-            yield ServiceSubscriberInterface::class;
-            yield print_r(\call_user_func(array($class->name, 'getSubscribedServices')), true);
         }
     }
 }

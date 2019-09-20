@@ -166,13 +166,16 @@
             </td>
         </tr>
         <tr>
-            <td colspan="2" class="noborder" style="padding-left: 60px; font-size: 12px;">
+            <td colspan="2" class="noborder" style="padding-left:140px;">
                 {$guia->retornoRepresentacaoNumerica}
             </td>
         </tr>
         <tr>
-            <td colspan="2" class="noborder">
-                <img width="450" src="data:image/jpeg;base64,{$barcode->getCodigoBarrasBase64()}"/>
+            <td class="noborder" style="padding-left:90px;" >
+                <img src="data:image/jpeg;base64,{$barcode->getCodigoBarrasBase64()}"/>
+            </td>
+            <td class="noborder" align="right" >
+
             </td>
         </tr>
     </table>

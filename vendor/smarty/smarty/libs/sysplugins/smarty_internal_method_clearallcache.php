@@ -28,8 +28,7 @@ class Smarty_Internal_Method_ClearAllCache
      * @param  integer $exp_time expiration time
      * @param  string  $type     resource type
      *
-     * @return int number of cache files deleted
-     * @throws \SmartyException
+     * @return integer number of cache files deleted
      */
     public function clearAllCache(Smarty $smarty, $exp_time = null, $type = null)
     {

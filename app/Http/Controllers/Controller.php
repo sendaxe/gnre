@@ -34,6 +34,8 @@ class Controller extends BaseController {
             $this->empresa = end($this->empresa);
             $this->empresa->pasta_guias = env('CONFIG_PDFPATH', $this->empresa->pasta_guias);
             $this->empresa->pasta_xml = env('CONFIG_XMLPATH', $this->empresa->pasta_xml);
+			$this->empresa->pasta_guias = str_replace('\\\\','\\',$this->empresa->pasta_guias);
+			$this->empresa->pasta_xml = str_replace('\\\\','\\',$this->empresa->pasta_xml);
         }
         if(!$this->empresa){
             $this->empresa = NULL;

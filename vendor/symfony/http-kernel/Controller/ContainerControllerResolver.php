@@ -40,7 +40,7 @@ class ContainerControllerResolver extends ControllerResolver
     {
         $controller = parent::getController($request);
 
-        if (\is_array($controller) && isset($controller[0]) && \is_string($controller[0]) && $this->container->has($controller[0])) {
+        if (is_array($controller) && isset($controller[0]) && is_string($controller[0]) && $this->container->has($controller[0])) {
             $controller[0] = $this->instantiateController($controller[0]);
         }
 
@@ -63,28 +63,19 @@ class ContainerControllerResolver extends ControllerResolver
             return parent::createController($controller);
         }
 
-        $method = null;
         if (1 == substr_count($controller, ':')) {
             // controller in the "service:method" notation
-            list($controller, $method) = explode(':', $controller, 2);
+            list($service, $method) = explode(':', $controller, 2);
+
+            return array($this->container->get($service), $method);
         }
 
-        if (!$this->container->has($controller)) {
-            $this->throwExceptionIfControllerWasRemoved($controller);
-
-            throw new \LogicException(sprintf('Controller not found: service "%s" does not exist.', $controller));
+        if ($this->container->has($controller) && method_exists($service = $this->container->get($controller), '__invoke')) {
+            // invokable controller in the "service" notation
+            return $service;
         }
 
-        $service = $this->container->get($controller);
-        if (null !== $method) {
-            return array($service, $method);
-        }
-
-        if (!method_exists($service, '__invoke')) {
-            throw new \LogicException(sprintf('Controller "%s" cannot be called without a method name. Did you forget an "__invoke" method?', $controller));
-        }
-
-        return $service;
+        throw new \LogicException(sprintf('Unable to parse the controller name "%s".', $controller));
     }
 
     /**
@@ -103,19 +94,10 @@ class ContainerControllerResolver extends ControllerResolver
         } catch (\TypeError $e) {
         }
 
-        $this->throwExceptionIfControllerWasRemoved($class, $e);
+        if ($this->container instanceof Container && isset($this->container->getRemovedIds()[$class])) {
+            throw new \LogicException(sprintf('Controller "%s" cannot be fetched from the container because it is private. Did you forget to tag the service with "controller.service_arguments"?', $class), 0, $e);
+        }
 
         throw $e;
-    }
-
-    /**
-     * @param string                     $controller
-     * @param \Exception|\Throwable|null $previous
-     */
-    private function throwExceptionIfControllerWasRemoved($controller, $previous = null)
-    {
-        if ($this->container instanceof Container && isset($this->container->getRemovedIds()[$controller])) {
-            throw new \LogicException(sprintf('Controller "%s" cannot be fetched from the container because it is private. Did you forget to tag the service with "controller.service_arguments"?', $controller), 0, $previous);
-        }
     }
 }

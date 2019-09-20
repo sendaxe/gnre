@@ -193,9 +193,6 @@ class Smarty_Internal_Debug extends Smarty_Internal_Data
      *
      * @param Smarty_Internal_Template|Smarty $obj object to debug
      * @param bool                            $full
-     *
-     * @throws \Exception
-     * @throws \SmartyException
      */
     public function display_debug($obj, $full = false)
     {
@@ -213,7 +210,7 @@ class Smarty_Internal_Debug extends Smarty_Internal_Data
         // init properties by hand as user may have edited the original Smarty class
         $debObj->setPluginsDir(is_dir(__DIR__ . '/../plugins') ? __DIR__ . '/../plugins' : $smarty->getPluginsDir());
         $debObj->force_compile = false;
-        $debObj->compile_check = Smarty::COMPILECHECK_ON;
+        $debObj->compile_check = true;
         $debObj->left_delimiter = '{';
         $debObj->right_delimiter = '}';
         $debObj->security_policy = null;
@@ -227,7 +224,7 @@ class Smarty_Internal_Debug extends Smarty_Internal_Data
         $debObj->autoload_filters = array();
         $debObj->default_modifiers = array();
         $debObj->escape_html = true;
-        $debObj->caching = Smarty::CACHING_OFF;
+        $debObj->caching = false;
         $debObj->compile_id = null;
         $debObj->cache_id = null;
         // prepare information of assigned variables
@@ -242,7 +239,7 @@ class Smarty_Internal_Debug extends Smarty_Internal_Data
         if ($obj->_isTplObj()) {
             $_template->assign('template_name', $obj->source->type . ':' . $obj->source->name);
         }
-        if ($obj->_objType === 1 || $full) {
+        if ($obj->_objType == 1 || $full) {
             $_template->assign('template_data', $this->template_data[ $this->index ]);
         } else {
             $_template->assign('template_data', null);
@@ -250,7 +247,7 @@ class Smarty_Internal_Debug extends Smarty_Internal_Data
         $_template->assign('assigned_vars', $_assigned_vars);
         $_template->assign('config_vars', $_config_vars);
         $_template->assign('execution_time', microtime(true) - $smarty->start_time);
-        $_template->assign('display_mode', $debugging === 2 || !$full);
+        $_template->assign('display_mode', $debugging == 2 || !$full);
         $_template->assign('offset', $this->offset * 50);
         echo $_template->fetch();
         if (isset($full)) {
@@ -284,15 +281,15 @@ class Smarty_Internal_Debug extends Smarty_Internal_Data
         $tpl_vars = array();
         foreach ($obj->tpl_vars as $key => $var) {
             foreach ($var as $varkey => $varvalue) {
-                if ($varkey === 'value') {
+                if ($varkey == 'value') {
                     $tpl_vars[ $key ][ $varkey ] = $varvalue;
                 } else {
-                    if ($varkey === 'nocache') {
-                        if ($varvalue === true) {
+                    if ($varkey == 'nocache') {
+                        if ($varvalue == true) {
                             $tpl_vars[ $key ][ $varkey ] = $varvalue;
                         }
                     } else {
-                        if ($varkey !== 'scope' || $varvalue !== 0) {
+                        if ($varkey != 'scope' || $varvalue !== 0) {
                             $tpl_vars[ $key ][ 'attributes' ][ $varkey ] = $varvalue;
                         }
                     }
@@ -326,15 +323,15 @@ class Smarty_Internal_Debug extends Smarty_Internal_Data
             foreach (Smarty::$global_tpl_vars as $key => $var) {
                 if (!array_key_exists($key, $tpl_vars)) {
                     foreach ($var as $varkey => $varvalue) {
-                        if ($varkey === 'value') {
+                        if ($varkey == 'value') {
                             $tpl_vars[ $key ][ $varkey ] = $varvalue;
                         } else {
-                            if ($varkey === 'nocache') {
-                                if ($varvalue === true) {
+                            if ($varkey == 'nocache') {
+                                if ($varvalue == true) {
                                     $tpl_vars[ $key ][ $varkey ] = $varvalue;
                                 }
                             } else {
-                                if ($varkey !== 'scope' || $varvalue !== 0) {
+                                if ($varkey != 'scope' || $varvalue !== 0) {
                                     $tpl_vars[ $key ][ 'attributes' ][ $varkey ] = $varvalue;
                                 }
                             }
@@ -359,7 +356,7 @@ class Smarty_Internal_Debug extends Smarty_Internal_Data
     {
         static $_is_stringy = array('string' => true, 'eval' => true);
         // calculate Uid if not already done
-        if ($template->source->uid === '') {
+        if ($template->source->uid == '') {
             $template->source->filepath;
         }
         $key = $template->source->uid;
@@ -389,7 +386,7 @@ class Smarty_Internal_Debug extends Smarty_Internal_Data
     public function ignore(Smarty_Internal_Template $template)
     {
         // calculate Uid if not already done
-        if ($template->source->uid === '') {
+        if ($template->source->uid == '') {
             $template->source->filepath;
         }
         $this->ignore_uid[ $template->source->uid ] = true;

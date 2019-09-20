@@ -14,7 +14,7 @@
  * @package    Smarty
  * @subpackage Compiler
  */
-class Smarty_Internal_Compile_Rdelim extends Smarty_Internal_Compile_Ldelim
+class Smarty_Internal_Compile_Rdelim extends Smarty_Internal_CompileBase
 {
     /**
      * Compiles code for the {rdelim} tag
@@ -28,7 +28,13 @@ class Smarty_Internal_Compile_Rdelim extends Smarty_Internal_Compile_Ldelim
      */
     public function compile($args, Smarty_Internal_TemplateCompilerBase $compiler)
     {
-        parent::compile($args,$compiler);
+        $_attr = $this->getAttributes($compiler, $args);
+        if ($_attr[ 'nocache' ] === true) {
+            $compiler->trigger_template_error('nocache option not allowed', null, true);
+        }
+        // this tag does not return compiled code
+        $compiler->has_code = true;
+
         return $compiler->smarty->right_delimiter;
     }
 }

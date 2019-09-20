@@ -82,7 +82,7 @@ class Smarty_Internal_Runtime_UpdateScope
     }
 
     /**
-     * Update variable in other scope
+     * Update varibale in other scope
      *
      * @param array     $tpl_vars template variable array
      * @param \Smarty_Internal_Template $from

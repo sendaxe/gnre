@@ -12,6 +12,6 @@
  * Load and register Smarty Autoloader
  */
 if (!class_exists('Smarty_Autoloader')) {
-    require dirname(__FILE__) . '/Autoloader.php';
+    require __DIR__ . '/Autoloader.php';
 }
-Smarty_Autoloader::register(true);
+Smarty_Autoloader::register();

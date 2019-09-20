@@ -73,11 +73,16 @@ abstract class Smarty_Template_Resource_Base
     public $content = null;
 
     /**
-     * Included sub templates
-     * - index name
-     * - value use count
+     * required plugins
      *
-     * @var int[]
+     * @var array
+     */
+    public $required_plugins = array();
+
+    /**
+     * Included subtemplates
+     *
+     * @var array
      */
     public $includes = array();
 

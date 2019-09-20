@@ -69,7 +69,7 @@ class Hostname extends AbstractValidator
 
     /**
      * Array of valid top-level-domains
-     * IanaVersion 2018013101
+     * IanaVersion 2017082200
      *
      * @see ftp://data.iana.org/TLD/tlds-alpha-by-domain.txt  List of all TLDs by domain
      * @see http://www.iana.org/domains/root/db/ Official list of supported TLDs
@@ -321,6 +321,7 @@ class Hostname extends AbstractValidator
         'chat',
         'cheap',
         'chintai',
+        'chloe',
         'christmas',
         'chrome',
         'chrysler',
@@ -671,6 +672,7 @@ class Hostname extends AbstractValidator
         'hr',
         'hsbc',
         'ht',
+        'htc',
         'hu',
         'hughes',
         'hyatt',
@@ -864,6 +866,8 @@ class Hostname extends AbstractValidator
         'mattel',
         'mba',
         'mc',
+        'mcd',
+        'mcdonalds',
         'mckinsey',
         'md',
         'me',
@@ -905,6 +909,7 @@ class Hostname extends AbstractValidator
         'monash',
         'money',
         'monster',
+        'montblanc',
         'mopar',
         'mormon',
         'mortgage',
@@ -1010,6 +1015,7 @@ class Hostname extends AbstractValidator
         'ovh',
         'pa',
         'page',
+        'pamperedchef',
         'panasonic',
         'panerai',
         'paris',
@@ -1233,7 +1239,6 @@ class Hostname extends AbstractValidator
         'soy',
         'space',
         'spiegel',
-        'sport',
         'spot',
         'spreadbetting',
         'sr',
@@ -1561,7 +1566,6 @@ class Hostname extends AbstractValidator
         '健康',
         'ไทย',
         'سورية',
-        '招聘',
         'рус',
         'рф',
         '珠宝',

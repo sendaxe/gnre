@@ -85,14 +85,17 @@ class ConsultarUF extends Controller {
     }
 
     public function consultarUf($id_empresa, $receita, $estado) {
+		
         $this->getEmpresaById($id_empresa);
         $configUF = new ConfigUf;
         $configUF->setEnvironment($this->getEmpresa()->gnre_ambiente);
         $configUF->setReceita($receita);
         $configUF->setEstado(strtoupper($estado));
+		
         if ($configUF->getEnvironment() == '2') {
             $configUF->utilizarAmbienteDeTeste(true);
         }
+		
         if (!empty($configUF->getEnvironment()) && !empty($configUF->getReceita()) && !empty($configUF->getEstado())) {
             $config = new GnreSetup($this->getEmpresa());
             $webService = new Connection($config, $configUF->getHeaderSoap(), $configUF->toXml());

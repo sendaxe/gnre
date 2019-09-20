@@ -322,7 +322,7 @@ class Smarty_Security
             // fall back
             return $this->isTrustedStaticClass($class_name, $compiler);
         }
-        if ($params[ 2 ] === 'method') {
+        if ($params[ 2 ] == 'method') {
             $allowed = $this->trusted_static_methods;
             $name = substr($params[ 0 ], 0, strpos($params[ 0 ], '('));
         } else {
@@ -514,39 +514,60 @@ class Smarty_Security
     public function isTrustedResourceDir($filepath, $isConfig = null)
     {
         if ($this->_include_path_status !== $this->smarty->use_include_path) {
-            $_dir = $this->smarty->use_include_path ? $this->smarty->ext->_getIncludePath->getIncludePathDirs($this->smarty) : array();
-            if ($this->_include_dir !== $_dir) {
-                $this->_updateResourceDir($this->_include_dir, $_dir);
-                $this->_include_dir = $_dir;
+            foreach ($this->_include_dir as $directory) {
+                unset($this->_resource_dir[ $directory ]);
+            }
+            if ($this->smarty->use_include_path) {
+                $this->_include_dir = array();
+                $_dirs = $this->smarty->ext->_getIncludePath->getIncludePathDirs($this->smarty);
+                foreach ($_dirs as $directory) {
+                    $this->_include_dir[] = $directory;
+                    $this->_resource_dir[ $directory ] = true;
+                }
             }
             $this->_include_path_status = $this->smarty->use_include_path;
         }
-        if ($isConfig !== true) {
+        if ($isConfig !== true &&
+            (!isset($this->smarty->_cache[ 'template_dir_new' ]) || $this->smarty->_cache[ 'template_dir_new' ])
+        ) {
             $_dir = $this->smarty->getTemplateDir();
             if ($this->_template_dir !== $_dir) {
-                $this->_updateResourceDir($this->_template_dir, $_dir);
+                foreach ($this->_template_dir as $directory) {
+                    unset($this->_resource_dir[ $directory ]);
+                }
+                foreach ($_dir as $directory) {
+                    $this->_resource_dir[ $directory ] = true;
+                }
                 $this->_template_dir = $_dir;
             }
+            $this->smarty->_cache[ 'template_dir_new' ] = false;
         }
-        if ($isConfig !== false) {
+        if ($isConfig !== false &&
+            (!isset($this->smarty->_cache[ 'config_dir_new' ]) || $this->smarty->_cache[ 'config_dir_new' ])
+        ) {
             $_dir = $this->smarty->getConfigDir();
             if ($this->_config_dir !== $_dir) {
-                $this->_updateResourceDir($this->_config_dir, $_dir);
+                foreach ($this->_config_dir as $directory) {
+                    unset($this->_resource_dir[ $directory ]);
+                }
+                foreach ($_dir as $directory) {
+                    $this->_resource_dir[ $directory ] = true;
+                }
                 $this->_config_dir = $_dir;
             }
+            $this->smarty->_cache[ 'config_dir_new' ] = false;
         }
-        if ($this->_secure_dir !== $this->secure_dir) {
-            $this->secure_dir = (array)$this->secure_dir;
-            foreach($this->secure_dir as $k => $d) {
-                $this->secure_dir[$k] = $this->smarty->_realpath($d.DIRECTORY_SEPARATOR,true);
+        if ($this->_secure_dir !== (array) $this->secure_dir) {
+            foreach ($this->_secure_dir as $directory) {
+                unset($this->_resource_dir[ $directory ]);
             }
-            $this->_updateResourceDir($this->_secure_dir, $this->secure_dir);
-            $this->_secure_dir = $this->secure_dir;
+            foreach ((array) $this->secure_dir as $directory) {
+                $directory = $this->smarty->_realpath($directory . DIRECTORY_SEPARATOR, true);
+                $this->_resource_dir[ $directory ] = true;
+            }
+            $this->_secure_dir = (array) $this->secure_dir;
         }
-        $addPath =  $this->_checkDir($filepath, $this->_resource_dir);
-        if ($addPath !== false) {
-           $this->_resource_dir = array_merge($this->_resource_dir, $addPath);
-        }
+        $this->_resource_dir = $this->_checkDir($filepath, $this->_resource_dir);
         return true;
     }
 
@@ -601,64 +622,40 @@ class Smarty_Security
                 $this->_php_resource_dir[ $directory ] = true;
             }
         }
-        $addPath =  $this->_checkDir($filepath, $this->_php_resource_dir);
-        if ($addPath !== false) {
-           $this->_php_resource_dir = array_merge($this->_php_resource_dir, $addPath);
-        }
-         return true;
-    }
 
-    /**
-     * Remove old directories and its sub folders, add new directories
-     *
-     * @param array $oldDir
-     * @param array $newDir
-     */
-    private function _updateResourceDir($oldDir, $newDir) {
-        foreach ($oldDir as $directory) {
-            $directory = $this->smarty->_realpath($directory, true);
-            $length = strlen($directory);
-            foreach ($this->_resource_dir as $dir) {
-                if (substr($dir, 0,$length) === $directory) {
-                    unset($this->_resource_dir[ $dir ]);
-                }
-            }
-        }
-        foreach ($newDir as $directory) {
-            $directory = $this->smarty->_realpath($directory, true);
-            $this->_resource_dir[ $directory ] = true;
-        }
+        $this->_php_resource_dir =
+            $this->_checkDir($this->smarty->_realpath($filepath, true), $this->_php_resource_dir);
+        return true;
     }
+    
     /**
      * Check if file is inside a valid directory
      *
      * @param string $filepath
      * @param array  $dirs valid directories
      *
-     * @return array|bool
+     * @return array
      * @throws \SmartyException
      */
     private function _checkDir($filepath, $dirs)
     {
         $directory = dirname($filepath) . DIRECTORY_SEPARATOR;
-        if (isset($dirs[ $directory ])) {
-            return false;
-        }
-        $filepath = $this->smarty->_realpath($filepath, true);
-        $directory = dirname($filepath) . DIRECTORY_SEPARATOR;
         $_directory = array();
         while (true) {
-             // test if the directory is trusted
+            // remember the directory to add it to _resource_dir in case we're successful
+            $_directory[ $directory ] = true;
+            // test if the directory is trusted
             if (isset($dirs[ $directory ])) {
-               return $_directory;
+                // merge sub directories of current $directory into _resource_dir to speed up subsequent lookup
+                $dirs = array_merge($dirs, $_directory);
+
+                return $dirs;
             }
             // abort if we've reached root
             if (!preg_match('#[\\\/][^\\\/]+[\\\/]$#', $directory)) {
                 break;
             }
-            // remember the directory to add it to _resource_dir in case we're successful
-            $_directory[ $directory ] = true;
-           // bubble up one level
+            // bubble up one level
             $directory = preg_replace('#[\\\/][^\\\/]+[\\\/]$#', DIRECTORY_SEPARATOR, $directory);
         }
 
@@ -679,11 +676,11 @@ class Smarty_Security
     {
         if ($security_class instanceof Smarty_Security) {
             $smarty->security_policy = $security_class;
-            return $smarty;
+            return;
         } elseif (is_object($security_class)) {
             throw new SmartyException("Class '" . get_class($security_class) . "' must extend Smarty_Security.");
         }
-        if ($security_class === null) {
+        if ($security_class == null) {
             $security_class = $smarty->security_class;
         }
         if (!class_exists($security_class)) {
@@ -693,7 +690,7 @@ class Smarty_Security
         } else {
             $smarty->security_policy = new $security_class($smarty);
         }
-        return $smarty;
+        return;
     }
     /**
      * Start template processing
